@@ -17,7 +17,7 @@ The system is designed for small and large companies that want to optimize their
 It is installed on a single domain where each user is given the option to contact all companies registered in the service.
 
 # Installation instructions:
-coming soon:)
+comming soon:)
 
 # Additional details:
-coming soon:)
+comming soon:)
