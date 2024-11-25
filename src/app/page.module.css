@@ -1,41 +1,56 @@
 .page {
-  height: 100vh; /* Full viewport height */
+  height: 90vh;
   width: 100%;
   background-color: #ddba0e;
   display: flex;
   justify-content: center;
-  align-items: center;
   font-family: Arial, sans-serif;
   position: relative;
   overflow: hidden;
+  position: absolute;
+  z-index: 2;
+
 }
 
-.logo { 
-  max-width: 100px;
- }
+.container {
+  height: 100vh;
+  position: relative;
 
-.text {
-  font-size: 60px;
-  color: #45474b;
-  z-index: 2; /* Ensures text is above the animation */
+}
+
+
+.logo {
+  max-width: 170px;
 }
 
 .spinner {
   position: absolute;
-  height: 450px;
-  width: 450px;
-  border: 8px solid #ffffff; /* Light border for spinner */
-  border-top: 8px solid #45474b; /* Darker border for spinning effect */
+  height: 380px;
+  width: 380px;
+  border: 8px solid #ffffff;
+  border-top: 8px solid #45474b;
   border-radius: 50%;
-  animation: spin 2s linear infinite; /* Spinning animation */
-  z-index: 1; /* Ensures spinner is behind the text */
+  animation: spin 2s linear infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+.text {
+  font-size: 60px;
+  color: #45474b;
+  z-index: 2; 
+  position: absolute;
 }
+
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
