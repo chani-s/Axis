@@ -24,6 +24,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.logo{
+  display: block;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
