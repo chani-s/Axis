@@ -26,12 +26,9 @@
 
 .spinner {
   position: absolute;
-  height: 450px;
-  width: 450px;
-  /* border: 8px solid #ffffff;
-  border-top: 8px solid #45474b;
-  border-radius: 50%; */
-  animation: spin 4s linear infinite;
+  height: 470px;
+  width: 470px;
+  animation: spin 5.5s linear infinite;
   z-index: 1;
 }
 
