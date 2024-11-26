@@ -1,14 +1,6 @@
-
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-
-export const metadata = {
-  title: 'Your App Title',
-  icons: {
-    icon: '/favicon.ico',
-  },
-};
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,8 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="favicon.ico" type="image" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-
         {children}
       </body>
     </html>

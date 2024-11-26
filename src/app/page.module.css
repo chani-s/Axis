@@ -4,6 +4,7 @@
   background-color: #ddba0e;
   display: flex;
   justify-content: center;
+  align-items: center;
   font-family: Arial, sans-serif;
   position: relative;
   overflow: hidden;
@@ -25,32 +26,30 @@
 
 .spinner {
   position: absolute;
-  height: 380px;
-  width: 380px;
-  border: 8px solid #ffffff;
+  height: 450px;
+  width: 450px;
+  /* border: 8px solid #ffffff;
   border-top: 8px solid #45474b;
-  border-radius: 50%;
-  animation: spin 2s linear infinite;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  border-radius: 50%; */
+  animation: spin 4s linear infinite;
   z-index: 1;
 }
 
 .text {
-  font-size: 60px;
-  color: #45474b;
+  font-size: 50px;
+  color: black;
   z-index: 2; 
-  position: absolute;
+  
 }
 
 
   @keyframes spin {
-    0% {
+    50% {
       transform: rotate(0deg);
     }
 
-    100% {
+    50% {
       transform: rotate(360deg);
     }
   }
+
