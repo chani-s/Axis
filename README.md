@@ -1,6 +1,7 @@
 Project name: Axis - one chat, total service.
-product by Rut Wertaymer, Chana Slaiter and Ayala Kugel.
+product by Rut Wertaymer, Chana Slater and Ayala Kugel.
 As part of "basmach" course, by IDF.
+
 Site: https://axis-brown.vercel.app/
 
 # General description:
