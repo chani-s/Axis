@@ -9,8 +9,8 @@ const MainPage = () => {
         <div className={styles.page}>
             <Header />
             <div className={styles.mainArea}>
-                <MainChat />
                 <SideBar />
+                <MainChat />
             </div>
         </div>
     )

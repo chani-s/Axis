@@ -1,7 +1,9 @@
-.sidebar {
+.sideBar {
     background-color: #e4e2e2;
     padding: 1rem;
     border: #45474b solid 2px;
-
+    width: 30%;
+    border-radius: 15px;
+    margin: 20px;
+    margin-top: 0;
 }
-

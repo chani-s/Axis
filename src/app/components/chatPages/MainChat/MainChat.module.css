@@ -1,9 +1,81 @@
-
 .mainChat {
     display: flex;
     flex-direction: column;
     height: 100vh;
     width: 75%;
-    background-color: #e4e2e2;
-    border: #45474b solid 2px;
+    background-color: white;
+    border-radius: 15px;
+    margin: 20px;
+    margin-top: 0;
+    position: relative;
+}
+
+.minimized {
+    height: 400px; 
+    width: 320px;
+    overflow: hidden; 
+    bottom: 0;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 15px 15px 0 0 ;
+}
+
+.rightButtons {
+    display: flex;
+    gap: 10px;
+}
+
+.closeButton, .minimizeButton, .hamburger {
+    width: 20px;
+    height: 20px;
+    border: none;
+    cursor: pointer;
+}
+
+.messages {
+    flex: 1; 
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.inputField{
+    flex: 1;
+    border-radius: 15px;
+    border: none;
+}
+
+.sendingBar {
+    display: flex;
+    justify-content: right;
+    padding: 0 20px;
+    padding: 10px;
+    gap: 10px;
+    border-top: 1px solid #ccc;
+    bottom: 0;
+    position: absolute; 
+    width: 100%; 
+}
+
+.sendingBar[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+    width: 85%;
+}
+
+.sendButton {
+    padding: 10px 20px;
+    background-color: #ddba0e;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
 }
