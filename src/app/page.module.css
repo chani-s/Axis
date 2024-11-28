@@ -28,7 +28,7 @@
   position: absolute;
   height: 470px;
   width: 470px;
-  animation: spin 5.5s linear infinite;
+  animation: spin 7s linear infinite;
   z-index: 1;
 }
 
