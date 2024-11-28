@@ -32,4 +32,33 @@
     color: #888; /* Light gray placeholder text */
     font-style: italic; /* Optional: italic style for placeholder */
   }
+  .yourChatsP{
+    direction: rtl;
+    align-self: center;
+  }
+  .conversationItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    border: 2px solid transparent; /* Set border to transparent initially */
+  }
+  .conversationItem:hover {
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: yellow; /* Add yellow border on hover */
+  }
   
+  .profileCircle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: black; /* Black background for the circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }  
