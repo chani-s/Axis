@@ -1,7 +1,35 @@
-.sidebar {
-    background-color: #e4e2e2;
-    padding: 1rem;
-    border: #45474b solid 2px;
-
+.sideBar {
+    background-color: white ;
+    border: none;
+    border-radius:10px ;
+    width: 23%;
+    border-radius: 15px;
+    margin: 20px;
 }
-
+.inputs {
+    display: flex;
+    flex-direction: column; /* Stack the inputs vertically */
+    gap: 15px; /* Space between inputs */
+    margin-bottom: 20px; /* Space below the input section */
+    align-items: center;
+    padding-top: 2rem;
+  }
+.input {
+    padding: 10px 15px; /* Inner spacing for better usability */
+    border:none; /* Light gray border */
+    border-radius: 20px; /* Circular edges */
+    background-color: #e0dddd; /* Gray background color for the inputs */
+    font-size: 16px; /* Comfortable font size */
+    color:black; /* Darker text for contrast */
+    outline: none; /* Remove the default blue border on focus */
+    transition: background-color 0.3s, border-color 0.3s; /* Smooth hover/focus transitions */
+    direction: rtl;
+    width: 17rem;
+    height: 3rem;
+  }
+  
+  .input::placeholder {
+    color: #888; /* Light gray placeholder text */
+    font-style: italic; /* Optional: italic style for placeholder */
+  }
+  
