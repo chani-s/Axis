@@ -1,13 +1,14 @@
 .mainChat {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 80vh;
     width: 75%;
     background-color: white;
     border-radius: 15px;
     margin: 20px;
     margin-top: 0;
     position: relative;
+        
 }
 
 .minimized {

@@ -9,7 +9,6 @@ const MainChat = () => {
     const [isPermissionPanelOpen, setIsPermissionPanelOpen] = useState(false);
     const [isSent, setIsSent] = useState(false);
 
-
     const closeChat = () => {
         setIsChatOpen(false);
 

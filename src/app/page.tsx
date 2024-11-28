@@ -8,7 +8,6 @@ export default function Home() {
       <div className={styles.page}>
       <div className={styles.text}>coming soon</div>
 
-          {/* <div className={styles.spinner}/>         */}
           <img className={styles.spinner} src="/imgs/working.png" alt="work"></img>
       </div>
     </div>
