@@ -1,0 +1,12 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.mainArea {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    background-color: #e4e2e2;
+    border: #45474b solid 2px;}
