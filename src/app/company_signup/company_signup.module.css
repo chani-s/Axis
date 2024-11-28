@@ -1,0 +1,21 @@
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  height: auto;
+  background-color: #f9f9f9;
+  position: relative;
+}
+
+.backgroundImg {
+  width: 55vw;
+  height: 45vh;
+  overflow: hidden;
+  position: absolute;
+  top: -15vh;
+  left: -6vw;
+  z-index: 1;
+  height: auto;
+}

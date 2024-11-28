@@ -1,0 +1,70 @@
+.container {
+    width: 25vw;
+    height: 65vh;
+    margin: 50px auto;
+    padding: 25px;
+    text-align: center;
+    border: 2px solid #cccccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    z-index: 3;
+  }
+
+  .title {
+    margin-bottom: 4vh;
+    font-size: 24px;
+    color: #45474b;
+  }
+
+  .inputContainer {
+    margin-bottom: 20px;
+  }
+
+  .input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 3vh;
+    border: 1px solid #e0dddd;
+    background-color: #e0dddd;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: right;
+  }
+
+  .googleButton {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 6vh;
+    margin-top: 2vh;
+    border: 1px solid #45474b;
+    border-radius: 5px;
+    background-color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .googleButton:hover{
+    background-color: #45474b;
+    color:#fff
+  }
+
+  .submitButton {
+    width: 100%;
+    padding: 10px;
+    background-color: #ddba0e;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .link {
+    display: block;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    color: #699cb9;
+    text-decoration: none;
+    font-size: 14px;
+  }
