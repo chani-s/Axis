@@ -1,64 +1,141 @@
 .sideBar {
-    background-color: white ;
+    background-color: white;
     border: none;
-    border-radius:10px ;
-    width: 23%;
     border-radius: 15px;
+    width: 23%;
     margin: 20px;
+    height: 100%;
+    position: relative; /* Positioning relative to the sidebar */
+    display: flex;
+    flex-direction: column; /* Stack inputs and bottom content vertically */
 }
+
 .inputs {
     display: flex;
-    flex-direction: column; /* Stack the inputs vertically */
-    gap: 15px; /* Space between inputs */
-    margin-bottom: 20px; /* Space below the input section */
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
     align-items: center;
     padding-top: 2rem;
-  }
+    width: 100%;
+}
+
 .input {
-    padding: 10px 15px; /* Inner spacing for better usability */
-    border:none; /* Light gray border */
-    border-radius: 20px; /* Circular edges */
-    background-color: #e0dddd; /* Gray background color for the inputs */
-    font-size: 16px; /* Comfortable font size */
-    color:black; /* Darker text for contrast */
-    outline: none; /* Remove the default blue border on focus */
-    transition: background-color 0.3s, border-color 0.3s; /* Smooth hover/focus transitions */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 20px;
+    background-color: #e0dddd;
+    font-size: 16px;
+    color: black;
+    outline: none;
     direction: rtl;
-    width: 17rem;
+    width: 17vw;
     height: 3rem;
-  }
-  
-  .input::placeholder {
-    color: #888; /* Light gray placeholder text */
-    font-style: italic; /* Optional: italic style for placeholder */
-  }
-  .yourChatsP{
-    direction: rtl;
-    align-self: center;
-  }
-  .conversationItem {
+}
+
+.input::placeholder {
+    color: #888;
+}
+
+.selectOptions {
+    position: absolute; /* Position dropdown below the input */
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    margin-top: 5px; /* Ensure some space between input and dropdown */
+}
+
+.optionItem {
     display: flex;
-    align-items: center;
     gap: 10px;
     padding: 10px;
-    border-radius: 10px;
+    cursor: pointer;
+    align-items: center;
+    text-align: right;
+    width: 100%;
+}
+
+.optionItem:hover {
+    background-color: #ddba0e;
+    color: white;
+}
+
+.profileCircle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.noResults {
+    padding: 10px;
+    text-align: center;
+    color: #888;
+}
+
+.selectOptionText {
+    font-size: 16px;
+}
+
+.yourChatsP {
+    margin-top: 40px;
+    direction: rtl;
+    font-size: 3vh;
+    margin-right: 3vw;
+}
+
+.bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+    padding-top: 1rem;
+    height: 55vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ddba0e #fff;
+    margin-top: 30px;
+}
+
+.conversationItem {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 20px;
     background-color: #fff;
     cursor: pointer;
     transition: background-color 0.3s, box-shadow 0.3s;
-    border: 2px solid transparent; /* Set border to transparent initially */
-  }
-  .conversationItem:hover {
-    background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-color: yellow; /* Add yellow border on hover */
-  }
-  
-  .profileCircle {
+    border: 1px solid transparent;
+    width: 17vw;
+    height: 7vh;
+    direction: rtl;
+    outline: none;
+}
+
+.conversationItem:hover,
+.conversationItem:focus {
+    background-color: #ddba0e !important;
+}
+
+.profileCircle {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: black; /* Black background for the circle */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }  
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.name {
+    margin-right: 3vw;
+}
