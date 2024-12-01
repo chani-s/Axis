@@ -5,7 +5,7 @@
 
 .container {
     width: 50vw;
-    height: 75vh;
+    min-height: 75vh;
     margin: 50px auto;
     padding: 25px;
     text-align: center;
@@ -85,3 +85,28 @@
     margin: 1vh;
   }
 
+.uploadProgressContainer{
+    width: 80%;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    margin-left: 2vw;
+}
+
+.uploadProgress{
+    background-color: #ddba0e;
+    height: 10px;
+    transition: width 0.3s;
+}
+
+.removeButton{
+    background-color: #fff;
+    border: none;
+    margin-bottom: 1.2vh;
+}
+
+.fileItem{
+    display: flex;
+    flex-direction: column;
+}

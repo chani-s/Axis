@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import style from "./UserEntrance.module.css";
 import { googleSignup } from '../../services/auth';
+import { FcGoogle } from "react-icons/fc";
 
 export const Entrance = ({ type }: any) => {
     const [email, setEmail] = useState("");
@@ -40,7 +41,7 @@ export const Entrance = ({ type }: any) => {
                     onChange={(e) => setPassword(e.target.value)}
                     title=" הסיסמה חייבת לכלול אותיות קטנות וגדולות ומספרים, באורך לפחות 6 תווים" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$" />
             </div>
-            < button className={style.googleButton} onClick={signupHandler} > {type} with Google </button>
+            < button className={style.googleButton} onClick={signupHandler} ><FcGoogle className={style.googleIcon}/> {type} with Google </button>
             < button className={style.submitButton} type="submit" > {type == "login" ? "הכנס" : "הרשם"} </button>
             < Link href={type == "login" ? "/signup" : "/login"} className={style.link} > {type == "login" ? "?משתמש חדש" : "?משתמש רשום"} </Link>
             < Link href="/company_signup" className={style.link} >?חברה חדשה</Link>
