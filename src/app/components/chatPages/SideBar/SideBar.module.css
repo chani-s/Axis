@@ -1,10 +1,143 @@
 .sideBar {
-    background-color: #e4e2e2;
-    padding: 1rem;
-    border: #45474b solid 2px;
-    width: 30%;
-    height: 80vh;
-    border-radius: 15px;
-    margin: 20px;
-    margin-top: 0;
+  background-color: white;
+  border: none;
+  border-radius: 15px;
+  width: 23%;
+  margin: 20px;
+  position: relative; /* Positioning relative to the sidebar */
+  display: flex;
+  flex-direction: column; /* Stack inputs and bottom content vertically */
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+  align-items: center;
+  padding-top: 2rem;
+  width: 100%;
+}
+
+.input {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 20px;
+  background-color: #e0dddd;
+  font-size: 16px;
+  color: black;
+  outline: none;
+  direction: rtl;
+  width: 17vw;
+  height: 3rem;
+}
+
+.input::placeholder {
+  color: #888;
+}
+
+.selectOptions {
+  position: absolute; /* Position dropdown below the input */
+  left: 0;
+  top: 10%;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  margin-top: 5px; /* Ensure some space between input and dropdown */
+}
+
+.optionItem {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  cursor: pointer;
+  align-items: center;
+  text-align: right;
+  width: 100%;
+  direction: rtl;
+
+}
+
+.optionItem:hover {
+  background-color: #ddba0e;
+  color: white;
+}
+
+.profileCircle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.noResults {
+  padding: 10px;
+  text-align: center;
+  color: #888;
+}
+
+.selectOptionText {
+  font-size: 16px;
+}
+
+.yourChatsP {
+  margin-top: 40px;
+  direction: rtl;
+  font-size: 3vh;
+  margin-right: 3vw;
+}
+
+.bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+  align-items: center;
+  padding-top: 1rem;
+  height: 55vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ddba0e #fff;
+  margin-top: 30px;
+}
+
+.conversationItem {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 20px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  border: 1px solid transparent;
+  width: 17vw;
+  height: 7vh;
+  direction: rtl;
+  outline: none;
+}
+
+.conversationItem:hover,
+.conversationItem:focus {
+  background-color: #ddba0e !important;
+}
+
+.profileCircle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.name {
+  margin-right: 3vw;
 }
