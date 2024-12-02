@@ -1,8 +1,11 @@
 import React, { useRef, useState } from "react";
 import { Conversation } from "@/app/models/Conversation";
 import styles from "./SideBar.module.css";
+import { useQueryClient } from "@tanstack/react-query";
 
 const SideBar = () => {
+  const queryClient = useQueryClient();
+
   const [conversations, setConversations] = useState([
     { id: 6, name: "Company A", image: "/imgs/default_profile_picture.jpg" },
     { id: 2, name: "Company B", image: "/imgs/default_profile_picture.jpg" },
