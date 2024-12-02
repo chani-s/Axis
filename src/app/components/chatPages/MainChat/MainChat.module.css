@@ -82,11 +82,13 @@
 
 .userMessage {
     align-self: flex-end;
+    color: #45474b;
     background-color: #e0dddd; 
 }
 
 .otherMessage {
     align-self: flex-start;
+    color: white;
     background-color: #45474b;
 }
 
