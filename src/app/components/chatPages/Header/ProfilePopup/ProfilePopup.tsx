@@ -19,12 +19,12 @@ const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profil
 
     const handleSave = () => {
         onSave(newUserName, newEmail, newProfilePic);
-        onClose(); 
+        onClose();
     };
 
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault(); 
-        handleSave(); 
+        e.preventDefault();
+        handleSave();
     };
 
     return (
@@ -35,6 +35,7 @@ const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profil
                 <div>
                     <label>שם:</label>
                     <input
+                        className={styles.input}
                         type="text"
                         value={newUserName}
                         onChange={(e) => setNewUserName(e.target.value)}
@@ -43,6 +44,7 @@ const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profil
                 <div>
                     <label>אימייל:</label>
                     <input
+                        className={styles.input}
                         type="email"
                         value={newEmail}
                         onChange={(e) => setNewEmail(e.target.value)}
@@ -51,6 +53,7 @@ const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profil
                 <div>
                     <label>תמונה:</label>
                     <input
+                        className={styles.input}
                         type="text"
                         value={newProfilePic}
                         onChange={(e) => setNewProfilePic(e.target.value)}

@@ -1,20 +1,20 @@
 import React, { useState } from "react";
-import { FaUser, FaPhone, FaHome, FaIdCard } from "react-icons/fa";
+import { FaUser, FaPhone, FaHome, FaIdCard, FaCreditCard } from "react-icons/fa";
 import styles from "./PermissionPanel.module.css";
 
 const iconsMapping = {
-    name: <FaUser />,
     phone: <FaPhone />,
     address: <FaHome />,
     id: <FaIdCard />,
+    bank: <FaCreditCard />,
 };
 
 const PermissionPanel = () => {
     const [permissions, setPermissions] = useState({
-        name: false,
         phone: false,
         address: false,
         id: false,
+        bank: false,
     });
 
     const togglePermission = (key: keyof typeof permissions) => {
@@ -25,10 +25,10 @@ const PermissionPanel = () => {
     };
 
     const descriptions: Record<keyof typeof permissions, string> = {
-        name: "הרשאה לגשת לשם המשתמש",
         phone: "הרשאה לגשת למספר הטלפון",
         address: "הרשאה לגשת לכתובת",
         id: "הרשאה לגשת לתעודת הזהות",
+        bank: "הרשאה לגשת לפרטי חשבון הבנק"
     };
 
     return (

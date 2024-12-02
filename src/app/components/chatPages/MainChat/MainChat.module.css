@@ -8,13 +8,13 @@
     margin: 20px;
     margin-top: 0;
     position: relative;
-        
+
 }
 
 .minimized {
-    height: 400px; 
+    height: 400px;
     width: 320px;
-    overflow: hidden; 
+    overflow: hidden;
     bottom: 0;
 }
 
@@ -24,7 +24,7 @@
     align-items: center;
     padding: 10px;
     background-color: #f1f1f1;
-    border-radius: 15px 15px 0 0 ;
+    border-radius: 15px 15px 0 0;
 }
 
 .rightButtons {
@@ -32,20 +32,88 @@
     gap: 10px;
 }
 
-.closeButton, .minimizeButton, .hamburger {
+.closeButton,
+.minimizeButton,
+.hamburger {
     width: 20px;
     height: 20px;
     border: none;
     cursor: pointer;
+    position: relative;
+
+}
+
+.hamburger::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    font-size: 12px;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 1001;
+}
+
+.chatMessages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    max-height: calc(100% - 100px); /* גובה מותאם עבור הצגת ההודעות */
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+.userMessage {
+    align-self: flex-end;
+    background-color: #e0dddd; 
+}
+
+.otherMessage {
+    align-self: flex-start;
+    background-color: #45474b;
+}
+
+.messageTime {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.messageText {
+    font-size: 1rem;
+    margin: 0;
+}
+
+
+.hamburger:hover::after {
+    opacity: 1;
+    visibility: visible;
 }
 
 .messages {
-    flex: 1; 
+    flex: 1;
     padding: 10px;
     overflow-y: auto;
 }
 
-.inputField{
+.inputField {
     flex: 1;
     border-radius: 15px;
     border: none;
@@ -59,8 +127,8 @@
     gap: 10px;
     border-top: 1px solid #ccc;
     bottom: 0;
-    position: absolute; 
-    width: 100%; 
+    position: absolute;
+    width: 100%;
 }
 
 .sendingBar[type="text"] {

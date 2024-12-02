@@ -1,6 +1,13 @@
 .permissionPanel {
+    z-index: 1000;
     display: flex;
     gap: 10px;
+    background-color: #f5f7f8;
+    border-radius: 15px;
+    width: 300px;
+    justify-content: space-around;
+    align-items: left;
+    position: absolute;
 }
 
 .permissionIcon {
