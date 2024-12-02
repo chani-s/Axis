@@ -1,8 +1,11 @@
+"use client"
 import React, { useRef, useState } from "react";
-import { Conversation } from "@/app/models/Conversation";
-import styles from "./SideBar.module.css";
+import { useQueryClient } from "@tanstack/react-query";
+import styles from "./SideBar.module.css"
 
 const SideBar = () => {
+  const queryClient = useQueryClient();
+
   const [conversations, setConversations] = useState([
     { id: 6, name: "Company A", image: "/imgs/default_profile_picture.jpg" },
     { id: 2, name: "Company B", image: "/imgs/default_profile_picture.jpg" },
@@ -26,6 +29,7 @@ const SideBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to control dropdown visibility
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref to hold the timeout ID
 
+  
   const resetDropdownTimeout = () => {
     if (dropdownTimeoutRef.current) {
       clearTimeout(dropdownTimeoutRef.current); // Clear any existing timeout
