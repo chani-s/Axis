@@ -16,14 +16,10 @@
 .container {
   height: 100vh;
   position: relative;
-
 }
-
-
 .logo {
   max-width: 170px;
 }
-
 .spinner {
   position: absolute;
   height: 470px;

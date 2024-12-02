@@ -2,5 +2,26 @@
     background-color: #e4e2e2;
     color: #45474b;
     padding: 1rem;
-    border: #45474b solid 2px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.basicDetails{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.profilePicture{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.logo{
+    width: 150px;
+    height: auto;
+    cursor: pointer;
 }
