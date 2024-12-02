@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+
 import styles from "./MainChat.module.css";
 import PermissionPanel from "../PermissionPanel/PermissionPanel";
 import { FaTimes, FaBars, FaArrowLeft, FaWindowMinimize } from 'react-icons/fa';
@@ -15,7 +16,12 @@ const MainChat = () => {
     const [isSent, setIsSent] = useState(false);
     const [messages, setMessages] = useState<MessageObj[]>();
     const [message, setMessage] = useState("");
+    const chatEndRef = useRef<HTMLDivElement>(null);
 
+    useEffect(() => {
+        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+    
 
     const closeChat = () => {
         setIsChatOpen(false);
@@ -95,6 +101,7 @@ const MainChat = () => {
                         className={`${styles.message} ${msg.sender ? styles.userMessage : styles.otherMessage}`}>
                         <span className={styles.messageTime}>{msg.time.toLocaleTimeString()}</span>
                         <p className={styles.messageText}>{msg.text}</p>
+                        <div ref={chatEndRef}></div>
                     </div>
                 ))}
             </div>
