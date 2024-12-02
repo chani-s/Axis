@@ -8,7 +8,7 @@
     width: 300px;
     max-width: 80vw; 
     height: 450px;
-    animation: fadeIn 0.3s ease-in-out;
+    box-shadow: 2px 2px 2px 2px #45474b;
 }
 
 
