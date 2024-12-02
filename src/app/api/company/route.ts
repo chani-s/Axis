@@ -1,5 +1,6 @@
+"use server"
+
 import { connectDatabase, getSpecificFields } from "@/app/services/mongo";
-import { profile } from "console";
 import { NextResponse } from "next/server";
 
 export async function getNameAndProfile() {

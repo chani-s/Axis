@@ -14,10 +14,7 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
-
-
 const queryClient = new QueryClient();
-
 
 export default function RootLayout({
   children,
@@ -31,11 +28,9 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
       <QueryClientProvider client={queryClient}>
-
         {children}
         </QueryClientProvider>
-
-      </body>
+         </body>
     </html>
   );
 }
