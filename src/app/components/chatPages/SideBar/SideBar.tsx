@@ -1,6 +1,7 @@
 "use client"
 import React, { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import styles from "./SideBar.module.css"
 
 const SideBar = () => {
   const queryClient = useQueryClient();

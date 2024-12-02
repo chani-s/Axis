@@ -1,9 +1,8 @@
-"use server"
 
 import { connectDatabase, getSpecificFields } from "@/app/services/mongo";
 import { NextResponse } from "next/server";
 
-export async function getNameAndProfile() {
+export async function GET() {
   try {
     const client = await connectDatabase();
     const companies = await getSpecificFields(
