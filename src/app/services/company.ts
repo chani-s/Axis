@@ -7,7 +7,7 @@ const ComapnyService = {
   async getNameAndPorfile(): Promise<any> {
     try {
       const response: AxiosResponse<any> = await http.get(
-        "/company/getNameAndProfile"
+        "/company/"
       );
       return response.data;
     } catch (error) {

@@ -15,7 +15,7 @@ export async function GET() {
     console.log(companies);
     return NextResponse.json(companies);
   } catch (error) {
-    console.error("Error fetching recipes:", error);
+    console.error("Error fetching", error);
     return NextResponse.error();
   }
 }
