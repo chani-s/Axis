@@ -43,8 +43,8 @@ export const Entrance = ({ type }: any) => {
             </div>
             < button className={style.googleButton} onClick={signupHandler} ><FcGoogle className={style.googleIcon}/> {type} with Google </button>
             < button className={style.submitButton} type="submit" > {type == "login" ? "הכנס" : "הרשם"} </button>
-            < Link href={type == "login" ? "/signup" : "/login"} className={style.link} > {type == "login" ? "?משתמש חדש" : "?משתמש רשום"} </Link>
-            < Link href="/company_signup" className={style.link} >?חברה חדשה</Link>
+            < Link href={type == "login" ? "/signup" : "/login"} className={style.link} > {type == "login" ? "משתמש חדש?" : "משתמש רשום?"} </Link>
+            < Link href="/company_signup" className={style.link} >חברה חדשה?</Link>
         </form>
 
     );

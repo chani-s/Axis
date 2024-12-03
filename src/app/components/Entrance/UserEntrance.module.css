@@ -1,6 +1,6 @@
 .container {
     width: 25vw;
-    height: 65vh;
+    min-height: 65vh;
     margin: 50px auto;
     padding: 25px;
     text-align: center;
@@ -62,6 +62,10 @@
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
+  }
+
+  .submitButton:hover{
+    background-color: #ddbb0ec7;
   }
 
   .link {

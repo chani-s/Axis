@@ -1,24 +1,27 @@
+"use client"
 import React, { useRef, useState } from "react";
-import { Conversation } from "@/app/models/Conversation";
-import styles from "./SideBar.module.css";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import styles from "./SideBar.module.css"
+import ComapnyService from "@/app/services/company";
 
 const SideBar = () => {
+  const queryClient = useQueryClient();
+
   const [conversations, setConversations] = useState([
     { id: 6, name: "Company A", image: "/imgs/default_profile_picture.jpg" },
     { id: 2, name: "Company B", image: "/imgs/default_profile_picture.jpg" },
     { id: 3, name: "Company C", image: "/imgs/default_profile_picture.jpg" },
     { id: 8, name: "Company D", image: "/imgs/default_profile_picture.jpg" },
     { id: 5, name: "Company E", image: "/imgs/default_profile_picture.jpg" },
-  ]); // Initialize with some conversations
+  ]); 
 
-  // Mock companies with images for the dropdown options
-  const companies = [
-    { id: 1, name: "Company A", image: "/imgs/default_profile_picture.jpg" },
-    { id: 2, name: "Company B", image: "/imgs/default_profile_picture.jpg" },
-    { id: 3, name: "Company C", image: "/imgs/default_profile_picture.jpg" },
-    { id: 4, name: "Company D", image: "/imgs/default_profile_picture.jpg" },
-    { id: 5, name: "Company E", image: "/imgs/default_profile_picture.jpg" },
-  ];
+
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ["companies"],
+    queryFn: ComapnyService.getNameAndPorfile,
+    staleTime: 10000,
+  });
+
 
   const [searchTerm, setSearchTerm] = useState(""); // State for search term in company search
   const [chatSearchTerm, setChatSearchTerm] = useState(""); // State for search term in chat search
@@ -26,6 +29,7 @@ const SideBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to control dropdown visibility
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref to hold the timeout ID
 
+  
   const resetDropdownTimeout = () => {
     if (dropdownTimeoutRef.current) {
       clearTimeout(dropdownTimeoutRef.current); // Clear any existing timeout
@@ -37,9 +41,9 @@ const SideBar = () => {
   };
 
   // Filter companies based on search term
-  const filteredCompanies = companies.filter((company) =>
+  const filteredCompanies = data?.filter((company: any) =>
     company.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ) || [];
 
   // Filter conversations based on chat search term
   const filteredConversations = conversations.filter((conversation) =>
@@ -85,7 +89,7 @@ const SideBar = () => {
         {isDropdownOpen && (
           <div className={styles.selectOptions}>
             {filteredCompanies.length > 0 ? (
-              filteredCompanies.map((company) => (
+              filteredCompanies.map((company:any) => (
                 <div
                   key={company.id}
                   className={styles.optionItem}
