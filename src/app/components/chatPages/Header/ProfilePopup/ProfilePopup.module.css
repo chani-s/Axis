@@ -1,5 +1,8 @@
 /* ProfilePopup.module.css */
 .popup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
     background-color: #fff;
     border-radius: 10px;
@@ -9,6 +12,18 @@
     max-width: 80vw; 
     height: 450px;
     box-shadow: 2px 2px 2px 2px #45474b;
+}
+
+.profilePicture{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    align-self: center;
+}
+
+.cameraIcon{
+    cursor: pointer;
+
 }
 
 
