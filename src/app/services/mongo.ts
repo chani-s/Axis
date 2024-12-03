@@ -6,14 +6,18 @@ let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
 export async function connectDatabase() {
+  console.log(" inconnetDB");
   if (!client) {
     const dbConnectionString = process.env.PUBLIC_DB_CONNECTION;
     if (!dbConnectionString) {
       throw new Error("Database connection string is not defined");
     }
     client = new MongoClient(dbConnectionString);
+    console.log(" after client");
   }
   clientPromise = client.connect();
+  console.log(" after connect");
+
   return clientPromise;
 }
 
