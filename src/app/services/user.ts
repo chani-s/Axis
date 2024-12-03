@@ -8,7 +8,7 @@ export const signUpUser = async (userData: {
     password: string;
     isWithGoogle: boolean;
 }) => {
-    const response: AxiosResponse<any> = await http.post('/auth/signup', userData);
+    const response: AxiosResponse<any> = await http.post('/user', userData);
     return response.data;
 };
 
@@ -17,6 +17,6 @@ export const loginUser = async (userData: {
     password: string;
     isWithGoogle: boolean;
 }) => {
-    const response: AxiosResponse<any> = await http.post('/auth/signup', userData);
+    const response: AxiosResponse<any> = await http.get('/user');
     return response.data;
 };
