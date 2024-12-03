@@ -4,6 +4,8 @@ import Link from "next/link";
 import style from "./UserEntrance.module.css";
 import { googleSignup } from '../../services/auth';
 import { FcGoogle } from "react-icons/fc";
+import { useMutation } from 'react-query';
+import { signUpUser, loginUser } from '../../services/user';
 
 export const Entrance = ({ type }: any) => {
     const [email, setEmail] = useState("");
@@ -11,10 +13,32 @@ export const Entrance = ({ type }: any) => {
     const [name, setName] = useState("");
     const [isWithGoogle, setIsWithGoogle] = useState(false);
 
+    const mutationSignUp = useMutation(signUpUser, {
+        onSuccess: () => {
+            alert('User signed up successfully!');
+        },
+        onError: (error: any) => {
+            alert(`Error signing up: ${error.message}`);
+        },
+    });
+
+    const mutationLogin = useMutation(loginUser, {
+        onSuccess: () => {
+            alert('User signed up successfully!');
+        },
+        onError: (error: any) => {
+            alert(`Error signing up: ${error.message}`);
+        },
+    });
+
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        console.log(email, password);
-        // Send data to server
+        const userData = {
+            email: email,
+            password: password,
+            isWithGoogle: false
+        };
+        type=="signup"?mutationSignUp.mutate(userData):mutationLogin.mutate(userData);
     }
 
     const signupHandler = async () => {
@@ -25,8 +49,13 @@ export const Entrance = ({ type }: any) => {
         const nameFromGoogle=res.user.displayName;
         setName(nameFromGoogle);
         console.log(emailFromGoogle, nameFromGoogle);
-        
-        // Send data to server
+        const userData = {
+            email: email,
+            password: password,
+            isWithGoogle: isWithGoogle
+        };
+        type=="signup"?mutationSignUp.mutate(userData):mutationLogin.mutate(userData);
+
     }
 
     return (
