@@ -1,6 +1,8 @@
+"use client"
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -12,8 +14,7 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
-
-
+const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -26,8 +27,10 @@ export default function RootLayout({
         <link rel="icon" href="favicon.ico" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <QueryClientProvider client={queryClient}>
         {children}
-      </body>
+        </QueryClientProvider>
+         </body>
     </html>
   );
 }

@@ -99,8 +99,8 @@ const MainChat = () => {
                     <div
                         key={index}
                         className={`${styles.message} ${msg.sender ? styles.userMessage : styles.otherMessage}`}>
-                        <span className={styles.messageTime}>{msg.time.toLocaleTimeString()}</span>
                         <p className={styles.messageText}>{msg.text}</p>
+                        <span className={styles.messageTime}>{msg.time.toLocaleTimeString()}</span>
                         <div ref={chatEndRef}></div>
                     </div>
                 ))}

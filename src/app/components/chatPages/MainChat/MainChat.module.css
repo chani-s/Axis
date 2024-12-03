@@ -5,8 +5,8 @@
     width: 75%;
     background-color: white;
     border-radius: 15px;
-    margin: 20px;
-    margin-top: 0;
+    margin-left: 20px;
+    margin-bottom: 20px;
     position: relative;
 
 }
@@ -82,17 +82,19 @@
 
 .userMessage {
     align-self: flex-end;
+    color: #45474b;
     background-color: #e0dddd; 
 }
 
 .otherMessage {
     align-self: flex-start;
+    color: white;
     background-color: #45474b;
 }
 
 .messageTime {
     font-size: 0.8rem;
-    color: #666;
+    color: #787474;
     margin-bottom: 5px;
 }
 
