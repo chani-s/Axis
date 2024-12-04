@@ -1,15 +1,14 @@
 
-import { connectDatabase, getSpecificFields } from "@/app/services/mongo";
-import { NextResponse } from "next/server";
+import { connectDatabase, isExist,getSpecificFields,isEqual } from "@/app/services/mongo";
+import { NextResponse, NextRequest} from "next/server";
 
-export async function GET(userData: any) {
+export async function POST(userData: any) {
   try {
     const client = await connectDatabase();
-    const companies = await getSpecificFields(
+    const companies = await isExist(
       client,
       "comapnies",
-      {},
-      { _id: 1, name: 1, profilePicture: 1 }
+      {}
     );
     await client.close();
     console.log(companies);
@@ -20,16 +19,51 @@ export async function GET(userData: any) {
   }
 }
 
-export async function POST(userData: any) {
+export async function GET(req: NextRequest) {
+  const responseDetails = {
+    message: "",
+    userId: ""
+  }
   try {
+    const { searchParams } = new URL(req.url);
+    const email = searchParams.get("email");
+    const password = searchParams.get("password");
+
+    if (!email || !password) {
+      return NextResponse.json({ message: "Missing email or password" }, { status: 400 });
+    }
     const client = await connectDatabase();
-    const userDetails = await getSpecificFields()
+    const userExist = await getSpecificFields(
+      client,
+      "users",
+      {email:email},
+      {_id:1}
+    ); 
     
+    if (userExist[0]) {
+      const userId = userExist[0]._id.toString();
+      console.log(userId);
+      const userPassword = await isEqual(
+        client,
+        "hashed_passwords",
+        {user_id:userId},
+        password
+      );
+      if (userPassword) {
+        responseDetails.message = "User login successfully";
+        responseDetails.userId = userId;
+      }
+      else
+        responseDetails.message = "Password is incorrect";
+    }
+    else
+      responseDetails.message = "User does not exist";
     await client.close();
-    console.log(userDetails);
-    return NextResponse.json(userDetails);
-  } catch (error) {
-    console.error("Error fetching signup:", error);
+    console.log(responseDetails);
+    return NextResponse.json(responseDetails);
+  }
+  catch (error) {
+    console.error("Error fetching login:", error);
     return NextResponse.error();
   }
 }

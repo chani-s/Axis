@@ -4,30 +4,49 @@ import Link from "next/link";
 import style from "./UserEntrance.module.css";
 import { googleSignup } from '../../services/auth';
 import { FcGoogle } from "react-icons/fc";
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { signUpUser, loginUser } from '../../services/user';
+import { useRouter } from 'next/navigation';
 
 export const Entrance = ({ type }: any) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const [isWithGoogle, setIsWithGoogle] = useState(false);
+    const router = useRouter();
 
-    const mutationSignUp = useMutation(signUpUser, {
-        onSuccess: () => {
-            alert('User signed up successfully!');
+    // Mutation עבור רישום
+    const mutationSignUp = useMutation({
+        mutationFn: signUpUser, // הפונקציה שמבצעת את הקריאה לשרת
+        onSuccess: (data) => {
+            console.log(data);
+            alert("Registration successful!"); // טיפול בהצלחה
         },
         onError: (error: any) => {
-            alert(`Error signing up: ${error.message}`);
+            alert(`Error signing up: ${error.message}`); // טיפול בשגיאה
         },
     });
 
-    const mutationLogin = useMutation(loginUser, {
-        onSuccess: () => {
-            alert('User signed up successfully!');
+    // Mutation עבור התחברות
+    const mutationLogin = useMutation({
+        mutationFn: loginUser, // הפונקציה שמבצעת את הקריאה לשרת
+        onSuccess: (data) => {
+            console.log(data);
+            if(data.userId!="")
+            {
+                alert("התחברת בהצלחה"); 
+                //שמירת הנתונים איפה שהוא
+                //בדיקת סוג המשתמש והעברה לעמוד המתאים
+                router.push('/chat/user');
+
+            }
+            else{
+                alert("אימייל או סיסמא שגויים");
+            }
+            
         },
         onError: (error: any) => {
-            alert(`Error signing up: ${error.message}`);
+            alert(`Error logging in: ${error.message}`); // טיפול בשגיאה
         },
     });
 
@@ -38,15 +57,15 @@ export const Entrance = ({ type }: any) => {
             password: password,
             isWithGoogle: false
         };
-        type=="signup"?mutationSignUp.mutate(userData):mutationLogin.mutate(userData);
+        type == "signup" ? mutationSignUp.mutate(userData) : mutationLogin.mutate(userData);
     }
 
     const signupHandler = async () => {
         const res = await googleSignup();
         setIsWithGoogle(true);
-        const emailFromGoogle=res.user.email;
+        const emailFromGoogle = res.user.email;
         setEmail(emailFromGoogle);
-        const nameFromGoogle=res.user.displayName;
+        const nameFromGoogle = res.user.displayName;
         setName(nameFromGoogle);
         console.log(emailFromGoogle, nameFromGoogle);
         const userData = {
@@ -54,7 +73,7 @@ export const Entrance = ({ type }: any) => {
             password: password,
             isWithGoogle: isWithGoogle
         };
-        type=="signup"?mutationSignUp.mutate(userData):mutationLogin.mutate(userData);
+        type == "signup" ? mutationSignUp.mutate(userData) : mutationLogin.mutate(userData);
 
     }
 
@@ -70,7 +89,7 @@ export const Entrance = ({ type }: any) => {
                     onChange={(e) => setPassword(e.target.value)}
                     title=" הסיסמה חייבת לכלול אותיות קטנות וגדולות ומספרים, באורך לפחות 6 תווים" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$" />
             </div>
-            < button className={style.googleButton} onClick={signupHandler} ><FcGoogle className={style.googleIcon}/> {type} with Google </button>
+            < button className={style.googleButton} onClick={signupHandler} ><FcGoogle className={style.googleIcon} /> {type} with Google </button>
             < button className={style.submitButton} type="submit" > {type == "login" ? "הכנס" : "הרשם"} </button>
             < Link href={type == "login" ? "/signup" : "/login"} className={style.link} > {type == "login" ? "משתמש חדש?" : "משתמש רשום?"} </Link>
             < Link href="/company_signup" className={style.link} >חברה חדשה?</Link>
