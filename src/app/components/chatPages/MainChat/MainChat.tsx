@@ -21,7 +21,7 @@ const MainChat = () => {
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
-    
+
 
     const closeChat = () => {
         setIsChatOpen(false);
@@ -100,7 +100,9 @@ const MainChat = () => {
                         key={index}
                         className={`${styles.message} ${msg.sender ? styles.userMessage : styles.otherMessage}`}>
                         <p className={styles.messageText}>{msg.text}</p>
-                        <span className={styles.messageTime}>{msg.time.toLocaleTimeString()}</span>
+                        <span className={styles.messageTime}>
+                            {msg.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
                         <div ref={chatEndRef}></div>
                     </div>
                 ))}

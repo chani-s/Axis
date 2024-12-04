@@ -60,7 +60,15 @@ const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profil
                         alt="profilePic"
                     />
                     <FaCamera className={styles.cameraIcon} onClick={handleButtonClick} />
-                    </div>
+                </div>
+                <input
+                    type="file"
+                    id="file-upload"
+                    ref={fileInputRef}
+                    accept=".png, .jpg, .jpeg, .gif"
+                    onChange={handleFileChange}
+                    style={{ display: "none" }}
+                />
                 <div>
                     <label>שם:</label>
                     <input
@@ -79,15 +87,6 @@ const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profil
                         onChange={(e) => setNewEmail(e.target.value)}
                     />
                 </div>
-
-                <input
-                    type="file"
-                    id="file-upload"
-                    ref={fileInputRef}
-                    accept=".png"
-                    onChange={handleFileChange}
-                    style={{ display: "none" }}
-                />
                 <button type="submit" className={styles.saveButton}>שמור</button>
             </form>
         </div>
