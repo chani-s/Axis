@@ -23,48 +23,44 @@ const SideBar = () => {
   });
 
 
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term in company search
-  const [chatSearchTerm, setChatSearchTerm] = useState(""); // State for search term in chat search
-  const [selectedCompany, setSelectedCompany] = useState<string | null>(null); // State for selected company
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to control dropdown visibility
-  const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref to hold the timeout ID
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const [chatSearchTerm, setChatSearchTerm] = useState(""); 
+  const [selectedCompany, setSelectedCompany] = useState<string | null>(null); 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
+  const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null); 
 
   
   const resetDropdownTimeout = () => {
     if (dropdownTimeoutRef.current) {
-      clearTimeout(dropdownTimeoutRef.current); // Clear any existing timeout
+      clearTimeout(dropdownTimeoutRef.current); 
     }
 
     dropdownTimeoutRef.current = setTimeout(() => {
-      setIsDropdownOpen(false); // Close dropdown after 3 seconds
-    }, 3000); // 3 seconds delay
+      setIsDropdownOpen(false);
+    }, 3000); 
   };
 
-  // Filter companies based on search term
   const filteredCompanies = data?.filter((company: any) =>
     company.name.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
-  // Filter conversations based on chat search term
   const filteredConversations = conversations.filter((conversation) =>
-    conversation.name.toLowerCase().includes(chatSearchTerm.toLowerCase()) // Filter based on company name
+    conversation.name.toLowerCase().includes(chatSearchTerm.toLowerCase()) 
   );
 
   const handleOptionClick = (company: { id: number; name: string; image: string }) => {
-    // Prevent adding a duplicate conversation
     const isDuplicate = conversations.some(conversation => conversation.id === company.id);
     if (isDuplicate) {
-      return; // Prevent adding a duplicate conversation
+      return; 
     }
 
-    setSelectedCompany(company.name); // Set selected company
-    setSearchTerm(company.name); // Update input with selected company name
-    setIsDropdownOpen(false); // Close dropdown after selecting an option
+    setSelectedCompany(company.name);
+    setSearchTerm(company.name);
+    setIsDropdownOpen(false); 
 
-    // Add new conversation item with the selected company details (immutable update)
     setConversations((prevConversations) => [
-      ...prevConversations, // Spread previous conversations
-      { id: company.id, name: company.name, image: company.image }, // Add new conversation
+      ...prevConversations, 
+      { id: company.id, name: company.name, image: company.image }, 
     ]);
   };
 
@@ -79,11 +75,11 @@ const SideBar = () => {
           onChange={(e) => {
             setSearchTerm(e.target.value);
             setIsDropdownOpen(true);
-            resetDropdownTimeout(); // Open dropdown when typing
+            resetDropdownTimeout(); 
           }}
           onFocus={() => {
             setIsDropdownOpen(true);
-            resetDropdownTimeout(); // Open dropdown when focused
+            resetDropdownTimeout(); 
           }}
         />
         {isDropdownOpen && (
@@ -93,7 +89,7 @@ const SideBar = () => {
                 <div
                   key={company.id}
                   className={styles.optionItem}
-                  onClick={() => handleOptionClick(company)} // Handle option click
+                  onClick={() => handleOptionClick(company)}
                 >
                   <div
                     className={styles.profileCircle}
@@ -112,7 +108,7 @@ const SideBar = () => {
           type="text"
           placeholder="חפש בצאטים..."
           value={chatSearchTerm}
-          onChange={(e) => setChatSearchTerm(e.target.value)} // Update search term for chats
+          onChange={(e) => setChatSearchTerm(e.target.value)} 
         />
       </div>
 
@@ -123,10 +119,10 @@ const SideBar = () => {
             <div className={styles.conversationItem} key={conversation.id}>
               <img
                 className={styles.profileCircle}
-                src={conversation.image} // Use the company image
+                src={conversation.image} 
                 alt="Profile"
               />
-              <p className={styles.name}>{conversation.name}</p> {/* Display company name */}
+              <p className={styles.name}>{conversation.name}</p> 
             </div>
           ))
         ) : (
