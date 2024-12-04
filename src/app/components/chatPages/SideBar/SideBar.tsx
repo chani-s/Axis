@@ -8,11 +8,11 @@ const SideBar = () => {
   const queryClient = useQueryClient();
 
   const [conversations, setConversations] = useState([
-    { id: 6, name: "Company A", image: "/imgs/default_profile_picture.jpg" },
-    { id: 2, name: "Company B", image: "/imgs/default_profile_picture.jpg" },
-    { id: 3, name: "Company C", image: "/imgs/default_profile_picture.jpg" },
-    { id: 8, name: "Company D", image: "/imgs/default_profile_picture.jpg" },
-    { id: 5, name: "Company E", image: "/imgs/default_profile_picture.jpg" },
+    { id: 6, name: "מאוחדת", image: "/imgs/default_profile_picture.jpg" },
+    { id: 2, name: "כללית", image: "/imgs/default_profile_picture.jpg" },
+    { id: 3, name: "לאומית", image: "/imgs/default_profile_picture.jpg" },
+    { id: 8, name: "מכבי", image: "/imgs/default_profile_picture.jpg" },
+    { id: 5, name: "בנק", image: "/imgs/default_profile_picture.jpg" },
   ]); 
 
 
