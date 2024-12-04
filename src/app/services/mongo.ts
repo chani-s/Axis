@@ -1,3 +1,35 @@
+// "use server";
+
+// import { MongoClient } from "mongodb";
+
+// let client: MongoClient; // משתנה גלובלי ללקוח
+// let clientPromise: Promise<MongoClient>; // משתנה גלובלי להבטחת החיבור
+
+// export async function connectDatabase() {
+//     console.log("in connectDatabase");
+
+//     if (!clientPromise) {
+//         const dbConnectionString = process.env.PUBLIC_DB_CONNECTION;
+
+//         if (!dbConnectionString) {
+//             throw new Error("Database connection string is not defined");
+//         }
+
+//         // יצירת לקוח חדש
+//         client = new MongoClient(dbConnectionString);
+
+//         console.log("after creating client");
+//         clientPromise = client.connect(); // התחברות למסד הנתונים
+//     }
+
+//     await clientPromise; // מחכים להתחברות
+//     console.log("after connect");
+
+//     return clientPromise; 
+// }
+
+
+
 "use server";
 
 import { MongoClient, ObjectId } from "mongodb";
