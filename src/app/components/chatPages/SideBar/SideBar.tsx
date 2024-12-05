@@ -4,9 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import styles from "./SideBar.module.css";
 import ComapnyService from "@/app/services/company";
 import { Conversation } from "@/app/models/Conversation";
-import ConversationService from "@/app/services/conversation";
-import { ObjectId } from "mongodb";
-import { profile } from "console";
+import { getConversations, createConversation } from "@/app/services/conversation";
 
 const SideBar = () => {
   const queryClient = useQueryClient();
@@ -30,32 +28,28 @@ const SideBar = () => {
     Conversation[]
   >({
     queryKey: ["conversations"],
-    queryFn: () => ConversationService.getConversations(), // Fetch conversations from the server
+    queryFn: () => getConversations(), // Fetch conversations from the server
     staleTime: 10000,
   });
   console.log(conversations);
 
-  const {
-    data: companiesData,
-    refetch: fetchCompanies,
-    isFetching: isCompaniesFetching,
+  const { data: companiesData, refetch: fetchCompanies, isFetching: isCompaniesFetching,
   } = useQuery({
     queryKey: ["companies"],
     queryFn: () => ComapnyService.getNameAndPorfile(),
     enabled: false, // Disable automatic fetching
     staleTime: 10000,
   });
-  const handleInputFocus = () => {
-    fetchCompanies();
-  };
+
+  const handleInputFocus = () => { fetchCompanies() };
 
   const createConversationMutation = useMutation({
-    mutationFn: ConversationService.createConversation,
+    mutationFn: createConversation,
     onMutate: async (conversation: Conversation) => {
       await queryClient.cancelQueries({ queryKey: ["conversations"] });
-  
+
       const previousConversations = queryClient.getQueryData(["conversations"])
-  
+
       return { previousConversations };
     },
     onSuccess: (newConversation) => {
@@ -66,12 +60,12 @@ const SideBar = () => {
         );
         return updatedConversations;
       });
-  
+
       // Optionally, invalidate queries if you need to refetch fresh data from the server
     }
   });
 
-  const handleCreateCar = (company:any) => {
+  const handleCreateCar = (company: any) => {
     createConversationMutation.mutate(newConversation);
     setNewConversation({
       company_id: company._id,
@@ -83,7 +77,7 @@ const SideBar = () => {
 
   const resetDropdownTimeout = () => {
     if (dropdownTimeoutRef.current) {
-      clearTimeout(dropdownTimeoutRef.current); 
+      clearTimeout(dropdownTimeoutRef.current);
     }
 
     dropdownTimeoutRef.current = setTimeout(() => {
@@ -98,17 +92,15 @@ const SideBar = () => {
 
   const filteredConversations =
     conversations?.filter((conversation: Conversation) => {
-      return conversation.company_name||""
+      return conversation.company_name || ""
         .toLowerCase()
         .includes(chatSearchTerm.toLowerCase());
     }) || [];
 
-  const handleOptionClick = (company: any
-  )=> {
-
-    setSelectedCompany(company.name); 
-    setSearchTerm(company.name); 
-    setIsDropdownOpen(false); 
+  const handleOptionClick = (company: any) => {
+    setSelectedCompany(company.name);
+    setSearchTerm(company.name);
+    setIsDropdownOpen(false);
     handleCreateCar(company)
   };
 
@@ -128,7 +120,7 @@ const SideBar = () => {
           onFocus={() => {
             handleInputFocus();
             setIsDropdownOpen(true);
-            resetDropdownTimeout(); 
+            resetDropdownTimeout();
           }}
         />
         {isDropdownOpen && (
@@ -161,7 +153,7 @@ const SideBar = () => {
           type="text"
           placeholder="חפש בצאטים..."
           value={chatSearchTerm}
-          onChange={(e) => setChatSearchTerm(e.target.value)} 
+          onChange={(e) => setChatSearchTerm(e.target.value)}
         />
       </div>
 
