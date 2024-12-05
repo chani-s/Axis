@@ -1,7 +1,7 @@
 // ProfilePopup.tsx
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styles from './ProfilePopup.module.css';
-import { FaTimes } from 'react-icons/fa';
+import { FaArrowUp, FaCamera, FaTimes } from 'react-icons/fa';
 
 
 interface ProfilePopupProps {
@@ -12,10 +12,31 @@ interface ProfilePopupProps {
     onSave: (newUserName: string, newEmail: string, newProfilePic: string) => void;
 }
 
+
 const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profilePicture, onClose, onSave }) => {
     const [newUserName, setNewUserName] = useState(userName);
     const [newEmail, setNewEmail] = useState(userEmail);
     const [newProfilePic, setNewProfilePic] = useState(profilePicture);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleButtonClick = () => {
+        fileInputRef.current?.click();
+    };
+
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                if (reader.result) {
+                    setNewProfilePic(reader.result as string);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
 
     const handleSave = () => {
         onSave(newUserName, newEmail, newProfilePic);
@@ -33,6 +54,22 @@ const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profil
                 <button className={styles.closeButton} type="button" onClick={onClose}><FaTimes /></button>
                 <h2>ערוך את הפרופיל שלך</h2>
                 <div>
+                    <img
+                        className={styles.profilePicture}
+                        src={newProfilePic}
+                        alt="profilePic"
+                    />
+                    <FaCamera className={styles.cameraIcon} onClick={handleButtonClick} />
+                </div>
+                <input
+                    type="file"
+                    id="file-upload"
+                    ref={fileInputRef}
+                    accept=".png, .jpg, .jpeg, .gif"
+                    onChange={handleFileChange}
+                    style={{ display: "none" }}
+                />
+                <div>
                     <label>שם:</label>
                     <input
                         className={styles.input}
@@ -48,15 +85,6 @@ const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profil
                         type="email"
                         value={newEmail}
                         onChange={(e) => setNewEmail(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label>תמונה:</label>
-                    <input
-                        className={styles.input}
-                        type="text"
-                        value={newProfilePic}
-                        onChange={(e) => setNewProfilePic(e.target.value)}
                     />
                 </div>
                 <button type="submit" className={styles.saveButton}>שמור</button>

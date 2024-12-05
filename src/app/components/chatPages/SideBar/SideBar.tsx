@@ -161,7 +161,7 @@ const SideBar = () => {
           type="text"
           placeholder="חפש בצאטים..."
           value={chatSearchTerm}
-          onChange={(e) => setChatSearchTerm(e.target.value)} // Update search term for chats
+          onChange={(e) => setChatSearchTerm(e.target.value)} 
         />
       </div>
 

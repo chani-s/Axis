@@ -1,12 +1,12 @@
 .permissionPanel {
     z-index: 1000;
     display: flex;
+    flex-direction: column;
     gap: 10px;
     background-color: #f5f7f8;
+    border: #a49f9f solid 0.5px;
     border-radius: 15px;
-    width: 300px;
     justify-content: space-around;
-    align-items: left;
     position: absolute;
 }
 

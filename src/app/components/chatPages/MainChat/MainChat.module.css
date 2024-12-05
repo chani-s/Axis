@@ -5,8 +5,8 @@
     width: 75%;
     background-color: white;
     border-radius: 15px;
-    margin: 20px;
-    margin-top: 0;
+    margin-left: 20px;
+    margin-bottom: 20px;
     position: relative;
 
 }
@@ -67,7 +67,7 @@
     gap: 10px;
     padding: 10px;
     overflow-y: auto;
-    max-height: calc(100% - 100px); /* גובה מותאם עבור הצגת ההודעות */
+    max-height: calc(100% - 100px);
 }
 
 .message {
@@ -82,17 +82,19 @@
 
 .userMessage {
     align-self: flex-end;
+    color: #45474b;
     background-color: #e0dddd; 
 }
 
 .otherMessage {
     align-self: flex-start;
+    color: white;
     background-color: #45474b;
 }
 
 .messageTime {
     font-size: 0.8rem;
-    color: #666;
+    color: #787474;
     margin-bottom: 5px;
 }
 
@@ -129,7 +131,7 @@
     bottom: 0;
     position: absolute;
     width: 100%;
-}
+} 
 
 .sendingBar[type="text"] {
     flex: 1;
@@ -147,4 +149,16 @@
     border: none;
     border-radius: 15px;
     cursor: pointer;
+}
+
+.detailsButton{
+    padding: 10px 20px;
+    background-color: #ddba0e;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+
+    /* background-color: #45474b; */
+    
 }
