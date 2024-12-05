@@ -130,7 +130,7 @@ const MainChat = ({ type} : any) => {
                     <button
                         className={styles.detailsButton}
                         onClick={showDetails}>
-                        Details
+                        פרטי לקוח
                     </button>}
 
                 <input

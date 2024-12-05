@@ -1,5 +1,5 @@
 // Header.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Header.module.css';
 import ProfilePopup from './ProfilePopup/ProfilePopup';
 
@@ -10,7 +10,6 @@ const Header = () => {
     const [userEmail, setUserEmail] = useState('abcdefg@gmail.com');
     const [profilePicture, setProfilePicture] = useState('https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png');
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-
 
     const showPersonalProfile = () => {
         setIsPopupOpen(true);

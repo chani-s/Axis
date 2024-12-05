@@ -152,10 +152,13 @@
 }
 
 .detailsButton{
-    padding: 10px;
-    background-color: #45474b;
+    padding: 10px 20px;
+    background-color: #ddba0e;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 15px;
     cursor: pointer;
+
+    /* background-color: #45474b; */
+    
 }
