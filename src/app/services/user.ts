@@ -7,6 +7,7 @@ export const signUpUser = async (userData: {
     email: string;
     password: string;
     isWithGoogle: boolean;
+    userType: string;
 }): Promise<AxiosResponse<any>> => {
     console.log("services");
     console.log(userData);

@@ -1,5 +1,5 @@
 
-import { connectDatabase, isExist, getSpecificFields, isEqual, insertDocument } from "@/app/services/mongo";
+import { connectDatabase, isExist, getSpecificFields, isEqual, insertDocument,getById } from "@/app/services/mongo";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   
   const responseDetails = {
     message: "",
-    userId: ""
+    userDetails: {}
   }
   try {
 
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       const insertUserDetails = await insertDocument(
         client,
         "users",
-        { email: userData.email, google_auth: userData.isWithGoogle }
+        { email: userData.email, google_auth: userData.isWithGoogle, user_type:userData.userType }
       );
       console.log(insertUserDetails);
       if (insertUserDetails) {
@@ -40,11 +40,9 @@ export async function POST(req: NextRequest) {
           "hashed_passwords",
           { user_id: insertUserDetails?._id.toString(), password: userData.password }
         );
-
-        console.log(insertUserPassword);
-        
+ 
         responseDetails.message = "User signup successfully";
-        responseDetails.userId = insertUserDetails._id.toString();
+        responseDetails.userDetails = insertUserDetails;
       }
     }
     else
@@ -62,7 +60,7 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const responseDetails = {
     message: "",
-    userId: ""
+    userDetails: {}
   }
   try {
     const { searchParams } = new URL(req.url);
@@ -91,7 +89,13 @@ export async function GET(req: NextRequest) {
       );
       if (userPassword) {
         responseDetails.message = "User login successfully";
-        responseDetails.userId = userId;
+        responseDetails.userDetails = await getById(
+          client,
+          "users",
+          userId 
+        );
+        console.log(responseDetails);
+        
       }
       else
         responseDetails.message = "Password is incorrect";

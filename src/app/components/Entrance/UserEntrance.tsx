@@ -7,6 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useMutation } from '@tanstack/react-query';
 import { signUpUser, loginUser } from '../../services/user';
 import { useRouter } from 'next/navigation';
+import {userDetailsStore} from '../../services/zustand'
 
 export const Entrance = ({ type }: any) => {
     const [email, setEmail] = useState("");
@@ -14,6 +15,7 @@ export const Entrance = ({ type }: any) => {
     const [name, setName] = useState("");
     const [isWithGoogle, setIsWithGoogle] = useState(false);
     const router = useRouter();
+    const setUserDetails = userDetailsStore((state) => state.setUserDetails);
 
     const mutationSignUp = useMutation({
         mutationFn: signUpUser,
@@ -21,9 +23,9 @@ export const Entrance = ({ type }: any) => {
             console.log(data);
             if (data.userId!="") {
                 alert("נרשמת בהצלחה");
-                //שמירת הנתונים איפה שהוא
-                //בדיקת סוג המשתמש והעברה לעמוד המתאים
-                router.push('/chat/user');
+                setUserDetails(data.userDetails);
+                if(data.userDetails.user_type=="user")
+                    router.push('/chat/user');
             }
             else {
                 alert("שגיאה בהרשמה נסה שוב או התחבר");
@@ -40,9 +42,9 @@ export const Entrance = ({ type }: any) => {
             console.log(data);
             if (data.userId != "") {
                 alert("התחברת בהצלחה");
-                //שמירת הנתונים איפה שהוא
-                //בדיקת סוג המשתמש והעברה לעמוד המתאים
-                router.push('/chat/user');
+                setUserDetails(data.userDetails);
+                if(data.userDetails.user_type=="user")
+                    router.push('/chat/user');
             }
             else {
                 alert("אימייל או סיסמא שגויים");
@@ -59,7 +61,8 @@ export const Entrance = ({ type }: any) => {
         const userData = {
             email: email,
             password: password,
-            isWithGoogle: false
+            isWithGoogle: false,
+            userType:"user"
         };
         console.log(userData);
 
@@ -77,7 +80,8 @@ export const Entrance = ({ type }: any) => {
         const userData = {
             email: email,
             password: password,
-            isWithGoogle: isWithGoogle
+            isWithGoogle: isWithGoogle,
+            userType:"user"
         };
         type == "signup" ? mutationSignUp.mutate(userData) : mutationLogin.mutate(userData);
 
