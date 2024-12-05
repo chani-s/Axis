@@ -15,38 +15,42 @@ export const Entrance = ({ type }: any) => {
     const [isWithGoogle, setIsWithGoogle] = useState(false);
     const router = useRouter();
 
-    // Mutation עבור רישום
     const mutationSignUp = useMutation({
-        mutationFn: signUpUser, // הפונקציה שמבצעת את הקריאה לשרת
-        onSuccess: (data) => {
+        mutationFn: signUpUser,
+        onSuccess: (data:any) => {
             console.log(data);
-            alert("Registration successful!"); // טיפול בהצלחה
-        },
-        onError: (error: any) => {
-            alert(`Error signing up: ${error.message}`); // טיפול בשגיאה
-        },
-    });
-
-    // Mutation עבור התחברות
-    const mutationLogin = useMutation({
-        mutationFn: loginUser, // הפונקציה שמבצעת את הקריאה לשרת
-        onSuccess: (data) => {
-            console.log(data);
-            if(data.userId!="")
-            {
-                alert("התחברת בהצלחה"); 
+            if (data.userId!="") {
+                alert("נרשמת בהצלחה");
                 //שמירת הנתונים איפה שהוא
                 //בדיקת סוג המשתמש והעברה לעמוד המתאים
                 router.push('/chat/user');
-
             }
-            else{
-                alert("אימייל או סיסמא שגויים");
+            else {
+                alert("שגיאה בהרשמה נסה שוב או התחבר");
             }
-            
         },
         onError: (error: any) => {
-            alert(`Error logging in: ${error.message}`); // טיפול בשגיאה
+            alert(`שגיאה בהרשמה ${<br />} ${error.message}`);
+        },
+    });
+
+    const mutationLogin = useMutation({
+        mutationFn: loginUser,
+        onSuccess: (data) => {
+            console.log(data);
+            if (data.userId != "") {
+                alert("התחברת בהצלחה");
+                //שמירת הנתונים איפה שהוא
+                //בדיקת סוג המשתמש והעברה לעמוד המתאים
+                router.push('/chat/user');
+            }
+            else {
+                alert("אימייל או סיסמא שגויים");
+            }
+        },
+        onError: (error: any) => {
+            alert(`שגיאה בהתחברות ${<br />} ${error.message}`);
+
         },
     });
 
@@ -57,6 +61,8 @@ export const Entrance = ({ type }: any) => {
             password: password,
             isWithGoogle: false
         };
+        console.log(userData);
+
         type == "signup" ? mutationSignUp.mutate(userData) : mutationLogin.mutate(userData);
     }
 

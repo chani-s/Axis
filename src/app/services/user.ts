@@ -8,6 +8,9 @@ export const signUpUser = async (userData: {
     password: string;
     isWithGoogle: boolean;
 }): Promise<AxiosResponse<any>> => {
+    console.log("services");
+    console.log(userData);
+    
     const response = await http.post("/user", userData);
     return response.data; 
 };
