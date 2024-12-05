@@ -50,24 +50,29 @@ export async function GET(request: Request) {
 }
 export async function POST(request: Request) {
     try {
+      const url = new URL(request.url);
+      const companyId = url.searchParams.get("company_id")||""; 
+      const userId = url.searchParams.get("user_id")||""; 
+      const body = await request.json();
+
       const client = await connectDatabase();
+      
       const db = client.db("Axis");
-  
-      const newConversation = await request.json();
-  
+      console.log(companyId);
+    
       const result = await db.collection("conversations").insertOne({
-        ...newConversation,
-        start_time: new Date(),
-        last_use: new Date(), 
+        ...body,
+        company_id: new ObjectId(companyId), 
+        user_id: new ObjectId(userId), 
+        start_time:  Date.now(),
+        last_use: Date.now(),
       });
-  
-      console.log("Conversation created:", result);
-  
+
       await client.close();
-  
+
       return NextResponse.json({
         message: "Conversation created successfully",
-        conversation: result, 
+        conversation: result, // Return the created conversation data
       });
     } catch (error) {
       console.error("Error creating conversation:", error);

@@ -6,6 +6,7 @@ import ComapnyService from "@/app/services/company";
 import { Conversation } from "@/app/models/Conversation";
 import ConversationService from "@/app/services/conversation";
 import { ObjectId } from "mongodb";
+import { profile } from "console";
 
 const SideBar = () => {
   const queryClient = useQueryClient();
@@ -16,17 +17,14 @@ const SideBar = () => {
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref to hold the timeout ID
   const [isMutating, setIsMutating] = useState(false);
   const [newConversation, setNewConversation] = useState<Conversation>({
-    _id: new ObjectId(),
-    company_id: new ObjectId(),
-    company_name: "",
-    company_profilePicture: "",
-    user_id: new ObjectId(),
+    company_id: "",
+    user_id: "",
     representative_id: null,
     status_code: 2,
     last_use: new Date(),
     start_time: null,
   });
-  const id = new ObjectId("67504b0fbe15427c891d0cbe");
+  const id = "67504b0fbe15427c891d0cbe";
 
   const { data: conversations, isLoading: isConversationsLoading } = useQuery<
     Conversation[]
@@ -54,74 +52,64 @@ const SideBar = () => {
   const createConversationMutation = useMutation({
     mutationFn: ConversationService.createConversation,
     onMutate: async (conversation: Conversation) => {
-      setIsMutating(true);
       await queryClient.cancelQueries({ queryKey: ["conversations"] });
-      const previousCars = queryClient.getQueryData(["conversations"]);
-      queryClient.setQueryData(["conversations"], (old: any) => [
-        ...old,
-        conversation,
-      ]);
-      return { previousCars };
+  
+      const previousConversations = queryClient.getQueryData(["conversations"])
+  
+      return { previousConversations };
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["conversations"] });
-      setIsMutating(false);
-    },
+    onSuccess: (newConversation) => {
+      // After mutation success, replace the old "conversations" with the new data
+      queryClient.setQueryData(["conversations"], (old: any) => {
+        const updatedConversations = old.map((conversation: any) =>
+          conversation._id === newConversation._id ? newConversation : conversation
+        );
+        return updatedConversations;
+      });
+  
+      // Optionally, invalidate queries if you need to refetch fresh data from the server
+    }
   });
-  const handleCreateCar = (company: any) => {
+
+  const handleCreateCar = (company:any) => {
     createConversationMutation.mutate(newConversation);
-    setNewConversation({});
+    setNewConversation({
+      company_id: company._id,
+      user_id: id,
+      representative_id: null,
+      status_code: 2,
+    });
   };
 
   const resetDropdownTimeout = () => {
     if (dropdownTimeoutRef.current) {
-      clearTimeout(dropdownTimeoutRef.current); // Clear any existing timeout
+      clearTimeout(dropdownTimeoutRef.current); 
     }
 
     dropdownTimeoutRef.current = setTimeout(() => {
-      setIsDropdownOpen(false); // Close dropdown after 3 seconds
-    }, 3000); // 3 seconds delay
+      setIsDropdownOpen(false);
+    }, 3000);
   };
 
-  // Filter companies based on search term
   const filteredCompanies =
     companiesData?.filter((company: any) =>
       company.name.toLowerCase().includes(searchTerm.toLowerCase())
     ) || [];
 
-  // Filter conversations based on chat search term
   const filteredConversations =
     conversations?.filter((conversation: Conversation) => {
-      return conversation.company_name
+      return conversation.company_name||""
         .toLowerCase()
         .includes(chatSearchTerm.toLowerCase());
     }) || [];
 
-  const handleOptionClick = (company: {
-    id: number;
-    name: string;
-    image: string;
-  }) => {
-    // Prevent adding a duplicate conversation
-    if (conversations) {
-      const isDuplicate = conversations.some(
-        (conversation: any) =>
-          conversation.company_id?.toString() === company.id.toString()
-      );
-      if (isDuplicate) {
-        return; // Prevent adding a duplicate conversation
-      }
-    }
+  const handleOptionClick = (company: any
+  )=> {
 
-    setSelectedCompany(company.name); // Set selected company
-    setSearchTerm(company.name); // Update input with selected company name
-    setIsDropdownOpen(false); // Close dropdown after selecting an option
-
-    // Add new conversation item with the selected company details (immutable update)
-    // setConversations((prevConversations) => [
-    //   ...prevConversations, // Spread previous conversations
-    //   { id: company.id, name: company.name, image: company.image, company_id: company.id.toString() }, // Add new conversation with company_id as string
-    // ]);
+    setSelectedCompany(company.name); 
+    setSearchTerm(company.name); 
+    setIsDropdownOpen(false); 
+    handleCreateCar(company)
   };
 
   return (
@@ -135,12 +123,12 @@ const SideBar = () => {
           onChange={(e) => {
             setSearchTerm(e.target.value);
             setIsDropdownOpen(true);
-            resetDropdownTimeout(); // Open dropdown when typing
+            resetDropdownTimeout();
           }}
           onFocus={() => {
             handleInputFocus();
             setIsDropdownOpen(true);
-            resetDropdownTimeout(); // Open dropdown when focused
+            resetDropdownTimeout(); 
           }}
         />
         {isDropdownOpen && (
@@ -148,9 +136,9 @@ const SideBar = () => {
             {filteredCompanies.length > 0 ? (
               filteredCompanies.map((company: any) => (
                 <div
-                  key={company.id}
+                  key={company._id}
                   className={styles.optionItem}
-                  onClick={() => handleOptionClick(company)} // Handle option click
+                  onClick={() => handleOptionClick(company)}
                 >
                   <div
                     className={styles.profileCircle}
@@ -184,7 +172,7 @@ const SideBar = () => {
             return (
               <div
                 className={styles.conversationItem}
-                key={conversation._id.toString()}
+                key={conversation._id?.toString()}
               >
                 <img
                   className={styles.profileCircle}
