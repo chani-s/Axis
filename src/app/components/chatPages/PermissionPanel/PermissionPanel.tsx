@@ -20,13 +20,6 @@ const PermissionPanel = () => {
 
     const [permissions, setPermissions] = useState<typeof defaultPermissions>(defaultPermissions);
 
-    // const [permissions, setPermissions] = useState({
-    //     phone: false,
-    //     address: false,
-    //     id: false,
-    //     bank: false,
-    // });
-
     useEffect(() => {
         const storedPermissions = localStorage.getItem("permissions");
         if (storedPermissions) {

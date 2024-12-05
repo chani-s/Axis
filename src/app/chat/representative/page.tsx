@@ -7,7 +7,7 @@ const Page = () => {
 
     return (
         <div>
-            <MainPage type="user"/>
+            <MainPage type="representative"/>
         </div>
     );
 };
