@@ -2,13 +2,13 @@
 import {create} from 'zustand';
 import { ObjectId } from 'mongodb';
 
-type ObjectIdStore = {
-    objectId: ObjectId[];
-    setObjectIds: (ids: ObjectId[]) => void; 
+type UserStore = {
+    userDetails: object;
+    setUserDetails: (details: object) => void; 
 };
 
-export const useObjectIdStore = create<ObjectIdStore>((set) => ({
-    objectId: [],
+export const userDetailsStore = create<UserStore>((set) => ({
+    userDetails: {},
 
-    setObjectIds: (ids: ObjectId[]): void => set({ objectId: ids }),
+    setUserDetails: (details: object): void => set({ userDetails : details }),
 }));

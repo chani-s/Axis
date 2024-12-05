@@ -27,6 +27,17 @@ export async function getAllDocuments(client: any, collection: string) {
   return documents;
 }
 
+export async function getById(client: any, collection: string, id: string) {
+  const db = client.db("Axis");
+  try {
+    const document = await db.collection(collection).findOne({ _id: new ObjectId(id) });
+    return document;
+  } catch (error) {
+    console.error("Error fetching document by ID:", error);
+    throw new Error("Failed to fetch user by ID");
+  }
+}
+
 export async function insertDocument(
   client: MongoClient,
   collection: string,
