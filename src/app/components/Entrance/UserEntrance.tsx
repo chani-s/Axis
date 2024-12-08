@@ -7,6 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useMutation } from '@tanstack/react-query';
 import { signUpUser, loginUser } from '../../services/user';
 import { useRouter } from 'next/navigation';
+import { userDetailsStore } from '../../services/zustand'
 
 export const Entrance = ({ type }: any) => {
     const [email, setEmail] = useState("");
@@ -14,50 +15,76 @@ export const Entrance = ({ type }: any) => {
     const [name, setName] = useState("");
     const [isWithGoogle, setIsWithGoogle] = useState(false);
     const router = useRouter();
+    const userDetails = userDetailsStore((state)=>state.userDetails);
+    const setUserDetails = userDetailsStore((state) => state.setUserDetails);
 
-    // Mutation עבור רישום
     const mutationSignUp = useMutation({
-        mutationFn: signUpUser, // הפונקציה שמבצעת את הקריאה לשרת
-        onSuccess: (data) => {
+        mutationFn: signUpUser,
+        onSuccess: (data: any) => {
             console.log(data);
-            alert("Registration successful!"); // טיפול בהצלחה
+            if (data.userId != "") {
+                setUserDetails(data.userDetails);
+                console.log(userDetails);
+                if (data.userDetails.user_type == "user")
+                    router.push('/chat/user');
+                if (data.userDetails.user_type == "representative")
+                    router.push('/chat/representative');
+                if (data.userDetails.user_type == "management")
+                    router.push('/chat/management');
+            }
+            else {
+                alert("שגיאה בהרשמה נסה שוב או התחבר");
+            }
         },
         onError: (error: any) => {
-            alert(`Error signing up: ${error.message}`); // טיפול בשגיאה
+            alert(`שגיאה בהרשמה ${<br />} ${error.message}`);
         },
     });
 
-    // Mutation עבור התחברות
     const mutationLogin = useMutation({
-        mutationFn: loginUser, // הפונקציה שמבצעת את הקריאה לשרת
+        mutationFn: loginUser,
         onSuccess: (data) => {
             console.log(data);
-            if(data.userId!="")
-            {
-                alert("התחברת בהצלחה"); 
-                //שמירת הנתונים איפה שהוא
-                //בדיקת סוג המשתמש והעברה לעמוד המתאים
-                router.push('/chat/user');
-
+            if (data.userId != "") {
+                setUserDetails(data.userDetails);
+                console.log(userDetails);
+                
+                if (data.userDetails.user_type == "user")
+                    router.push('/chat/user');
+                if (data.userDetails.user_type == "representative")
+                    router.push('/chat/representative');
+                if (data.userDetails.user_type == "management")
+                    router.push('/chat/management');
             }
-            else{
+            else {
                 alert("אימייל או סיסמא שגויים");
             }
-            
         },
         onError: (error: any) => {
-            alert(`Error logging in: ${error.message}`); // טיפול בשגיאה
+            alert(`שגיאה בהתחברות ${<br />} ${error.message}`);
+
         },
     });
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        const userData = {
-            email: email,
-            password: password,
-            isWithGoogle: false
-        };
-        type == "signup" ? mutationSignUp.mutate(userData) : mutationLogin.mutate(userData);
+        if (type == "signup") {
+            const userData = {
+                email: email,
+                password: password,
+                isWithGoogle: false,
+                userType: "user"
+            };
+            mutationSignUp.mutate(userData)
+        }
+        if (type == "login") {
+            const userData = {
+                email: email,
+                password: password,
+                isWithGoogle: false
+            };
+            mutationLogin.mutate(userData)
+        }
     }
 
     const signupHandler = async () => {
@@ -71,7 +98,8 @@ export const Entrance = ({ type }: any) => {
         const userData = {
             email: email,
             password: password,
-            isWithGoogle: isWithGoogle
+            isWithGoogle: isWithGoogle,
+            userType: "user"
         };
         type == "signup" ? mutationSignUp.mutate(userData) : mutationLogin.mutate(userData);
 

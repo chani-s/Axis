@@ -9,7 +9,8 @@ interface MessageObj {
     text: string,
     sender: Boolean,  // true if sender is user, false otherwise      
 };
-const MainChat = () => {
+
+const MainChat = ({ type} : any) => {
     const [isChatOpen, setIsChatOpen] = useState(true);
     const [isMinimized, setIsMinimized] = useState(false);
     const [isPermissionPanelOpen, setIsPermissionPanelOpen] = useState(false);
@@ -17,6 +18,15 @@ const MainChat = () => {
     const [messages, setMessages] = useState<MessageObj[]>();
     const [message, setMessage] = useState("");
     const chatEndRef = useRef<HTMLDivElement>(null);
+    const [isUser, setIsUser] = useState(true);
+
+    useEffect(() => {
+        if(type === "representative"){
+            setIsUser(false);
+        }
+        console.log(type);
+
+    }, [type]);
 
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -69,6 +79,12 @@ const MainChat = () => {
     if (!isChatOpen) {
         return null;
     }
+
+    const showDetails = () => {
+        alert("show details");
+    }
+
+
     return (
         <div className={`${styles.mainChat} ${isMinimized ? styles.minimized : ""}`}>
             <div className={styles.header}>
@@ -109,6 +125,14 @@ const MainChat = () => {
             </div>
 
             <div className={styles.sendingBar}>
+
+                {!isUser &&
+                    <button
+                        className={styles.detailsButton}
+                        onClick={showDetails}>
+                        פרטי לקוח
+                    </button>}
+
                 <input
                     className={styles.inputField}
                     type="text"

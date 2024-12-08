@@ -2,13 +2,14 @@
 
 import { ObjectId } from "mongodb";
 
-export interface Conversation{
-    map(arg0: (c: any) => import("react").JSX.Element): import("react").ReactNode;
-    _id: ObjectId;
-    company_id: ObjectId;
-    user_id: ObjectId;
-    representative_id: ObjectId;
-    status: string;
-    last_use: Date;
-    start_time: Date;
-}
+export interface Conversation {
+    _id?: ObjectId;
+    company_id: ObjectId|string;
+    company_name?: string;
+    company_profilePicture?: string;
+    user_id: ObjectId|string;
+    representative_id: ObjectId | null;
+    status_code: number;
+    last_use?: Date | null;
+    start_time?: Date | null;
+  }
