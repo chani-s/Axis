@@ -4,9 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import styles from "./SideBar.module.css";
 import ComapnyService from "@/app/services/company";
 import { Conversation } from "@/app/models/Conversation";
-import ConversationService from "@/app/services/conversation";
-import { ObjectId } from "mongodb";
-import { profile } from "console";
+import { getConversations, createConversation } from "@/app/services/conversation";
 
 const SideBar = () => {
   const queryClient = useQueryClient();
@@ -30,27 +28,23 @@ const SideBar = () => {
     Conversation[]
   >({
     queryKey: ["conversations"],
-    queryFn: () => ConversationService.getConversations(), // Fetch conversations from the server
+    queryFn: () => getConversations(), // Fetch conversations from the server
     staleTime: 10000,
   });
   console.log(conversations);
 
-  const {
-    data: companiesData,
-    refetch: fetchCompanies,
-    isFetching: isCompaniesFetching,
+  const { data: companiesData, refetch: fetchCompanies, isFetching: isCompaniesFetching,
   } = useQuery({
     queryKey: ["companies"],
     queryFn: () => ComapnyService.getNameAndPorfile(),
     enabled: false, // Disable automatic fetching
     staleTime: 10000,
   });
-  const handleInputFocus = () => {
-    fetchCompanies();
-  };
+
+  const handleInputFocus = () => { fetchCompanies() };
 
   const createConversationMutation = useMutation({
-    mutationFn: ConversationService.createConversation,
+    mutationFn: createConversation,
     onMutate: async (conversation: Conversation) => {
       await queryClient.cancelQueries({ queryKey: ["conversations"] });
   
@@ -74,7 +68,7 @@ const SideBar = () => {
     }
   });
 
-  const handleCreateCar = (company:any) => {
+  const handleCreateCar = (company: any) => {
     createConversationMutation.mutate(newConversation);
     setNewConversation({
       company_id: company._id,
@@ -105,7 +99,7 @@ const SideBar = () => {
   // Filter conversations based on chat search term
   const filteredConversations =
     conversations?.filter((conversation: Conversation) => {
-      return conversation.company_name||""
+      return conversation.company_name || ""
         .toLowerCase()
         .includes(chatSearchTerm.toLowerCase());
     }) || [];
@@ -168,7 +162,7 @@ const SideBar = () => {
           type="text"
           placeholder="חפש בצאטים..."
           value={chatSearchTerm}
-          onChange={(e) => setChatSearchTerm(e.target.value)} // Update search term for chats
+          onChange={(e) => setChatSearchTerm(e.target.value)}
         />
       </div>
       <p className={styles.yourChatsP}>הצאטים שלך:</p>

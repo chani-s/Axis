@@ -27,6 +27,17 @@ export async function getAllDocuments(client: any, collection: string) {
   return documents;
 }
 
+export async function getById(client: any, collection: string, id: string) {
+  const db = client.db("Axis");
+  try {
+    const document = await db.collection(collection).findOne({ _id: new ObjectId(id) });
+    return document;
+  } catch (error) {
+    console.error("Error fetching document by ID:", error);
+    throw new Error("Failed to fetch user by ID");
+  }
+}
+
 export async function insertDocument(
   client: MongoClient,
   collection: string,
@@ -68,6 +79,31 @@ export async function deleteDocument(
   return { message: `Document with ID ${documentId} has been deleted.` };
 }
 
+export async function isExist(
+  client: MongoClient,
+  collection: string,
+  filter: object
+): Promise<boolean> {
+  const db = client.db("Axis");
+  const exists = await db.collection(collection).findOne(filter);
+  return !!exists; // Returns true if the document exists, false otherwise
+}
+
+export async function isEqual(
+  client: MongoClient,
+  collection: string,
+  filter: object,
+  data: string
+): Promise<boolean> {
+  const db = client.db("Axis"); 
+  const user = await db.collection(collection).findOne(filter); 
+  if (!user) {
+    return false; 
+  }
+  const isMatch = data==user.password;
+  return isMatch; 
+}
+
 //await upsertDocument(client, "users", { name: "Jane Doe" }(<-מחפש שדה כזה), { age: 28 }(<-משנה את השדה הזה));
 export async function upsertDocument(
   client: MongoClient,
@@ -96,5 +132,6 @@ export async function getSpecificFields(
     .collection(collection)
     .find(filter, { projection: fields })
     .toArray();
+  console.log(documents);
   return documents;
 }
