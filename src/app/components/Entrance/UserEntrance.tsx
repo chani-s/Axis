@@ -7,7 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useMutation } from '@tanstack/react-query';
 import { signUpUser, loginUser } from '../../services/user';
 import { useRouter } from 'next/navigation';
-import {userDetailsStore} from '../../services/zustand';
+import { userDetailsStore } from '../../services/zustand'
 
 export const Entrance = ({ type }: any) => {
     const [email, setEmail] = useState("");
@@ -15,18 +15,22 @@ export const Entrance = ({ type }: any) => {
     const [name, setName] = useState("");
     const [isWithGoogle, setIsWithGoogle] = useState(false);
     const router = useRouter();
+    const userDetails = userDetailsStore((state)=>state.userDetails);
     const setUserDetails = userDetailsStore((state) => state.setUserDetails);
 
     const mutationSignUp = useMutation({
         mutationFn: signUpUser,
-        onSuccess: (data:any) => {
-            
+        onSuccess: (data: any) => {
             console.log(data);
-            if (data.userId!="") {
-                alert("נרשמת בהצלחה");
+            if (data.userId != "") {
                 setUserDetails(data.userDetails);
-                if(data.userDetails.user_type=="user")
+                console.log(userDetails);
+                if (data.userDetails.user_type == "user")
                     router.push('/chat/user');
+                if (data.userDetails.user_type == "representative")
+                    router.push('/chat/representative');
+                if (data.userDetails.user_type == "management")
+                    router.push('/chat/management');
             }
             else {
                 alert("שגיאה בהרשמה נסה שוב או התחבר");
@@ -42,10 +46,15 @@ export const Entrance = ({ type }: any) => {
         onSuccess: (data) => {
             console.log(data);
             if (data.userId != "") {
-                alert("התחברת בהצלחה");
                 setUserDetails(data.userDetails);
-                if(data.userDetails.user_type=="user")
+                console.log(userDetails);
+                
+                if (data.userDetails.user_type == "user")
                     router.push('/chat/user');
+                if (data.userDetails.user_type == "representative")
+                    router.push('/chat/representative');
+                if (data.userDetails.user_type == "management")
+                    router.push('/chat/management');
             }
             else {
                 alert("אימייל או סיסמא שגויים");
@@ -59,15 +68,23 @@ export const Entrance = ({ type }: any) => {
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        const userData = {
-            email: email,
-            password: password,
-            isWithGoogle: false,
-            userType:"user"
-        };
-        console.log(userData);
-
-        type == "signup" ? mutationSignUp.mutate(userData) : mutationLogin.mutate(userData);
+        if (type == "signup") {
+            const userData = {
+                email: email,
+                password: password,
+                isWithGoogle: false,
+                userType: "user"
+            };
+            mutationSignUp.mutate(userData)
+        }
+        if (type == "login") {
+            const userData = {
+                email: email,
+                password: password,
+                isWithGoogle: false
+            };
+            mutationLogin.mutate(userData)
+        }
     }
 
     const signupHandler = async () => {
@@ -82,7 +99,7 @@ export const Entrance = ({ type }: any) => {
             email: email,
             password: password,
             isWithGoogle: isWithGoogle,
-            userType:"user"
+            userType: "user"
         };
         type == "signup" ? mutationSignUp.mutate(userData) : mutationLogin.mutate(userData);
 
