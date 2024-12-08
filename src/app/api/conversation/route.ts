@@ -1,6 +1,7 @@
 import { connectDatabase } from "@/app/services/mongo";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
+import { insertDocument } from "@/app/services/mongo";
 
 export async function GET(request: Request) {
   try {
@@ -60,7 +61,7 @@ export async function POST(request: Request) {
       const db = client.db("Axis");
       console.log(companyId);
     
-      const result = await db.collection("conversations").insertOne({
+      const result = insertDocument(client,"conversations",{
         ...body,
         company_id: new ObjectId(companyId), 
         user_id: new ObjectId(userId), 
