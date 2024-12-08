@@ -2,13 +2,18 @@
 import {create} from 'zustand';
 import { ObjectId } from 'mongodb';
 
+interface User{
+    _id: string;
+    email: string;
+    google_auth: boolean;
+  }
+
 type UserStore = {
-    userDetails: object;
-    setUserDetails: (details: object) => void; 
+    userDetails: User;
+    setUserDetails: (details: User) => void; 
 };
 
 export const userDetailsStore = create<UserStore>((set) => ({
-    userDetails: {},
-
-    setUserDetails: (details: object): void => set({ userDetails : details }),
+    userDetails: { _id: "", email: "", google_auth: false},
+    setUserDetails: (details: User) => set({ userDetails : details }),
 }));

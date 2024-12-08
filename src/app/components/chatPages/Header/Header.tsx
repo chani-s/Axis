@@ -2,14 +2,20 @@
 import React, { useEffect, useState } from 'react';
 import styles from './Header.module.css';
 import ProfilePopup from './ProfilePopup/ProfilePopup';
+import { userDetailsStore } from '../../../services/zustand';
 
 
 const Header = () => {
     //userName: string, profilePicture: string, userEmail: string (should be in props)
-    const [userName, setUserName] = useState('אילה, רותי וחני');
+    const userDetails = userDetailsStore((state) => state.userDetails); // שליפת הנתונים מ-zustand
+
+    // const setUserDetails = userDetailsStore((state) => state.userDetails);
+    const [userName, setUserName] = useState("חנה");
     const [userEmail, setUserEmail] = useState('abcdefg@gmail.com');
     const [profilePicture, setProfilePicture] = useState('https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png');
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+    console.log("userDetails:", userDetails);
 
     const showPersonalProfile = () => {
         setIsPopupOpen(true);

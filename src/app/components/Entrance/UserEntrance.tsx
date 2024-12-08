@@ -7,7 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useMutation } from '@tanstack/react-query';
 import { signUpUser, loginUser } from '../../services/user';
 import { useRouter } from 'next/navigation';
-import {userDetailsStore} from '../../services/zustand'
+import {userDetailsStore} from '../../services/zustand';
 
 export const Entrance = ({ type }: any) => {
     const [email, setEmail] = useState("");
@@ -20,6 +20,7 @@ export const Entrance = ({ type }: any) => {
     const mutationSignUp = useMutation({
         mutationFn: signUpUser,
         onSuccess: (data:any) => {
+            
             console.log(data);
             if (data.userId!="") {
                 alert("נרשמת בהצלחה");
