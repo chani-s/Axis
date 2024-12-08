@@ -54,12 +54,16 @@ const SideBar = () => {
     onMutate: async (conversation: Conversation) => {
       await queryClient.cancelQueries({ queryKey: ["conversations"] });
   
-      const previousConversations = queryClient.getQueryData(["conversations"])
+      const previousConversations = queryClient.getQueryData(["conversations"]);
+ 
+      queryClient.setQueryData(["conversations"], (old: any) => [
+        ...old,
+        conversation, 
+      ]);
   
       return { previousConversations };
     },
     onSuccess: (newConversation) => {
-      // After mutation success, replace the old "conversations" with the new data
       queryClient.setQueryData(["conversations"], (old: any) => {
         const updatedConversations = old.map((conversation: any) =>
           conversation._id === newConversation._id ? newConversation : conversation
@@ -67,7 +71,6 @@ const SideBar = () => {
         return updatedConversations;
       });
   
-      // Optionally, invalidate queries if you need to refetch fresh data from the server
     }
   });
 
@@ -78,24 +81,28 @@ const SideBar = () => {
       user_id: id,
       representative_id: null,
       status_code: 2,
+      company_profilePicture:company.profilePicture,
+      company_name:company.name
     });
   };
 
   const resetDropdownTimeout = () => {
     if (dropdownTimeoutRef.current) {
-      clearTimeout(dropdownTimeoutRef.current); 
+      clearTimeout(dropdownTimeoutRef.current); // Clear any existing timeout
     }
 
     dropdownTimeoutRef.current = setTimeout(() => {
-      setIsDropdownOpen(false);
-    }, 3000);
+      setIsDropdownOpen(false); // Close dropdown after 3 seconds
+    }, 3000); // 3 seconds delay
   };
 
+  // Filter companies based on search term
   const filteredCompanies =
     companiesData?.filter((company: any) =>
       company.name.toLowerCase().includes(searchTerm.toLowerCase())
     ) || [];
 
+  // Filter conversations based on chat search term
   const filteredConversations =
     conversations?.filter((conversation: Conversation) => {
       return conversation.company_name||""
@@ -105,10 +112,10 @@ const SideBar = () => {
 
   const handleOptionClick = (company: any
   )=> {
-
-    setSelectedCompany(company.name); 
-    setSearchTerm(company.name); 
-    setIsDropdownOpen(false); 
+    console.log(company._id+ "in option handler")
+    setSelectedCompany(company.name); // Set selected company
+    setSearchTerm(company.name); // Update input with selected company name
+    setIsDropdownOpen(false); // Close dropdown after selecting an option
     handleCreateCar(company)
   };
 
@@ -123,12 +130,12 @@ const SideBar = () => {
           onChange={(e) => {
             setSearchTerm(e.target.value);
             setIsDropdownOpen(true);
-            resetDropdownTimeout();
+            resetDropdownTimeout(); // Open dropdown when typing
           }}
           onFocus={() => {
             handleInputFocus();
             setIsDropdownOpen(true);
-            resetDropdownTimeout(); 
+            resetDropdownTimeout(); // Open dropdown when focused
           }}
         />
         {isDropdownOpen && (
@@ -138,7 +145,7 @@ const SideBar = () => {
                 <div
                   key={company._id}
                   className={styles.optionItem}
-                  onClick={() => handleOptionClick(company)}
+                  onClick={() => handleOptionClick(company)} // Handle option click
                 >
                   <div
                     className={styles.profileCircle}
@@ -164,7 +171,6 @@ const SideBar = () => {
           onChange={(e) => setChatSearchTerm(e.target.value)} // Update search term for chats
         />
       </div>
-
       <p className={styles.yourChatsP}>הצאטים שלך:</p>
       <div className={styles.bottom}>
         {filteredConversations ? (
