@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import styles from "./SideBar.module.css";
 import ComapnyService from "@/app/services/company";
@@ -12,8 +12,7 @@ const SideBar = () => {
   const [chatSearchTerm, setChatSearchTerm] = useState(""); // State for search term in chat search
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null); // State for selected company
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to control dropdown visibility
-  const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref to hold the timeout ID
-  const [isMutating, setIsMutating] = useState(false);
+  // const [isMutating, setIsMutating] = useState(false);
   const [newConversation, setNewConversation] = useState<Conversation>({
     company_id: "",
     user_id: "",
@@ -22,26 +21,13 @@ const SideBar = () => {
     last_use: new Date(),
     start_time: null,
   });
+
   const id = "67504b0fbe15427c891d0cbe";
 
-  const { data: conversations, isLoading: isConversationsLoading } = useQuery<
-    Conversation[]
-  >({
-    queryKey: ["conversations"],
-    queryFn: () => getConversations(), // Fetch conversations from the server
-    staleTime: 10000,
-  });
-  console.log(conversations);
-
-  const { data: companiesData, refetch: fetchCompanies, isFetching: isCompaniesFetching,
-  } = useQuery({
-    queryKey: ["companies"],
-    queryFn: () => ComapnyService.getNameAndPorfile(),
-    enabled: false, // Disable automatic fetching
-    staleTime: 10000,
-  });
-
-  const handleInputFocus = () => { fetchCompanies() };
+  const { data: conversations, isLoading: isConversationsLoading } = useQuery<Conversation[]>({ queryKey: ["conversations"], queryFn: () => getConversations(), staleTime: 10000 });
+  const { data: companiesData } = useQuery({ queryKey: ["companies"], queryFn: () => ComapnyService.getNameAndPorfile(), staleTime: 10000 });
+console.log(333,companiesData)
+  // const handleInputFocus = () => { fetchCompanies() };
 
   const createConversationMutation = useMutation({
     mutationFn: createConversation,
@@ -80,21 +66,7 @@ const SideBar = () => {
     });
   };
 
-  const resetDropdownTimeout = () => {
-    if (dropdownTimeoutRef.current) {
-      clearTimeout(dropdownTimeoutRef.current); // Clear any existing timeout
-    }
-
-    dropdownTimeoutRef.current = setTimeout(() => {
-      setIsDropdownOpen(false); // Close dropdown after 3 seconds
-    }, 3000); // 3 seconds delay
-  };
-
-  // Filter companies based on search term
-  const filteredCompanies =
-    companiesData?.filter((company: any) =>
-      company.name.toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
+  const filteredCompanies = companiesData?.filter((company: any) => company.name.toLowerCase().includes(searchTerm.toLowerCase())) || [];
 
   // Filter conversations based on chat search term
   const filteredConversations =
@@ -104,12 +76,27 @@ const SideBar = () => {
         .includes(chatSearchTerm.toLowerCase());
     }) || [];
 
-  const handleOptionClick = (company: any
-  )=> {
-    console.log(company._id+ "in option handler")
-    setSelectedCompany(company.name); // Set selected company
-    setSearchTerm(company.name); // Update input with selected company name
-    setIsDropdownOpen(false); // Close dropdown after selecting an option
+  const RenderFilteredCompanies = () => {
+    return filteredCompanies.map((company: any) => (
+      <div
+        key={company._id}
+        className={styles.optionItem}
+        onClick={() => handleOptionClick(company)}
+      >
+        <div
+          className={styles.profileCircle}
+          style={{ backgroundImage: `url(${company.profilePicture})` }}
+        ></div>
+        <span className={styles.selectOptionText}>{company.name}</span>
+      </div>
+    ));
+  }
+
+
+  const handleOptionClick = (company: any) => {
+    setSelectedCompany(company.name);
+    setSearchTerm(company.name);
+    setIsDropdownOpen(false);
     handleCreateCar(company)
   };
 
@@ -124,38 +111,14 @@ const SideBar = () => {
           onChange={(e) => {
             setSearchTerm(e.target.value);
             setIsDropdownOpen(true);
-            resetDropdownTimeout(); // Open dropdown when typing
           }}
           onFocus={() => {
-            handleInputFocus();
+            // handleInputFocus();
             setIsDropdownOpen(true);
-            resetDropdownTimeout(); // Open dropdown when focused
           }}
         />
         {isDropdownOpen && (
-          <div className={styles.selectOptions}>
-            {filteredCompanies.length > 0 ? (
-              filteredCompanies.map((company: any) => (
-                <div
-                  key={company._id}
-                  className={styles.optionItem}
-                  onClick={() => handleOptionClick(company)} // Handle option click
-                >
-                  <div
-                    className={styles.profileCircle}
-                    style={{
-                      backgroundImage: `url(${company.profilePicture})`,
-                    }}
-                  ></div>
-                  <span className={styles.selectOptionText}>
-                    {company.name}
-                  </span>
-                </div>
-              ))
-            ) : (
-              <div className={styles.noResults}>לא נמצאו תוצאות</div>
-            )}
-          </div>
+          <div className={styles.selectOptions}><RenderFilteredCompanies /></div>
         )}
         <input
           className={styles.input}
@@ -170,17 +133,9 @@ const SideBar = () => {
         {filteredConversations ? (
           filteredConversations.map((conversation) => {
             return (
-              <div
-                className={styles.conversationItem}
-                key={conversation._id?.toString()}
-              >
-                <img
-                  className={styles.profileCircle}
-                  src={conversation.company_profilePicture} // Use the company image
-                  alt="Profile"
-                />
+              <div className={styles.conversationItem} key={conversation._id?.toString()}>
+                <img className={styles.profileCircle} src={conversation.company_profilePicture} alt="Profile" />
                 <p className={styles.name}>{conversation.company_name}</p>{" "}
-                {/* Display company name */}
               </div>
             );
           })
