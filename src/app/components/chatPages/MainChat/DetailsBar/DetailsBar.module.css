@@ -1,0 +1,53 @@
+.permissionPanel {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transform: translate(-100%, -100%);
+}
+
+
+.permissionIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.permissionIcon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+.permissionIcon[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.allowed {
+    background-color: #4caf50; 
+}
+
+.denied {
+    background-color: #f44336;
+}
+
+.missing {
+    background-color: #9e9e9e; 
+}

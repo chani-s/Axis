@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./MainChat.module.css";
 import PermissionPanel from "../PermissionPanel/PermissionPanel";
 import { FaTimes, FaBars, FaArrowLeft, FaWindowMinimize } from 'react-icons/fa';
+import DetailsBar from "./DetailsBar/DetailsBar";
 
 interface MessageObj {
     time: Date,
@@ -82,8 +83,7 @@ const MainChat = ({ type }: any) => {
     }
 
     const showDetails = () => {
-        alert("show details");
-        setIsShowDetails(true);
+        setIsShowDetails((prev) => !prev);
     }
 
 
@@ -134,7 +134,7 @@ const MainChat = ({ type }: any) => {
                         onClick={showDetails}>
                         פרטי לקוח
                     </button>}
-                    {/* {isShowDetails && <DetailsBar />} */}
+                    {isShowDetails && <DetailsBar />}
 
                 <input
                     className={styles.inputField}
