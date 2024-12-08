@@ -34,7 +34,7 @@ const Header = () => {
     return (
         <div className={styles.header}>
             <div className={styles.basicDetails}
-                title={userName + "\n" + userEmail}>
+                title={userDetails._id + "\n" + userDetails.email}>
                 <img
                     className={styles.profilePicture}
                     src={profilePicture}
@@ -47,8 +47,8 @@ const Header = () => {
 
             {isPopupOpen && (
                 <ProfilePopup
-                    userName={userName}
-                    userEmail={userEmail}
+                    userName={userDetails._id}
+                    userEmail={userDetails.email}
                     profilePicture={profilePicture}
                     onClose={closePopup}
                     onSave={saveProfile}

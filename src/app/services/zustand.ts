@@ -6,6 +6,7 @@ interface User{
     _id: string;
     email: string;
     google_auth: boolean;
+    user_type: string;
   }
 
 type UserStore = {
@@ -14,6 +15,6 @@ type UserStore = {
 };
 
 export const userDetailsStore = create<UserStore>((set) => ({
-    userDetails: { _id: "", email: "", google_auth: false},
+    userDetails: { _id: "", email: "", google_auth: false, user_type: "",},
     setUserDetails: (details: User) => set({ userDetails : details }),
 }));
