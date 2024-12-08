@@ -15,7 +15,7 @@ export const Entrance = ({ type }: any) => {
     const [name, setName] = useState("");
     const [isWithGoogle, setIsWithGoogle] = useState(false);
     const router = useRouter();
-    const userDetails = userDetailsStore((state)=>state.userDetails);
+    const userDetails = userDetailsStore((state) => state.userDetails);
     const setUserDetails = userDetailsStore((state) => state.setUserDetails);
 
     const mutationSignUp = useMutation({
@@ -23,6 +23,12 @@ export const Entrance = ({ type }: any) => {
         onSuccess: (data: any) => {
             console.log(data);
             if (data.userId != "") {
+                const userDetails = {
+                    _id: data.userDetails._id,
+                    email: data.userDetails.email,
+                    google_auth: data.userDetails.google_auth || false,
+                    user_type: data.userDetails.user_type,
+                };
                 setUserDetails(data.userDetails);
                 console.log(userDetails);
                 if (data.userDetails.user_type == "user")
@@ -46,17 +52,22 @@ export const Entrance = ({ type }: any) => {
         onSuccess: (data) => {
             console.log(data);
             if (data.userId != "") {
-                setUserDetails(data.userDetails);
-                console.log(userDetails);
-                
+                const userDetails = {
+                    _id: data.userDetails._id,
+                    email: data.userDetails.email,
+                    google_auth: data.userDetails.google_auth || false,
+                    user_type: data.userDetails.user_type,
+                };
+                setUserDetails(userDetails);
                 if (data.userDetails.user_type == "user")
                     router.push('/chat/user');
                 if (data.userDetails.user_type == "representative")
                     router.push('/chat/representative');
                 if (data.userDetails.user_type == "management")
                     router.push('/chat/management');
-            }
-            else {
+
+                console.log(userDetails);
+            } else {
                 alert("אימייל או סיסמא שגויים");
             }
         },
