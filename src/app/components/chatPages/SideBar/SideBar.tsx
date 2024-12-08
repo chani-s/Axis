@@ -25,7 +25,7 @@ const SideBar = () => {
   const id = "67504b0fbe15427c891d0cbe";
 
   const { data: conversations, isLoading: isConversationsLoading } = useQuery<Conversation[]>({ queryKey: ["conversations"], queryFn: () => getConversations(), staleTime: 10000 });
-  const { data: companiesData } = useQuery({ queryKey: ["companies"], queryFn: () => ComapnyService.getNameAndPorfile(), enabled: false, staleTime: 10000 });
+  const { data: companiesData } = useQuery({ queryKey: ["companies"], queryFn: () => ComapnyService.getNameAndPorfile(), staleTime: 10000 });
 console.log(333,companiesData)
   // const handleInputFocus = () => { fetchCompanies() };
 
@@ -109,8 +109,6 @@ console.log(333,companiesData)
             setIsDropdownOpen(true);
           }}
         />
-
-
         {isDropdownOpen && (
           <div className={styles.selectOptions}><RenderFilteredCompanies /></div>
         )}
