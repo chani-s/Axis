@@ -14,36 +14,49 @@ export const Entrance = ({ type }: any) => {
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const [isWithGoogle, setIsWithGoogle] = useState(false);
+    const [isLoadding, setIsLoadding] = useState(false);
     const router = useRouter();
     const userDetails = userDetailsStore((state) => state.userDetails);
     const setUserDetails = userDetailsStore((state) => state.setUserDetails);
 
     const mutationSignUp = useMutation({
         mutationFn: signUpUser,
+        onMutate: () => {
+            setIsLoadding(true);
+        },
         onSuccess: (data: any) => {
+            console.log(isLoadding);
+            
             console.log(data);
-            if (data.userId != "") 
+            if (data.userDetails.userId)
                 setDetails(data);
             else {
+                setIsLoadding(false);
                 alert("שגיאה בהרשמה נסה שוב או התחבר");
             }
         },
         onError: (error: any) => {
+            setIsLoadding(false);
             alert(`שגיאה בהרשמה ${<br />} ${error.message}`);
         },
     });
 
     const mutationLogin = useMutation({
         mutationFn: loginUser,
+        onMutate: () => {
+            setIsLoadding(true);
+        },
         onSuccess: (data) => {
             console.log(data);
-            if (data.userId != "") 
+            if (data.userDetails.userId)
                 setDetails(data);
             else {
+                setIsLoadding(false);
                 alert("אימייל או סיסמא שגויים");
             }
         },
         onError: (error: any) => {
+            setIsLoadding(false);
             alert(`שגיאה בהתחברות ${<br />} ${error.message}`);
 
         },
@@ -68,7 +81,7 @@ export const Entrance = ({ type }: any) => {
                 email: data.userDetails.email,
                 google_auth: data.userDetails.google_auth || false,
                 user_type: data.userDetails.user_type,
-            };        
+            };
             setUserDetails(userDetails);
             router.push('/chat/representative');
         }
@@ -125,22 +138,24 @@ export const Entrance = ({ type }: any) => {
     }
 
     return (
-
-        <form onSubmit={handleSubmit} className={style.container}>
-            <h2 className={style.title}>{type == "login" ? "התחברות" : "רישום"}</h2>
-            < div className={style.inputContainer}>
-                <input type="email" placeholder="אימייל" className={style.input}
-                    onChange={(e) => setEmail(e.target.value)}
-                    title="אנא הכנס כתובת אימייל תקינה" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" />
-                <input type="password" placeholder="סיסמא" className={style.input}
-                    onChange={(e) => setPassword(e.target.value)}
-                    title=" הסיסמה חייבת לכלול אותיות קטנות וגדולות ומספרים, באורך לפחות 6 תווים" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$" />
-            </div>
-            < button className={style.googleButton} onClick={signupHandler} ><FcGoogle className={style.googleIcon} /> {type} with Google </button>
-            < button className={style.submitButton} type="submit" > {type == "login" ? "הכנס" : "הרשם"} </button>
-            < Link href={type == "login" ? "/signup" : "/login"} className={style.link} > {type == "login" ? "משתמש חדש?" : "משתמש רשום?"} </Link>
-            < Link href="/company_signup" className={style.link} >חברה חדשה?</Link>
-        </form>
-
+        <>
+            {isLoadding && <div>טוען נתונים, אנא המתן...</div>}
+            {!isLoadding &&
+                <form onSubmit={handleSubmit} className={style.container}>
+                    <h2 className={style.title}>{type == "login" ? "התחברות" : "רישום"}</h2>
+                    < div className={style.inputContainer}>
+                        <input type="email" placeholder="אימייל" className={style.input}
+                            onChange={(e) => setEmail(e.target.value)}
+                            title="אנא הכנס כתובת אימייל תקינה" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" />
+                        <input type="password" placeholder="סיסמא" className={style.input}
+                            onChange={(e) => setPassword(e.target.value)}
+                            title=" הסיסמה חייבת לכלול אותיות קטנות וגדולות ומספרים, באורך לפחות 6 תווים" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$" />
+                    </div>
+                    < button className={style.googleButton} onClick={signupHandler} ><FcGoogle className={style.googleIcon} /> {type} with Google </button>
+                    < button className={style.submitButton} type="submit" > {type == "login" ? "הכנס" : "הרשם"} </button>
+                    < Link href={type == "login" ? "/signup" : "/login"} className={style.link} > {type == "login" ? "משתמש חדש?" : "משתמש רשום?"} </Link>
+                    < Link href="/company_signup" className={style.link} >חברה חדשה?</Link>
+                </form>}
+        </>
     );
 };
