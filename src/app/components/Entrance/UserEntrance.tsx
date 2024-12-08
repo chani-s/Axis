@@ -15,23 +15,15 @@ export const Entrance = ({ type }: any) => {
     const [name, setName] = useState("");
     const [isWithGoogle, setIsWithGoogle] = useState(false);
     const router = useRouter();
-    const userDetails = userDetailsStore((state)=>state.userDetails);
+    const userDetails = userDetailsStore((state) => state.userDetails);
     const setUserDetails = userDetailsStore((state) => state.setUserDetails);
 
     const mutationSignUp = useMutation({
         mutationFn: signUpUser,
         onSuccess: (data: any) => {
             console.log(data);
-            if (data.userId != "") {
-                setUserDetails(data.userDetails);
-                console.log(userDetails);
-                if (data.userDetails.user_type == "user")
-                    router.push('/chat/user');
-                if (data.userDetails.user_type == "representative")
-                    router.push('/chat/representative');
-                if (data.userDetails.user_type == "management")
-                    router.push('/chat/management');
-            }
+            if (data.userId != "") 
+                setDetails(data);
             else {
                 alert("שגיאה בהרשמה נסה שוב או התחבר");
             }
@@ -45,17 +37,8 @@ export const Entrance = ({ type }: any) => {
         mutationFn: loginUser,
         onSuccess: (data) => {
             console.log(data);
-            if (data.userId != "") {
-                setUserDetails(data.userDetails);
-                console.log(userDetails);
-                
-                if (data.userDetails.user_type == "user")
-                    router.push('/chat/user');
-                if (data.userDetails.user_type == "representative")
-                    router.push('/chat/representative');
-                if (data.userDetails.user_type == "management")
-                    router.push('/chat/management');
-            }
+            if (data.userId != "") 
+                setDetails(data);
             else {
                 alert("אימייל או סיסמא שגויים");
             }
@@ -65,6 +48,42 @@ export const Entrance = ({ type }: any) => {
 
         },
     });
+
+    const setDetails = (data: any) => {
+        console.log("Data passed to setDetails:", data);
+
+        if (data.userDetails.user_type == "user") {
+            const userDetails = { // Details should be update according to types and popup new details
+                _id: data.userDetails._id,
+                email: data.userDetails.email,
+                google_auth: data.userDetails.google_auth || false,
+                user_type: data.userDetails.user_type,
+            };
+            setUserDetails(userDetails);
+            router.push('/chat/user');
+        }
+        if (data.userDetails.user_type == "representative") {
+            const userDetails = {
+                _id: data.userDetails._id,
+                email: data.userDetails.email,
+                google_auth: data.userDetails.google_auth || false,
+                user_type: data.userDetails.user_type,
+            };        
+            setUserDetails(userDetails);
+            router.push('/chat/representative');
+        }
+        if (data.userDetails.user_type == "manager") {
+            const userDetails = {
+                _id: data.userDetails._id,
+                email: data.userDetails.email,
+                google_auth: data.userDetails.google_auth || false,
+                user_type: data.userDetails.user_type,
+            };
+            setUserDetails(userDetails);
+            router.push('/chat/manager');
+        }
+        console.log(userDetails);
+    }
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
