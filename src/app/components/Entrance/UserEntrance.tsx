@@ -5,7 +5,7 @@ import style from "./UserEntrance.module.css";
 import { googleSignup } from '../../services/auth';
 import { FcGoogle } from "react-icons/fc";
 import { useMutation } from '@tanstack/react-query';
-import { signUpUser, loginUser } from '../../services/user';
+import { signUpUser, loginUser, registerWithGoogle } from '../../services/user';
 import { useRouter } from 'next/navigation';
 import { userDetailsStore } from '../../services/zustand';
 import Swal from 'sweetalert2';
@@ -38,7 +38,7 @@ export const Entrance = ({ type }: any) => {
         },
         onError: (error: any) => {
             setIsLoadding(false);
-            console.log(error.message);  
+            console.log(error.message);
             showError("נסה שוב או התחבר");
 
         },
@@ -60,22 +60,38 @@ export const Entrance = ({ type }: any) => {
         },
         onError: (error: any) => {
             setIsLoadding(false);
-            console.log(error.message);  
+            console.log(error.message);
             showError("נסה שוב או התחבר");
         },
     });
 
-    const showError = (message:string) => {
+    const mutationRegisterWithGoogle = useMutation({
+        mutationFn: registerWithGoogle,
+        onMutate: () => {
+            setIsLoadding(true);
+        },
+        onSuccess: (data) => {
+            console.log(data);
+            setDetails(data);
+        },
+        onError: (error: any) => {
+            setIsLoadding(false);
+            console.log(error.message);
+            showError("נסה שוב ");
+        },
+    });
+
+    const showError = (message: string) => {
         Swal.fire({
-          icon: 'error',         
-          title: 'משהו השתבש😳',  
-          text: message, 
-          confirmButtonText: 'OK', 
-          customClass: {
-            confirmButton: style.custom_confirm_button  
-          } 
+            icon: 'error',
+            title: 'משהו השתבש😳',
+            text: message,
+            confirmButtonText: 'OK',
+            customClass: {
+                confirmButton: style.custom_confirm_button
+            }
         });
-      }
+    }
 
     const setDetails = (data: any) => {
         console.log("Data passed to setDetails:", data);
@@ -134,7 +150,8 @@ export const Entrance = ({ type }: any) => {
         }
     }
 
-    const signupHandler = async () => {
+    const signupHandler = async (e: any) => {
+        e.preventDefault();
         const res = await googleSignup();
         setIsWithGoogle(true);
         const emailFromGoogle = res.user.email;
@@ -143,12 +160,12 @@ export const Entrance = ({ type }: any) => {
         setName(nameFromGoogle);
         console.log(emailFromGoogle, nameFromGoogle);
         const userData = {
-            email: email,
-            password: password,
+            email: emailFromGoogle,
+            name: nameFromGoogle,
             isWithGoogle: true,
             userType: "user"
         };
-        type == "signup" ? mutationSignUp.mutate(userData) : mutationLogin.mutate(userData);
+        mutationRegisterWithGoogle.mutate(userData);
 
     }
 
@@ -172,7 +189,7 @@ export const Entrance = ({ type }: any) => {
                             onChange={(e) => setPassword(e.target.value)}
                             title=" הסיסמה חייבת לכלול אותיות קטנות וגדולות ומספרים, באורך לפחות 6 תווים" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$" />
                     </div>
-                    < button className={style.googleButton} onClick={signupHandler} ><FcGoogle className={style.googleIcon} /> {type} with Google </button>
+                    < button className={style.googleButton} onClick={signupHandler} ><FcGoogle className={style.googleIcon} /> register with Google </button>
                     < button className={style.submitButton} type="submit" > {type == "login" ? "הכנס" : "הרשם"} </button>
                     < Link href={type == "login" ? "/signup" : "/login"} className={style.link} > {type == "login" ? "משתמש חדש?" : "משתמש רשום?"} </Link>
                     < Link href="/company_signup" className={style.link} >חברה חדשה?</Link>
