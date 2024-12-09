@@ -33,6 +33,4 @@ export const conversationsStore = create<Conversations>((set) => ({
     setConversation: (details: Conversation) => set({ conversation : details }),
 }));
 
-const userDetails = userDetailsStore((state) => state.userDetails);
-const setUserDetails = userDetailsStore((state) => state.setUserDetails);
 
