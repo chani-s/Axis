@@ -4,7 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { Fredoka } from '@next/font/google';
+import { Fredoka } from 'next/font/google';
 
 const roboto = Fredoka({
   weight: ['400', '400'],
