@@ -10,7 +10,7 @@ interface MessageObj {
     sender: Boolean,  // true if sender is user, false otherwise      
 };
 
-const MainChat = ({ type} : any) => {
+const MainChat = ({ type }: any) => {
     const [isChatOpen, setIsChatOpen] = useState(true);
     const [isMinimized, setIsMinimized] = useState(false);
     const [isPermissionPanelOpen, setIsPermissionPanelOpen] = useState(false);
@@ -19,9 +19,10 @@ const MainChat = ({ type} : any) => {
     const [message, setMessage] = useState("");
     const chatEndRef = useRef<HTMLDivElement>(null);
     const [isUser, setIsUser] = useState(true);
+    const [isShowDetails, setIsShowDetails] = useState(false);
 
     useEffect(() => {
-        if(type === "representative"){
+        if (type === "representative") {
             setIsUser(false);
         }
         console.log(type);
@@ -82,6 +83,7 @@ const MainChat = ({ type} : any) => {
 
     const showDetails = () => {
         alert("show details");
+        setIsShowDetails(true);
     }
 
 
@@ -132,6 +134,7 @@ const MainChat = ({ type} : any) => {
                         onClick={showDetails}>
                         פרטי לקוח
                     </button>}
+                    {/* {isShowDetails && <DetailsBar />} */}
 
                 <input
                     className={styles.inputField}

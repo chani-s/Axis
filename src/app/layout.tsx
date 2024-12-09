@@ -25,6 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="favicon.ico" />
+        <title>Axis</title> 
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <QueryClientProvider client={queryClient}>
