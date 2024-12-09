@@ -3,6 +3,7 @@ import Header from "../Header/Header";
 import MainChat from "../MainChat/MainChat";
 import SideBar from "../SideBar/SideBar";
 import styles from "./MainPage.module.css"
+import Footer from "../Footer/Footer";
 
 const MainPage = ({type}: any) => { //string should be repleced in user_type struct
 console.log(type);
@@ -13,6 +14,7 @@ console.log(type);
                 <SideBar />
                 <MainChat type={type} />
             </div>
+            <Footer />
         </div>
     )
 }
