@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
           <img src="/imgs/whitelogo.png" alt="logo" />
         </div>
         <div className={styles.developers}>
-          <a href="/privacy-policy" className={styles.policyLink}>אפיון ופיתוח</a>:
+          <a className={styles.policyLink}>אפיון ופיתוח</a>:
           <a href="https://github.com/AyalaSprei" className={styles.policyLink}>אילה</a>
           <a href="https://github.com/rut-te" className={styles.policyLink}>רותי</a>
           <a href="https://github.com/chani-s" className={styles.policyLink}>חני</a>
