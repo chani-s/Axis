@@ -7,7 +7,8 @@ import { FcGoogle } from "react-icons/fc";
 import { useMutation } from '@tanstack/react-query';
 import { signUpUser, loginUser } from '../../services/user';
 import { useRouter } from 'next/navigation';
-import { userDetailsStore } from '../../services/zustand'
+import { userDetailsStore } from '../../services/zustand';
+import Swal from 'sweetalert2';
 
 export const Entrance = ({ type }: any) => {
     const [email, setEmail] = useState("");
@@ -26,18 +27,20 @@ export const Entrance = ({ type }: any) => {
         },
         onSuccess: (data: any) => {
             console.log(isLoadding);
-            
+
             console.log(data);
-            if (data.userDetails.userId)
+            if (data.userDetails._id)
                 setDetails(data);
             else {
                 setIsLoadding(false);
-                alert("שגיאה בהרשמה נסה שוב או התחבר");
+                showError("נסה שוב או התחבר");
             }
         },
         onError: (error: any) => {
             setIsLoadding(false);
-            alert(`שגיאה בהרשמה ${<br />} ${error.message}`);
+            console.log(error.message);  
+            showError("נסה שוב או התחבר");
+
         },
     });
 
@@ -48,19 +51,31 @@ export const Entrance = ({ type }: any) => {
         },
         onSuccess: (data) => {
             console.log(data);
-            if (data.userDetails.userId)
+            if (data.userDetails._id)
                 setDetails(data);
             else {
                 setIsLoadding(false);
-                alert("אימייל או סיסמא שגויים");
+                showError("אימייל או סיסמא שגויים");
             }
         },
         onError: (error: any) => {
             setIsLoadding(false);
-            alert(`שגיאה בהתחברות ${<br />} ${error.message}`);
-
+            console.log(error.message);  
+            showError("נסה שוב או התחבר");
         },
     });
+
+    const showError = (message:string) => {
+        Swal.fire({
+          icon: 'error',         
+          title: 'משהו השתבש😳',  
+          text: message, 
+          confirmButtonText: 'OK', 
+          customClass: {
+            confirmButton: style.custom_confirm_button  
+          } 
+        });
+      }
 
     const setDetails = (data: any) => {
         console.log("Data passed to setDetails:", data);
@@ -130,7 +145,7 @@ export const Entrance = ({ type }: any) => {
         const userData = {
             email: email,
             password: password,
-            isWithGoogle: isWithGoogle,
+            isWithGoogle: true,
             userType: "user"
         };
         type == "signup" ? mutationSignUp.mutate(userData) : mutationLogin.mutate(userData);
@@ -139,7 +154,13 @@ export const Entrance = ({ type }: any) => {
 
     return (
         <>
-            {isLoadding && <div>טוען נתונים, אנא המתן...</div>}
+            {isLoadding &&
+                <div className={style.loading_dots}>
+                    <div className={style.dot}></div>
+                    <div className={style.dot}></div>
+                    <div className={style.dot}></div>
+                </div>
+            }
             {!isLoadding &&
                 <form onSubmit={handleSubmit} className={style.container}>
                     <h2 className={style.title}>{type == "login" ? "התחברות" : "רישום"}</h2>
