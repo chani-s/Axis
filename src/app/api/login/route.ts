@@ -1,7 +1,7 @@
 
 import { connectDatabase, getSpecificFields, getById } from "@/app/services/mongo";
 import { NextResponse, NextRequest } from "next/server";
-import {verifyPassword} from "../../../services/hash";
+import {verifyPassword} from "../../services/hash";
 
 
 export async function POST(req: NextRequest) {
