@@ -1,8 +1,8 @@
 /* Footer.module.css */
 .footer {
-    background-color: #333;
+    background-color: #46474B;
     color: white;
-    padding: 20px 0;
+    padding: 10px 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -13,21 +13,26 @@
     text-align: center;
     max-width: 1200px;
     width: 100%;
-    padding: 0 20px;
   }
   
   .logo img {
-    width: 150px;
+    width: 130px;
+  }
+
+  .developers{
     margin-bottom: 15px;
+    color: #ddba0e;
   }
   
   .policy {
     margin-bottom: 15px;
+    color: #fff;
+
   }
   
   .policyLink {
-    color: #fff;
     text-decoration: none;
+    font-size: 14px;
     margin: 0 10px;
   }
   
@@ -38,7 +43,7 @@
   .socialIcons a {
     margin: 0 15px;
     color: white;
-    font-size: 24px;
+    font-size: 18px;
   }
   
   .socialIcons a:hover {

@@ -7,7 +7,13 @@ const Footer: React.FC = () => {
     <footer className={styles.footer}>
       <div className={styles.footerContent}>
         <div className={styles.logo}>
-          <img src="/imgs/nonebg1.png" alt="Company Logo" />
+          <img src="/imgs/whitelogo.png" alt="Company Logo" />
+        </div>
+        <div className={styles.developers}>
+          <a href="/privacy-policy" className={styles.policyLink}>מפתחות האתר</a>:
+          <a href="https://github.com/AyalaSprei" className={styles.policyLink}>אילה</a>
+          <a href="https://github.com/rut-te" className={styles.policyLink}>רותי</a>
+          <a href="https://github.com/chani-s" className={styles.policyLink}>חני</a>
         </div>
         <div className={styles.policy}>
           <a href="/privacy-policy" className={styles.policyLink}>מדיניות פרטיות</a> | 
@@ -26,6 +32,7 @@ const Footer: React.FC = () => {
           <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">
             <FaLinkedin className={styles.icon} />
           </a>
+          
         </div>
       </div>
     </footer>
