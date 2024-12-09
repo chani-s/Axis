@@ -1,12 +1,11 @@
 "use client"
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { Fredoka } from 'next/font/google';
 
-const roboto = Fredoka({
+const fredoka = Fredoka({
   weight: ['400', '400'],
   subsets: ['latin'],
 });
@@ -27,7 +26,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700" rel="stylesheet"></link>
         <title>Axis</title>
       </head>
-      <body className={roboto.className}>
+      <body className={fredoka.className}>
         <QueryClientProvider client={queryClient}>
           {children}
           {/* <div className={styles.container}> */}
