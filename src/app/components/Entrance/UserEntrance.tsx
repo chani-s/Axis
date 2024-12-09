@@ -150,7 +150,8 @@ export const Entrance = ({ type }: any) => {
         }
     }
 
-    const signupHandler = async () => {
+    const signupHandler = async (e: any) => {
+        e.preventDefault();
         const res = await googleSignup();
         setIsWithGoogle(true);
         const emailFromGoogle = res.user.email;
