@@ -34,9 +34,9 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" />
-        {/* <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700" rel="stylesheet"></link> */}
+        <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700" rel="stylesheet"></link>
         <title>Axis</title>
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${fredoka.className}`}>
