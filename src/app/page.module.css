@@ -5,24 +5,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: Arial, sans-serif;
   position: relative;
   overflow: hidden;
   position: absolute;
   z-index: 2;
 
-}
-
-
-.container {
-  display: flex;
-  gap: 20px;
-  justify-content: center; 
-  align-items: center;
-  padding: 20px;
-  background-color: #ddba0e; 
-  border-radius: 10px; 
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
 .navLink {

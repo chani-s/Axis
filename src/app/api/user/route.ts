@@ -6,8 +6,6 @@ import {verifyPassword, hashPassword} from "../../services/hash";
 export async function POST(req: NextRequest) {
   console.log("router");
   const userData = await req.json();
-  console.log(userData.email);
-
 
   const responseDetails = {
     message: "",
