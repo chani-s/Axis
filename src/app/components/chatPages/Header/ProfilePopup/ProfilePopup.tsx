@@ -18,6 +18,8 @@ const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profil
     const [newEmail, setNewEmail] = useState(userEmail);
     const [newProfilePic, setNewProfilePic] = useState(profilePicture);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isDetailsPopupOpen, setIsDetailsPopupOpen] = useState(false);
+
 
     const handleButtonClick = () => {
         fileInputRef.current?.click();
@@ -47,6 +49,10 @@ const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profil
         e.preventDefault();
         handleSave();
     };
+
+    const onDetailsClick = () => {
+        setIsDetailsPopupOpen((prev) => !prev);
+    }
 
     return (
         <div className={styles.popup}>
@@ -87,6 +93,12 @@ const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profil
                         onChange={(e) => setNewEmail(e.target.value)}
                     />
                 </div>
+                <button onClick={onDetailsClick}>הנתונים שלי</button>
+                {isDetailsPopupOpen &&
+                    <div>
+                        <p>כאן תופיע אפשרות להכנסת נתונים שאינם קיימים?</p>
+                    </div>}
+
                 <button type="submit" className={styles.saveButton}>שמור</button>
             </form>
         </div>
