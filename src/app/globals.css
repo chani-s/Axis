@@ -1,3 +1,12 @@
+.fredoka-body {
+  font-family: "Fredoka", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -9,6 +18,8 @@
     --foreground: #171717;
   }
 }
+
+
 
 html,
 body {
