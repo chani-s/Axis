@@ -6,7 +6,6 @@ import styles from "./MainPage.module.css"
 import Footer from "../Footer/Footer";
 
 const MainPage = ({type}: any) => { //string should be repleced in user_type struct
-console.log(type);
     return (
         <div className={styles.page}>
             <Header />
