@@ -12,7 +12,7 @@ export const signUpUser = async (userData: {
   console.log("services");
   console.log(userData);
 
-  const response = await http.post("/user/signup", userData);
+  const response = await http.post("/signup", userData);
   return response.data;
 };
 
@@ -21,7 +21,7 @@ export const loginUser = async (userData: {
   password: string;
   isWithGoogle: boolean;
 }): Promise<any> => {
-  const response: AxiosResponse<any> = await http.post('/user/login',userData);
+  const response: AxiosResponse<any> = await http.post('/login',userData);
   return response.data;
 };
 
@@ -31,9 +31,9 @@ export const registerWithGoogle = async (userData: {
   isWithGoogle: boolean;
   userType: string;
 }): Promise<AxiosResponse<any>> => {
-  console.log("services");
+  console.log("google");
   console.log(userData);
 
-  const response = await http.post("/user/registerGoogle", userData);
+  const response: AxiosResponse<any> = await http.post('/google_register',userData);
   return response.data;
 };

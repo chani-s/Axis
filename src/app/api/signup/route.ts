@@ -1,7 +1,7 @@
 
 import { connectDatabase, isExist, insertDocument } from "@/app/services/mongo";
 import { NextResponse, NextRequest } from "next/server";
-import { hashPassword} from "../../../services/hash";
+import { hashPassword} from "../../services/hash";
 
 export async function POST(req: NextRequest) {
   const userData = await req.json();

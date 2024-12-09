@@ -6,16 +6,12 @@ import { userDetailsStore } from '../../../services/zustand';
 
 
 const Header = () => {
-    //userName: string, profilePicture: string, userEmail: string (should be in props)
-    const userDetails = userDetailsStore((state) => state.userDetails); // שליפת הנתונים מ-zustand
+    const userDetails = userDetailsStore((state) => state.userDetails); 
 
-    // const setUserDetails = userDetailsStore((state) => state.userDetails);
     const [userName, setUserName] = useState("חנה");
     const [userEmail, setUserEmail] = useState('abcdefg@gmail.com');
     const [profilePicture, setProfilePicture] = useState('https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png');
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-    console.log("userDetails:", userDetails);
 
     const showPersonalProfile = () => {
         setIsPopupOpen(true);
