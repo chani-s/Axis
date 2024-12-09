@@ -4,24 +4,36 @@ import { http } from "./http";
 
 
 export const signUpUser = async (userData: {
-    email: string;
-    password: string;
-    isWithGoogle: boolean;
-    userType: string;
+  email: string;
+  password: string;
+  isWithGoogle: boolean;
+  userType: string;
 }): Promise<AxiosResponse<any>> => {
-    console.log("services");
-    console.log(userData);
-    
-    const response = await http.post("/user", userData);
-    return response.data; 
+  console.log("services");
+  console.log(userData);
+
+  const response = await http.post("/signup", userData);
+  return response.data;
 };
 
 export const loginUser = async (userData: {
-    email: string;
-    password: string;
-    isWithGoogle: boolean;
-  }): Promise<any> => {
-    const queryParams = new URLSearchParams(userData as any).toString();
-    const response: AxiosResponse<any> = await http.get(`/user?${queryParams}`);
-    return response.data;
-  };
+  email: string;
+  password: string;
+  isWithGoogle: boolean;
+}): Promise<any> => {
+  const response: AxiosResponse<any> = await http.post('/login',userData);
+  return response.data;
+};
+
+export const registerWithGoogle = async (userData: {
+  email: string;
+  name: string;
+  isWithGoogle: boolean;
+  userType: string;
+}): Promise<AxiosResponse<any>> => {
+  console.log("google");
+  console.log(userData);
+
+  const response: AxiosResponse<any> = await http.post('/google_register',userData);
+  return response.data;
+};

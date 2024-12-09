@@ -12,6 +12,10 @@ interface User{
     _id: string;
   }
 
+  interface Conversation{
+    _id: string;
+  }
+
 type UserStore = {
     userDetails: User;
     setUserDetails: (details: User) => void; 

@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Fredoka } from 'next/font/google';
 
 const fredoka = Fredoka({
-  weight: ['400', '400'],
+  weight: ['300', '400'],
   subsets: ['latin'],
 });
 

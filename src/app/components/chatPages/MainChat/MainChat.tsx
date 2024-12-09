@@ -26,7 +26,6 @@ const MainChat = ({ type }: any) => {
         if (type === "representative") {
             setIsUser(false);
         }
-        console.log(type);
 
     }, [type]);
 

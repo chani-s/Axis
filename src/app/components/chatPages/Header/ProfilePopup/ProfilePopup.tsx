@@ -52,7 +52,7 @@ const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profil
         <div className={styles.popup}>
             <form className={styles.popupContent} onSubmit={handleSubmit}>
                 <button className={styles.closeButton} type="button" onClick={onClose}><FaTimes /></button>
-                <h2>ערוך את הפרופיל שלך</h2>
+                <h2>שלום, {userName}</h2>
                 <div>
                     <img
                         className={styles.profilePicture}
