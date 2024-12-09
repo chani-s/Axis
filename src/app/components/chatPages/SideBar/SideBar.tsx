@@ -1,10 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import styles from "./SideBar.module.css";
 import ComapnyService from "@/app/services/company";
 import { Conversation } from "@/app/models/Conversation";
 import { getConversations, createConversation } from "@/app/services/conversation";
+import CompanyService from "@/app/services/company";
+import { conversationsStore }  from "../../../services/zustand"
+
 
 const SideBar = () => {
   const id = "67504b0fbe15427c891d0cbe";
@@ -12,7 +15,7 @@ const SideBar = () => {
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState(""); // State for search term in company search
   const [chatSearchTerm, setChatSearchTerm] = useState(""); // State for search term in chat search
-  const [selectedCompany, setSelectedCompany] = useState<string | null>(null); // State for selected company
+  const [selectedConversationId, setselectedConversationId] = useState<string | null>(null); // State for selected company
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to control dropdown visibility
   const [newConversation, setNewConversation] = useState<Conversation>({
     company_id: "",
@@ -23,10 +26,24 @@ const SideBar = () => {
     last_use: new Date(),
     start_time: null,
   });
-  
+
+
+
   const { data: conversations, isLoading: isConversationsLoading } = useQuery<Conversation[]>({ queryKey: ["conversations"], queryFn: () => getConversations(), staleTime: 10000 });
-  const { data: companiesData } = useQuery({ queryKey: ["companies"], queryFn: () => ComapnyService.getNameAndPorfile(), staleTime: 10000 });
-let filteredConversations=conversations;
+  const { data: companiesData } = useQuery({
+    queryKey: ["companies", conversations],
+    queryFn: () => {
+      let companyIds=[]
+      // Ensure conversations are loaded before extracting company IDs
+      if (!conversations) return Promise.resolve([]);
+       companyIds = conversations.map((conversation) =>
+        conversation.company_id.toString() // Convert ObjectId to string
+      );
+      return CompanyService.getNameAndProfile(companyIds);
+    },
+    staleTime: 100000,
+    enabled: !!conversations, // Only run this query if conversations are loaded
+  });let filteredConversations=conversations;
 
   const createConversationMutation = useMutation({
     mutationFn: createConversation,
@@ -42,14 +59,34 @@ let filteredConversations=conversations;
     onSuccess: (newConversation) => {
       queryClient.setQueryData(["conversations"], (old: any) => {
         const updatedConversations = old.map((conversation: any) =>
-          conversation._id === newConversation._id ? conversation : conversation
+           conversation.company_name === newConversation.company_name  ? newConversation : conversation
         );
         filteredConversations=conversations;
+        setselectedConversationId(newConversation._id)
         return updatedConversations;
       });
     }
   });
-
+  
+  const inputsRef = useRef<HTMLDivElement>(null);
+  const handleClickOutside = (e: MouseEvent) => {
+    if (
+      inputsRef.current &&
+      !inputsRef.current.contains(e.target as Node)
+    ) {
+      setIsDropdownOpen(false);
+    }
+  };
+  
+  useEffect(() => {
+    console.log("Sidebar Ref:", inputsRef.current);
+    if (isDropdownOpen) {
+      document.addEventListener('click', handleClickOutside);
+    } else {
+      document.removeEventListener('click', handleClickOutside);
+    }
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isDropdownOpen]);
   const handleCreateConversation = (company: any) => {
     const newConversation = {
       company_id: company._id,
@@ -60,11 +97,8 @@ let filteredConversations=conversations;
       company_name: company.name,
       last_use: new Date(),
     };
-    
-    // Set the state
+  
     setNewConversation(newConversation);
-    
-    // Immediately use it for the mutation
     createConversationMutation.mutate(newConversation);
   };
 
@@ -76,6 +110,10 @@ let filteredConversations=conversations;
     
   
   const RenderFilteredCompanies = () => {
+    if (!filteredCompanies.length) {
+      return <div className={styles.noResults}>אין תוצאות</div>;
+    }
+  
     return filteredCompanies.map((company: any) => (
       <div
         key={company._id}
@@ -89,19 +127,24 @@ let filteredConversations=conversations;
         <span className={styles.selectOptionText}>{company.name}</span>
       </div>
     ));
-  }
+  };
 
 
   const handleOptionClick = (company: any) => {
-    setSelectedCompany(company.name);
     setSearchTerm(company.name);
     setIsDropdownOpen(false);
     handleCreateConversation(company)
   };
+  const handleConversationClick=(con:Conversation)=>{
+   if(con._id){
+    setselectedConversationId(con._id.toString());
+    console.log(selectedConversationId);
+   }
+  }
 
   return (
-    <div className={styles.sideBar}>
-      <div className={styles.inputs}>
+    <div  className={styles.sideBar}>
+      <div  ref={inputsRef} className={styles.inputs}>
         <input
           className={styles.input}
           type="text"
@@ -116,9 +159,11 @@ let filteredConversations=conversations;
             setIsDropdownOpen(true);
           }}
         />
-        {isDropdownOpen && (
-          <div className={styles.selectOptions}><RenderFilteredCompanies /></div>
-        )}
+       {isDropdownOpen && (
+  <div className={styles.selectOptions}>
+    <RenderFilteredCompanies />
+  </div>
+)}
         <input
           className={styles.input}
           type="text"
@@ -127,20 +172,35 @@ let filteredConversations=conversations;
           onChange={(e) => {
             setChatSearchTerm(e.target.value)
           }}
+          onFocus={()=>{
+            setIsDropdownOpen(false);
+
+          }}
         />
       </div>
       <p className={styles.yourChatsP}>הצאטים שלך:</p>
       <div className={styles.bottom}>
-        {filteredConversations? (
-          filteredConversations.map((conversation:any) => {
-            return (
-              <div className={styles.conversationItem} key={conversation._id?.toString()}>
-                <img className={styles.profileCircle} src={conversation.company_profilePicture} alt="Profile" />
-                <p className={styles.name}>{conversation.company_name}</p>{" "}
-              </div>
-            );
-          })
-        ) : (
+        {filteredConversations ? (
+    filteredConversations.map((conversation: Conversation) => {
+      const isSelected = selectedConversationId === conversation._id?.toString();
+
+      return (
+        <div
+          onClick={() => handleConversationClick(conversation)}
+          className={`${styles.conversationItem} ${isSelected ? styles.selected : ''}`}
+          style={{ backgroundColor: isSelected ? 'yellow' : '' }}
+          key={conversation._id?.toString()}
+        >
+          <img
+            className={styles.profileCircle}
+            src={conversation.company_profilePicture}
+            alt="Profile"
+          />
+          <p className={styles.name}>{conversation.company_name}</p>
+        </div>
+      );
+    })
+  )  : (
           <div className={styles.noResults}>לא נמצאו תוצאות</div>
         )}
       </div>

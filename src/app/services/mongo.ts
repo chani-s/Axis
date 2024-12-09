@@ -135,3 +135,27 @@ export async function getSpecificFields(
   console.log(documents);
   return documents;
 }
+export async function getDocumentsByIds(
+  client: MongoClient,
+  collection: string,
+  ids?: ObjectId[], // Array of ObjectId values
+  include: boolean = true, // If true, fetch IDs in the list; if false, exclude them
+  fields?: object // Optional projection for specific fields
+) {
+  const db = client.db("Axis");
+  let documents
+  if (ids){
+    const query = { _id: { [include ? "$in" : "$nin"]: ids } }; // Use $in or $nin based on 'includ
+
+    const options = fields ? { projection: fields } : {}; // Handle optional projection
+     documents = await db.collection(collection).find(query, options).toArray();
+  }
+  else{
+    const options = fields ? { projection: fields } : {}; // Handle optional projection
+    documents = await db.collection(collection).find(options).toArray();
+
+  }
+ 
+
+  return documents;
+}
