@@ -5,7 +5,7 @@ export default function About() {
         <div className={styles.aboutPage}>
             <img src="/imgs/nonebg1.png" alt="logo" className={styles.logo} />
             <h1 className={styles.intro}>
-                ברוכים הבאים ל<span className={styles.brandName}>Axis</span>
+                ברוכים הבאים ל- Axis
             </h1>
             <h2> הציר שמחבר בין אנשים ועסקים בדרך פשוטה, מהירה ויעילה.</h2>
 
