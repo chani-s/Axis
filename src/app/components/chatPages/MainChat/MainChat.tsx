@@ -1,14 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 
 import styles from "./MainChat.module.css";
+import Pusher from 'pusher-js';
 import PermissionPanel from "../PermissionPanel/PermissionPanel";
 import { FaTimes, FaBars, FaArrowLeft, FaWindowMinimize } from 'react-icons/fa';
 import DetailsBar from "./DetailsBar/DetailsBar";
+import { userDetailsStore } from '../../../services/zustand';
+
 
 interface MessageObj {
     time: Date,
     text: string,
-    sender: Boolean,  // true if sender is user, false otherwise      
+    sender: string,     
 };
 
 const MainChat = ({ type }: any) => {
@@ -21,6 +24,53 @@ const MainChat = ({ type }: any) => {
     const chatEndRef = useRef<HTMLDivElement>(null);
     const [isUser, setIsUser] = useState(true);
     const [isShowDetails, setIsShowDetails] = useState(false);
+    const userDetails = userDetailsStore((state) => state.userDetails); 
+
+    useEffect(() => {
+        const pusher = new Pusher('ff054817599b88393e16', {
+            cluster: 'ap2'
+        });
+
+        // התחברות לערוץ ולהגדרת אירועים
+        const channel = pusher.subscribe('chat-channel');
+        channel.bind('new-message', (data: MessageObj) => {
+            // עדכון ההודעות בצד הלקוח עם הודעות שנשלחות ע"י נציגים
+            // setMessages((prevMessages) => [...(prevMessages || []), data]);
+            setMessages((prevMessages) => [
+                ...(prevMessages || []),
+                { ...data, time: new Date(data.time) }
+            ]);
+            
+        });
+
+        return () => {
+            pusher.unsubscribe('chat-channel');
+        };
+    }, []);
+
+    const sendMessage = async () => {
+        if (!message) return;
+     
+        const newMessage: MessageObj = {
+            time: new Date(),
+            text: message,
+            sender: userDetails._id, // הודעה שנשלחת על ידי המשתמש
+        };
+     
+        console.log('Sending message:', newMessage);  // בודק מה נשלח
+     
+        // setMessages((prevMessages) => [...(prevMessages || []), newMessage]);
+     
+        await fetch('/api/pusher/send-message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: newMessage }),
+        });
+     
+        setMessage('');
+    }     
 
     useEffect(() => {
         if (type === "representative") {
@@ -30,9 +80,9 @@ const MainChat = ({ type }: any) => {
     }, [type]);
 
     useEffect(() => {
-        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        const chatMessagesElement = chatEndRef.current?.parentElement; 
+        chatMessagesElement?.scrollTo({ top: chatMessagesElement.scrollHeight, behavior: "smooth" });
     }, [messages]);
-
 
     const closeChat = () => {
         setIsChatOpen(false);
@@ -50,26 +100,6 @@ const MainChat = ({ type }: any) => {
         if (e.key === "Enter") {
             sendMessage();
         }
-    };
-
-    const sendMessage = () => {
-        if (!message) return;
-        setIsSent(true);
-        console.log('sendMessage', message);
-        const newMessage: MessageObj = {
-            time: new Date(),
-            text: message,
-            sender: true,
-        };
-        const newMessage1: MessageObj = {
-            time: new Date(),
-            text: message,
-            sender: false,
-        };
-        setMessages((prevMessages) => prevMessages ? [...prevMessages, newMessage] : [newMessage]);
-        setMessages((prevMessages) => prevMessages ? [...prevMessages, newMessage1] : [newMessage1]);
-
-        setMessage("");
     };
 
     const handleChange = (e: any) => {
@@ -113,16 +143,14 @@ const MainChat = ({ type }: any) => {
 
             <div className={styles.chatMessages}>
                 {messages?.sort((a, b) => a.time.getTime() - b.time.getTime()).map((msg, index) => (
-                    <div
-                        key={index}
-                        className={`${styles.message} ${msg.sender ? styles.userMessage : styles.otherMessage}`}>
+                    <div key={index} className={`${styles.message} ${msg.sender===userDetails._id ? styles.userMessage : styles.otherMessage}`}>
                         <p className={styles.messageText}>{msg.text}</p>
                         <span className={styles.messageTime}>
                             {msg.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
-                        <div ref={chatEndRef}></div>
                     </div>
                 ))}
+                <div ref={chatEndRef}></div>
             </div>
 
             <div className={styles.sendingBar}>
@@ -133,7 +161,7 @@ const MainChat = ({ type }: any) => {
                         onClick={showDetails}>
                         פרטי לקוח
                     </button>}
-                    {isShowDetails && <DetailsBar />}
+                {isShowDetails && <DetailsBar />}
 
                 <input
                     className={styles.inputField}

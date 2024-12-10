@@ -8,7 +8,7 @@ import { userDetailsStore } from '../../../services/zustand';
 const Header = () => {
     const userDetails = userDetailsStore((state) => state.userDetails); 
 
-    const [userName, setUserName] = useState("חנה");
+    const [userName, setUserName] = useState("אנחנו!");
     const [userEmail, setUserEmail] = useState('abcdefg@gmail.com');
     const [profilePicture, setProfilePicture] = useState('https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png');
     const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -38,6 +38,7 @@ const Header = () => {
                     onClick={showPersonalProfile}>
                 </img>
                 <p>{userName}</p>
+
             </div>
             <img className={styles.logo} src="/imgs/nonebg1.png" alt="logo"></img>
 

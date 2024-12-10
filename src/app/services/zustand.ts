@@ -21,15 +21,15 @@ type UserStore = {
     setUserDetails: (details: User) => void; 
 };
 
-export const userDetailsStore = create<UserStore>((set) => ({
-    userDetails: { _id: "", email: "", google_auth: false, user_type: "",},
-    setUserDetails: (details: User) => set({ userDetails : details }),
-}));
-
 type Conversations = {
     conversation: Conversation;
     setConversation: (details: Conversation) => void; 
 };
+
+export const userDetailsStore = create<UserStore>((set) => ({
+    userDetails: { _id: "", email: "", google_auth: false, user_type: "",},
+    setUserDetails: (details: User) => set({ userDetails : details }),
+}));
 
 export const conversationsStore = create<Conversations>((set) => ({
     conversation: { _id: ""},
