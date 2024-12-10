@@ -143,19 +143,17 @@ export async function getDocumentsByIds(
   fields?: object // Optional projection for specific fields
 ) {
   const db = client.db("Axis");
-  let documents
   if (ids){
     const query = { _id: { [include ? "$in" : "$nin"]: ids } }; // Use $in or $nin based on 'includ
 
     const options = fields ? { projection: fields } : {}; // Handle optional projection
-     documents = await db.collection(collection).find(query, options).toArray();
+    return await db.collection(collection).find(query, options).toArray();
   }
   else{
     const options = fields ? { projection: fields } : {}; // Handle optional projection
-    documents = await db.collection(collection).find(options).toArray();
+    return await db.collection(collection).find(options).toArray();
 
   }
  
 
-  return documents;
 }

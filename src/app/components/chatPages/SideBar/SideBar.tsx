@@ -71,7 +71,6 @@ const SideBar = () => {
                     _id: newConversation._id
                 }
                 setConversation(conversationId);
-                console.log("zustand: " + conversation);
 
                 return updatedConversations;
             });
@@ -89,7 +88,6 @@ const SideBar = () => {
     };
 
     useEffect(() => {
-        console.log("Sidebar Ref:", inputsRef.current);
         if (isDropdownOpen) {
             document.addEventListener('click', handleClickOutside);
         } else {
@@ -148,7 +146,6 @@ const SideBar = () => {
     const handleConversationClick = (con: Conversation) => {
         if (con._id) {
             setselectedConversationId(con._id.toString());
-            console.log(selectedConversationId);
         }
     }
 
@@ -184,7 +181,6 @@ const SideBar = () => {
                     }}
                     onFocus={() => {
                         setIsDropdownOpen(false);
-
                     }}
                 />
             </div>
