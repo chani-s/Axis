@@ -71,6 +71,7 @@ const SideBar = () => {
                     _id: newConversation._id
                 }
                 setConversation(conversationId);
+                console.log("zustand: " + conversation);
 
                 return updatedConversations;
             });
