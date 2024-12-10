@@ -34,8 +34,6 @@ const MainChat = ({ type }: any) => {
         // התחברות לערוץ ולהגדרת אירועים
         const channel = pusher.subscribe('chat-channel');
         channel.bind('new-message', (data: MessageObj) => {
-            // עדכון ההודעות בצד הלקוח עם הודעות שנשלחות ע"י נציגים
-            // setMessages((prevMessages) => [...(prevMessages || []), data]);
             setMessages((prevMessages) => [
                 ...(prevMessages || []),
                 { ...data, time: new Date(data.time) }
@@ -54,12 +52,10 @@ const MainChat = ({ type }: any) => {
         const newMessage: MessageObj = {
             time: new Date(),
             text: message,
-            sender: userDetails._id, // הודעה שנשלחת על ידי המשתמש
+            sender: userDetails._id, 
         };
      
-        console.log('Sending message:', newMessage);  // בודק מה נשלח
-     
-        // setMessages((prevMessages) => [...(prevMessages || []), newMessage]);
+        console.log('Sending message:', newMessage);  
      
         await fetch('/api/pusher/send-message', {
             method: 'POST',
