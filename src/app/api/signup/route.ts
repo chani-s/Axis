@@ -4,9 +4,6 @@ import { NextResponse, NextRequest } from "next/server";
 import { hashPassword} from "../../services/hash";
 import jwt from "jsonwebtoken";
 
-//const token = req.cookies.get("authToken");
-// const decoded = jwt.verify(token, SECRET_KEY);
-
 export async function POST(req: NextRequest) {
 
   const SECRET_KEY = "m10r07w24";

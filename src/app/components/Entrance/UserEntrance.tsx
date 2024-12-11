@@ -193,7 +193,9 @@ export const Entrance = ({ type }: any) => {
                             title="אנא הכנס כתובת אימייל תקינה" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" />
                         <input type="password" placeholder="סיסמא" className={style.input}
                             onChange={(e) => setPassword(e.target.value)}
-                            title=" הסיסמה חייבת לכלול אותיות קטנות וגדולות ומספרים, באורך לפחות 6 תווים" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$" />
+                            title=" הסיסמה חייבת לכלול אותיות קטנות וגדולות ומספרים, באורך לפחות 6 תווים"
+                            required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$" />
+                        {type == "login" && <button className={style.resetPassword}>שכחתי סיסמא</button>}
                     </div>
                     < button onClick={entranceExempleUser} className={style.exempleUser} >  <FaSignInAlt className={style.entranceIcon} />  התחבר כמשתמש לדוגמא</button>
                     < button className={style.googleButton} onClick={signupHandler} ><FcGoogle className={style.googleIcon} /> register with Google </button>
