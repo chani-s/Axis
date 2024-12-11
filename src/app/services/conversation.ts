@@ -24,6 +24,8 @@ export async function createConversation(conversationData: any): Promise<any> {
       `/conversation?${queryParams}`,
       otherData
     );
+    console.log(response);
+
     return response.data;
   } catch (error) {
     console.error("Error creating conversation:", error);
