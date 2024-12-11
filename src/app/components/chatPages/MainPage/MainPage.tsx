@@ -10,7 +10,7 @@ const MainPage = ({type}: any) => { //string should be repleced in user_type str
         <div className={styles.page}>
             <Header />
             <div className={styles.mainArea}>
-                <SideBar />
+                <SideBar userType={type} />
                 <MainChat type={type} />
             </div>
             <Footer />

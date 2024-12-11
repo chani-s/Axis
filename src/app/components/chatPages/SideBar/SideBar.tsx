@@ -11,8 +11,10 @@ import {
 import CompanyService from "@/app/services/company";
 import { conversationsStore } from "../../../services/zustand";
 
-const SideBar = () => {
-  const id = "67504b0fbe15427c891d0cbe";
+interface SideBarProps {
+  userType: string; // or you can define it as a more complex type
+}
+const SideBar: React.FC<SideBarProps> = ({ userType }) => {  const id = "67504b0fbe15427c891d0cbe";
 
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState(""); // State for search term in company search
@@ -38,6 +40,13 @@ const SideBar = () => {
     queryFn: () => getConversations(),
     staleTime: 10000,
   });
+  const { data: repConversation } = useQuery<
+  Conversation[]
+>({
+  queryKey: ["repConversation"],
+  queryFn: () => getConversations(),
+  staleTime: 10000,
+});
   const { data: companiesData } = useQuery({
     queryKey: ["companies", conversations],
     queryFn: () => {
@@ -171,76 +180,70 @@ const SideBar = () => {
 
   return (
     <div className={styles.sideBar}>
-      <div ref={inputsRef} className={styles.inputs}>
-        <input
-          className={styles.input}
-          type="text"
-          placeholder="חפש חברה חדשה..."
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setIsDropdownOpen(true);
+        {/* Conditionally render inputs if userType is 'user' */}
+        {userType === "user" && (
+            <div ref={inputsRef} className={styles.inputs}>
+                <input
+                    className={styles.input}
+                    type="text"
+                    placeholder="חפש חברה חדשה..."
+                    value={searchTerm}
+                    onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setIsDropdownOpen(true);
 
-            if(e.target.value===""){
-              setIsDropdownOpen(false);
-            }
-        
-          }}
-          // onFocus={() => {
-          //   // handleInputFocus();
-          //   setIsDropdownOpen(true);
-          // }}
-          onKeyDown={handleKeyPress} 
-        />
-        {isDropdownOpen && (
-          <div className={styles.selectOptions}>
-            <RenderFilteredCompanies />
-          </div>
-        )}
-        <input
-          className={styles.input}
-          type="text"
-          placeholder="חפש בצאטים..."
-          value={chatSearchTerm}
-          onChange={(e) => {
-            setChatSearchTerm(e.target.value);
-          }}
-          onFocus={() => {
-            setIsDropdownOpen(false);
-          }}
-        />
-      </div>
-      <p className={styles.yourChatsP}>הצאטים שלך:</p>
-      <div className={styles.bottom}>
-        {filteredConversations ? (
-          filteredConversations.map((mapConversation: Conversation) => {
-            const isSelected =
-            conversation._id === mapConversation._id?.toString();
-
-            return (
-              <div
-                onClick={() => handleConversationClick(mapConversation)}
-                className={`${styles.conversationItem} ${
-                  isSelected ? styles.selected : ""
-                }`}
-                style={{ backgroundColor: isSelected ? "#ddba0e" : "" }}
-                key={mapConversation._id?.toString()}
-              >
-                <img
-                  className={styles.profileCircle}
-                  src={mapConversation.company_profilePicture}
-                  alt="Profile"
+                        if (e.target.value === "") {
+                            setIsDropdownOpen(false);
+                        }
+                    }}
+                    onKeyDown={handleKeyPress}
                 />
-                <p className={styles.name}>{mapConversation.company_name}</p>
-              </div>
-            );
-          })
-        ) : (
-          <div className={styles.noResults}>לא נמצאו תוצאות</div>
+                <input
+                    className={styles.input}
+                    type="text"
+                    placeholder="חפש בצאטים..."
+                    value={chatSearchTerm}
+                    onChange={(e) => {
+                        setChatSearchTerm(e.target.value);
+                    }}
+                    onFocus={() => {
+                        setIsDropdownOpen(false);
+                    }}
+                />
+            </div>
         )}
-      </div>
+
+        <p className={styles.yourChatsP}>הצאטים שלך:</p>
+        <div className={styles.bottom}>
+            {filteredConversations ? (
+                filteredConversations.map((mapConversation: Conversation) => {
+                    const isSelected =
+                        conversation._id === mapConversation._id?.toString();
+
+                    return (
+                        <div
+                            onClick={() => handleConversationClick(mapConversation)}
+                            className={`${styles.conversationItem} ${
+                                isSelected ? styles.selected : ""
+                            }`}
+                            style={{ backgroundColor: isSelected ? "#ddba0e" : "" }}
+                            key={mapConversation._id?.toString()}
+                        >
+                            <img
+                                className={styles.profileCircle}
+                                src={mapConversation.company_profilePicture}
+                                alt="Profile"
+                            />
+                            <p className={styles.name}>{mapConversation.company_name}</p>
+                        </div>
+                    );
+                })
+            ) : (
+                <div className={styles.noResults}>לא נמצאו תוצאות</div>
+            )}
+        </div>
     </div>
-  );
+);
 };
 
 export default SideBar;

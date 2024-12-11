@@ -10,6 +10,14 @@ export async function getConversations(): Promise<any> {
     throw error;
   }
 }
+export async function getRepConversations(): Promise<any> {
+    try {
+      const response: AxiosResponse<any> = await http.get("/conversation/representative");
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
 
 export async function createConversation(conversationData: any): Promise<any> {
   const { company_id, user_id, ...otherData } = conversationData;

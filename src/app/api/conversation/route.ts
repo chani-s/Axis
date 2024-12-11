@@ -16,10 +16,8 @@ const pusher = new Pusher({
 
 export async function GET(request: Request) {
   try {
-    console.log("Connecting to database...");
     const client = await connectDatabase();
     const db = client.db("Axis");
-
     console.log("Running aggregation pipeline...");
     const conversations = await db.collection("conversations").aggregate([
       {
