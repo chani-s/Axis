@@ -72,7 +72,6 @@ export const Entrance = ({ type }: any) => {
             setIsLoadding(true);
         },
         onSuccess: (data) => {
-            console.log(data);
             setDetails(data);
         },
         onError: (error: any) => {
@@ -95,8 +94,6 @@ export const Entrance = ({ type }: any) => {
     }
 
     const setDetails = (data: any) => {
-        console.log("Data passed to setDetails:", data);
-
         if (data.userDetails.user_type == "user") {
             const userDetails = { // Details should be update according to types and popup new details
                 _id: data.userDetails._id,
@@ -127,7 +124,6 @@ export const Entrance = ({ type }: any) => {
             setUserDetails(userDetails);
             router.push('/chat/manager');
         }
-        console.log(userDetails);
     }
 
     const entranceExempleUser = (e: any) => {
@@ -141,7 +137,7 @@ export const Entrance = ({ type }: any) => {
     }
 
     const handleSubmit = (e: any) => {
-        e.preventDefault();
+        // e.preventDefault();  Ruti - ma ze??
         if (type == "signup") {
             const userData = {
                 email: email,

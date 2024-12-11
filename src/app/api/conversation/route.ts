@@ -39,9 +39,6 @@ export async function GET(request: Request) {
         },
       },
     ]).toArray();
-
-    console.log("Aggregation result:", conversations);
-
     await client.close();
     return NextResponse.json(conversations);
   } catch (error) {
@@ -61,7 +58,7 @@ export async function POST(request: Request) {
       const db = client.db("Axis");
       console.log(companyId);
     
-      const result = insertDocument(client,"conversations",{
+      const result = await insertDocument(client, "conversations", {
         ...body,
         company_id: new ObjectId(companyId), 
         user_id: new ObjectId(userId), 
@@ -71,10 +68,7 @@ export async function POST(request: Request) {
 
       await client.close();
 
-      return NextResponse.json({
-        message: "Conversation created successfully",
-        conversation: result, // Return the created conversation data
-      });
+      return NextResponse.json(result);
     } catch (error) {
       console.error("Error creating conversation:", error);
       return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
