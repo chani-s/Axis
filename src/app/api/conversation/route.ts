@@ -2,6 +2,17 @@ import { connectDatabase } from "@/app/services/mongo";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import { insertDocument } from "@/app/services/mongo";
+import Pusher from "pusher";
+
+
+
+const pusher = new Pusher({
+    appId: process.env.PUSHER_APP_ID,
+    key: process.env.PUSHER_KEY,
+    secret: process.env.PUSHER_SECRET,
+    cluster: process.env.PUSHER_CLUSTER,
+    useTLS: true,
+});
 
 export async function GET(request: Request) {
   try {
@@ -46,26 +57,51 @@ export async function GET(request: Request) {
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
+
+
+
 export async function POST(request: Request) {
     try {
       const url = new URL(request.url);
       const companyId = url.searchParams.get("company_id")||""; 
       const userId = url.searchParams.get("user_id")||""; 
       const body = await request.json();
-
       const client = await connectDatabase();
-      
       const db = client.db("Axis");
       console.log(companyId);
     
+      const representatives = await db.collection("users").find({
+        user_type: "representative",
+        company_id: new ObjectId(companyId),
+      }).toArray();
+  
+      if (representatives.length === 0) {
+        throw new Error("No representatives found for the company.");
+      }
+      const representativeWithMinConversations = representatives.reduce(
+        (minRep, currentRep) => {
+          const minLength = minRep.conversations?.length || 0;
+          const currentLength = currentRep.conversations?.length || 0;
+          return currentLength < minLength ? currentRep : minRep;
+        }
+      );
       const result = await insertDocument(client, "conversations", {
         ...body,
         company_id: new ObjectId(companyId), 
         user_id: new ObjectId(userId), 
         start_time:  Date.now(),
         last_use: Date.now(),
+        representative_id: representativeWithMinConversations._id,
+
       });
 
+      const conversationId = result?._id;
+
+      await db.collection("users").updateOne(
+        { _id: representativeWithMinConversations._id },
+        { $addToSet: { conversations: conversationId } } // Ensures no duplicate entries
+      );
+    // 
       await client.close();
 
       return NextResponse.json(result);
