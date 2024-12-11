@@ -17,9 +17,6 @@ const SideBar = () => {
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState(""); // State for search term in company search
   const [chatSearchTerm, setChatSearchTerm] = useState(""); // State for search term in chat search
-  const [selectedConversationId, setselectedConversationId] = useState<
-    string | null
-  >(null); // State for selected company
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to control dropdown visibility
   const [newConversation, setNewConversation] = useState<Conversation>({
     company_id: "",
@@ -76,7 +73,6 @@ const SideBar = () => {
             : conversation
         );
         filteredConversations = conversations;
-        setselectedConversationId(newConversation._id); // Unneccessary?
         // Chanis Changes:
         const conversationId = {
           _id: newConversation._id,
@@ -150,14 +146,21 @@ const SideBar = () => {
     ));
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && filteredCompanies.length === 1) {
+      const company = filteredCompanies[0];
+      handleOptionClick(company);
+    }
+  };
+
   const handleOptionClick = (company: any) => {
-    setSearchTerm(company.name);
+    setSearchTerm("");
     setIsDropdownOpen(false);
     handleCreateConversation(company);
   };
   const handleConversationClick = (con: Conversation) => {
     if (con._id) {
-      setselectedConversationId(con._id.toString());
+      // setselectedConversationId(con._id.toString());
       const conversationId = {
         _id: con._id.toString(),
       };
@@ -177,11 +180,17 @@ const SideBar = () => {
           onChange={(e) => {
             setSearchTerm(e.target.value);
             setIsDropdownOpen(true);
+
+            if(e.target.value===""){
+              setIsDropdownOpen(false);
+            }
+        
           }}
-          onFocus={() => {
-            // handleInputFocus();
-            setIsDropdownOpen(true);
-          }}
+          // onFocus={() => {
+          //   // handleInputFocus();
+          //   setIsDropdownOpen(true);
+          // }}
+          onKeyDown={handleKeyPress} 
         />
         {isDropdownOpen && (
           <div className={styles.selectOptions}>
