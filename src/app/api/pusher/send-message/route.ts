@@ -19,23 +19,6 @@ const pusher = new Pusher({
     useTLS: true,
 });
 
-// export async function POST(req: any) {
-//     try {
-//         const { channel, event, message } = await req.json();
-//         // await pusher.trigger(channel, event, { message });
-
-//         await pusher.trigger("chat-channel", "new-message", {
-//             time: new Date(),
-//             text: message.text,
-//             sender: message.sender,
-//         });
-//         return new Response(JSON.stringify({ success: true }), { status: 200 });
-//     } catch (error) {
-//         console.error(error);
-//         return new Response(JSON.stringify({ success: false, error }), { status: 500 });
-//     }
-
-// }
 
 export async function POST(req: any) {
     try {
