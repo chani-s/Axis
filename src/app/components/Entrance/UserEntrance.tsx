@@ -81,6 +81,8 @@ export const Entrance = ({ type }: any) => {
         },
     });
 
+// ==================
+// TODO: move to a separate file
     const showError = (message: string) => {
         Swal.fire({
             icon: 'error',
