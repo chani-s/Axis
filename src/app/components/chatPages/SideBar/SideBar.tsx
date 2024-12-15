@@ -184,15 +184,16 @@ const SideBar: React.FC<SideBarProps> = ({
                 style={{ backgroundColor: isSelected ? "#ddba0e" : "" }}
                 key={mapConversation._id?.toString()}
               >
-               <img
-  className={styles.profileCircle}
-  src={
-    userType === "user"
-      ? mapConversation.company_profilePicture
-      : mapConversation.user_profilePicture || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s"
-  }
-  alt="Profile"
-/>
+                <img
+                  className={styles.profileCircle}
+                  src={
+                    userType === "user"
+                      ? mapConversation.company_profilePicture
+                      : mapConversation.user_profilePicture ||
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s"
+                  }
+                  alt="Profile"
+                />
                 <p className={styles.name}>
                   {userType === "user"
                     ? mapConversation.company_name
