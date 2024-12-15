@@ -5,7 +5,8 @@ const nextConfig = {
     PUSHER_APP_ID: "1908915",
     PUSHER_KEY: "ff054817599b88393e16",
     PUSHER_SECRET: "266445049ee3b1fb3ec4",
-    PUSHER_CLUSTER: "ap2"
+    PUSHER_CLUSTER: "ap2",
+    TOKEN_SECRET_KEY:"m10r07w24"
 
   },
 };
