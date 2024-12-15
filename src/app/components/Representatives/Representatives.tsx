@@ -32,7 +32,7 @@ export const Representatives = () => {
     return (
         <div className={style.container}>
             <h2 className={style.title}>ניהול נציגים</h2>
-
+            <p style={{ textAlign: 'right' }}>הנציגים שלך:</p>
             <div className={style.content}>
                 <div className={style.representativesList}>
                     {representatives.map((rep) => (
