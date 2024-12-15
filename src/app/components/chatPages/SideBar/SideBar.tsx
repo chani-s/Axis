@@ -1,100 +1,40 @@
-"use client";
 import React, { useEffect, useRef, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import styles from "./SideBar.module.css";
-import ComapnyService from "@/app/services/company";
-import { Conversation } from "@/app/models/Conversation";
-import {
-  getConversations,
-  createConversation,
-} from "@/app/services/conversation";
-import CompanyService from "@/app/services/company";
 import { conversationsStore } from "../../../services/zustand";
+import { getConversations } from "@/app/services/conversation";
+import { Conversation } from "@/app/models/Conversation";
 
 interface SideBarProps {
-  userType: string; // or you can define it as a more complex type
+  userType: string;
+  conversations: Conversation[];
+  companiesData: any[];
+  createConversation: any;
+  chosenConversationId: string;
 }
-const SideBar: React.FC<SideBarProps> = ({ userType }) => {  const id = "67504b0fbe15427c891d0cbe";
 
-  const queryClient = useQueryClient();
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term in company search
-  const [chatSearchTerm, setChatSearchTerm] = useState(""); // State for search term in chat search
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to control dropdown visibility
-  const [newConversation, setNewConversation] = useState<Conversation>({
-    company_id: "",
-    company_name: "",
-    user_id: id,
-    representative_id: null,
-    status_code: 2,
-    last_use: new Date(),
-    start_time: null,
-  });
+const SideBar: React.FC<SideBarProps> = ({
+  userType,
+  conversations,
+  companiesData,
+  createConversation,
+  chosenConversationId,
+}) => {
+  // const id = "67504b0fbe15427c891d0cbe";
+
+  const [searchTerm, setSearchTerm] = useState(""); // Search term for company search
+  const [chatSearchTerm, setChatSearchTerm] = useState(""); // Search term for chat search
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Dropdown visibility
+  const [filteredCompanies, setFilteredCompanies] = useState<any[]>([]);
+  const [filteredConversations, setFilteredConversations] = useState<
+    Conversation[]
+  >([]);
 
   const conversation = conversationsStore((state) => state.conversation);
   const setConversation = conversationsStore((state) => state.setConversation);
 
-  const { data: conversations, isLoading: isConversationsLoading } = useQuery<
-    Conversation[]
-  >({
-    queryKey: ["conversations"],
-    queryFn: () => getConversations(),
-    staleTime: 10000,
-  });
-  const { data: repConversation } = useQuery<
-  Conversation[]
->({
-  queryKey: ["repConversation"],
-  queryFn: () => getConversations(),
-  staleTime: 10000,
-});
-  const { data: companiesData } = useQuery({
-    queryKey: ["companies", conversations],
-    queryFn: () => {
-      let companyIds = [];
-      // Ensure conversations are loaded before extracting company IDs
-      if (!conversations) return Promise.resolve([]);
-      companyIds = conversations.map(
-        (conversation) => conversation.company_id.toString() // Convert ObjectId to string
-      );
-      return CompanyService.getNameAndProfile(companyIds);
-    },
-    staleTime: 100000,
-    enabled: !!conversations, // Only run this query if conversations are loaded
-  });
-  let filteredConversations = conversations;
-
-  const createConversationMutation = useMutation({
-    mutationFn: createConversation,
-    onMutate: async (conversation: any) => {
-      await queryClient.cancelQueries({ queryKey: ["conversations"] });
-      const previousConversations = queryClient.getQueryData(["conversations"]);
-      queryClient.setQueryData(["conversations"], (old: any) => [
-        ...old,
-        conversation,
-      ]);
-      return { previousConversations };
-    },
-    onSuccess: (newConversation) => {
-      queryClient.setQueryData(["conversations"], (old: any) => {
-        const updatedConversations = old.map((conversation: any) =>
-          conversation.company_name === newConversation.company_name
-            ? newConversation
-            : conversation
-        );
-        filteredConversations = conversations;
-        // Chanis Changes:
-        const conversationId = {
-          _id: newConversation._id,
-        };
-        setConversation(conversationId);
-        console.log("zustand: " + conversation);
-
-        return updatedConversations;
-      });
-    },
-  });
-
   const inputsRef = useRef<HTMLDivElement>(null);
+
   const handleClickOutside = (e: MouseEvent) => {
     if (inputsRef.current && !inputsRef.current.contains(e.target as Node)) {
       setIsDropdownOpen(false);
@@ -102,6 +42,28 @@ const SideBar: React.FC<SideBarProps> = ({ userType }) => {  const id = "67504b0
   };
 
   useEffect(() => {
+    // Filter companies whenever `searchTerm` or `companiesData` changes
+    setFilteredCompanies(
+      companiesData?.filter((company: any) => {
+        return company.name.toLowerCase().includes(searchTerm.toLowerCase());
+      }) || []
+    );
+    console.log("term" + searchTerm);
+  }, [searchTerm, companiesData]);
+
+  useEffect(() => {
+    // Filter conversations whenever `chatSearchTerm` or `conversations` changes
+    setFilteredConversations(
+      conversations?.filter((conversation: any) => {
+        return (conversation.company_name?.toLowerCase() || "").includes(
+          chatSearchTerm.toLowerCase()
+        );
+      }) || []
+    );
+  }, [chatSearchTerm, conversations]);
+
+  useEffect(() => {
+    // Handle dropdown visibility
     if (isDropdownOpen) {
       document.addEventListener("click", handleClickOutside);
     } else {
@@ -109,32 +71,41 @@ const SideBar: React.FC<SideBarProps> = ({ userType }) => {  const id = "67504b0
     }
     return () => document.removeEventListener("click", handleClickOutside);
   }, [isDropdownOpen]);
+
   const handleCreateConversation = (company: any) => {
     const newConversation = {
       company_id: company._id,
-      user_id: id,
       representative_id: null,
       status_code: 2,
       company_profilePicture: company.profilePicture,
       company_name: company.name,
       last_use: new Date(),
+      user_name: "",
+      user_profilePicture:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s",
     };
+    createConversation(newConversation);
 
-    setNewConversation(newConversation);
-    createConversationMutation.mutate(newConversation);
+    setConversation({ _id: chosenConversationId });
   };
 
-  const filteredCompanies =
-    companiesData?.filter((company: any) =>
-      company.name.toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
-  filteredConversations =
-    conversations?.filter((conversation: any) => {
-      return (conversation.company_name?.toLowerCase() || "").includes(
-        chatSearchTerm.toLowerCase()
-      );
-    }) || [];
+  const handleOptionClick = (company: any) => {
+    setSearchTerm("");
+    setIsDropdownOpen(false);
+    handleCreateConversation(company);
+  };
 
+  const handleConversationClick = (con: Conversation) => {
+    if (con._id) {
+      setConversation({ _id: con._id.toString() });
+    }
+  };
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && filteredCompanies.length === 1) {
+      const company = filteredCompanies[0];
+      handleOptionClick(company);
+    }
+  };
   const RenderFilteredCompanies = () => {
     if (!filteredCompanies.length) {
       return <div className={styles.noResults}>אין תוצאות</div>;
@@ -155,95 +126,89 @@ const SideBar: React.FC<SideBarProps> = ({ userType }) => {  const id = "67504b0
     ));
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && filteredCompanies.length === 1) {
-      const company = filteredCompanies[0];
-      handleOptionClick(company);
-    }
-  };
-
-  const handleOptionClick = (company: any) => {
-    setSearchTerm("");
-    setIsDropdownOpen(false);
-    handleCreateConversation(company);
-  };
-  const handleConversationClick = (con: Conversation) => {
-    if (con._id) {
-      // setselectedConversationId(con._id.toString());
-      const conversationId = {
-        _id: con._id.toString(),
-      };
-      setConversation(conversationId);
-      console.log("zustand: " + conversation._id);
-    }
-  };
-
   return (
     <div className={styles.sideBar}>
-        {/* Conditionally render inputs if userType is 'user' */}
-        {userType === "user" && (
-            <div ref={inputsRef} className={styles.inputs}>
-                <input
-                    className={styles.input}
-                    type="text"
-                    placeholder="חפש חברה חדשה..."
-                    value={searchTerm}
-                    onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                        setIsDropdownOpen(true);
+      {userType === "user" && (
+        <div ref={inputsRef} className={styles.inputs}>
+          <input
+            className={styles.input}
+            type="text"
+            placeholder="חפש חברה חדשה..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setIsDropdownOpen(true);
 
-                        if (e.target.value === "") {
-                            setIsDropdownOpen(false);
-                        }
-                    }}
-                    onKeyDown={handleKeyPress}
-                />
-                <input
-                    className={styles.input}
-                    type="text"
-                    placeholder="חפש בצאטים..."
-                    value={chatSearchTerm}
-                    onChange={(e) => {
-                        setChatSearchTerm(e.target.value);
-                    }}
-                    onFocus={() => {
-                        setIsDropdownOpen(false);
-                    }}
-                />
+              if (e.target.value === "") {
+                setIsDropdownOpen(false);
+              }
+            }}
+            // onFocus={() => {
+            //   // handleInputFocus();
+            //   setIsDropdownOpen(true);
+            // }}
+            onKeyDown={handleKeyPress}
+          />
+          {isDropdownOpen && (
+            <div className={styles.selectOptions}>
+              <RenderFilteredCompanies />
             </div>
-        )}
-
-        <p className={styles.yourChatsP}>הצאטים שלך:</p>
-        <div className={styles.bottom}>
-            {filteredConversations ? (
-                filteredConversations.map((mapConversation: Conversation) => {
-                    const isSelected =
-                        conversation._id === mapConversation._id?.toString();
-
-                    return (
-                        <div
-                            onClick={() => handleConversationClick(mapConversation)}
-                            className={`${styles.conversationItem} ${
-                                isSelected ? styles.selected : ""
-                            }`}
-                            style={{ backgroundColor: isSelected ? "#ddba0e" : "" }}
-                            key={mapConversation._id?.toString()}
-                        >
-                            <img
-                                className={styles.profileCircle}
-                                src={mapConversation.company_profilePicture}
-                                alt="Profile"
-                            />
-                            <p className={styles.name}>{mapConversation.company_name}</p>
-                        </div>
-                    );
-                })
-            ) : (
-                <div className={styles.noResults}>לא נמצאו תוצאות</div>
-            )}
+          )}
+          <input
+            className={styles.input}
+            type="text"
+            placeholder="חפש בצאטים..."
+            value={chatSearchTerm}
+            onChange={(e) => {
+              setChatSearchTerm(e.target.value);
+            }}
+            onFocus={() => {
+              setIsDropdownOpen(false);
+            }}
+          />
         </div>
+      )}
+      <p className={styles.yourChatsP}>הצאטים שלך:</p>
+      <div className={styles.bottom}>
+        {filteredConversations ? (
+          filteredConversations.map((mapConversation: Conversation) => {
+            const isSelected =
+              conversation._id === mapConversation._id?.toString();
+
+            return (
+              <div
+                onClick={() => handleConversationClick(mapConversation)}
+                className={`${styles.conversationItem} ${
+                  isSelected ? styles.selected : ""
+                }`}
+                style={{ backgroundColor: isSelected ? "#ddba0e" : "" }}
+                key={mapConversation._id?.toString()}
+              >
+               <img
+  className={styles.profileCircle}
+  src={
+    userType === "user"
+      ? mapConversation.company_profilePicture
+      : mapConversation.user_profilePicture || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s"
+  }
+  alt="Profile"
+/>
+                <p className={styles.name}>
+                  {userType === "user"
+                    ? mapConversation.company_name
+                    : mapConversation.user_name
+                    ? mapConversation.user_name
+                    : "פניה חדשה"}
+                </p>{" "}
+              </div>
+            );
+          })
+        ) : (
+          <div className={styles.noResults}>לא נמצאו תוצאות</div>
+        )}
+      </div>
     </div>
-);
+  );
 };
 
 export default SideBar;
