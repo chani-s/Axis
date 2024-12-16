@@ -1,18 +1,18 @@
 
 import { connectDatabase, getSpecificFields, getById, insertDocument } from "@/app/services/mongo";
 import { NextResponse, NextRequest } from "next/server";
-
+import jwt from "jsonwebtoken";
 
 export async function POST(req: NextRequest) {
-    console.log("hi");
-    
+
+    const SECRET_KEY = process.env.SECRET_KEY;
     const responseDetails = {
         message: "",
-        userDetails: {}
+        userDetails: {}, 
+        token: ""
     }
     try {
         const userData = await req.json();
-        console.log(userData);
 
         if (!userData.email) {
             return NextResponse.json({ message: "Missing email" }, { status: 400 });
@@ -25,16 +25,34 @@ export async function POST(req: NextRequest) {
             { _id: 1 }
         );
 
-        console.log(userExist);
-        
         if (userExist[0]) {
             const userId = userExist[0]._id.toString();
-            responseDetails.message = "User register successfully";
-            responseDetails.userDetails = await getById(
+            const userDetails = await getById(
                 client,
                 "users",
                 userId
-            );
+              );
+    
+              const token = jwt.sign(
+                { userId: userDetails._id },
+                SECRET_KEY?SECRET_KEY:"", 
+                { expiresIn: "1h" } 
+              );
+              responseDetails.message = "User register successfully";
+              const { _id, ...userWithoutId } = userDetails;
+              responseDetails.userDetails = userWithoutId;
+              responseDetails.token = token;
+      
+              const response = NextResponse.json(responseDetails);
+              response.cookies.set("authToken", token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict",
+                maxAge: 3600 
+              });
+      
+              await client.close();
+              return response;
         }
         else {
             const insertUserDetails = await insertDocument(
@@ -42,11 +60,29 @@ export async function POST(req: NextRequest) {
                 "users",
                 { email: userData.email, name: userData.name, google_auth: userData.isWithGoogle, user_type: userData.userType }
             );
-            console.log(insertUserDetails);
             
             if (insertUserDetails) {
-                responseDetails.message = "User register successfully";
-                responseDetails.userDetails = insertUserDetails;
+                const token = jwt.sign(
+                    { userId: insertUserDetails._id },
+                    SECRET_KEY?SECRET_KEY:"", 
+                    { expiresIn: "1h" } 
+                  );
+          
+                  responseDetails.message = "User register successfully";
+                  const { _id, ...userWithoutId } = insertUserDetails;
+                  responseDetails.userDetails = userWithoutId;
+                  responseDetails.token = token;
+          
+                  const response = NextResponse.json(responseDetails);
+                  response.cookies.set("authToken", token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "strict",
+                    maxAge: 3600 
+                  });
+          
+                  await client.close();
+                  return response;
             }
         }
         await client.close();
