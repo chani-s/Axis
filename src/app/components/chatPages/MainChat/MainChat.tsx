@@ -29,6 +29,7 @@ const MainChat = ({ type }: any) => {
   const userDetails = userDetailsStore((state) => state.userDetails);
   const conversation = conversationsStore((state) => state.conversation);
 
+
   useEffect(() => {
     if (!conversation?._id) return;
       const loadConversationMessages = async () => {
@@ -134,6 +135,7 @@ const MainChat = ({ type }: any) => {
     if (e.key === "Enter") {
       sendMessage();
     }
+    console.log(userDetails._id)
   };
 
   const handleChange = (e: any) => {

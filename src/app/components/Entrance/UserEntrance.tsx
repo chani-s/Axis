@@ -100,6 +100,7 @@ export const Entrance = ({ type }: any) => {
                 email: data.userDetails.email,
                 google_auth: data.userDetails.google_auth || false,
                 user_type: data.userDetails.user_type,
+                user_name:data.userDetails.user_name
             };
             setUserDetails(userDetails);
             router.push('/chat/user');
@@ -110,6 +111,8 @@ export const Entrance = ({ type }: any) => {
                 email: data.userDetails.email,
                 google_auth: data.userDetails.google_auth || false,
                 user_type: data.userDetails.user_type,
+                user_name:data.userDetails.user_name
+
             };
             setUserDetails(userDetails);
             router.push('/chat/representative');
@@ -120,6 +123,8 @@ export const Entrance = ({ type }: any) => {
                 email: data.userDetails.email,
                 google_auth: data.userDetails.google_auth || false,
                 user_type: data.userDetails.user_type,
+                user_name:data.userDetails.user_name
+
             };
             setUserDetails(userDetails);
             router.push('/chat/manager');
