@@ -72,9 +72,9 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
   
-  .repName {
-    font-size: 1rem;
-    font-weight: bold;
+  .repTitle {
+    font-size: 1.3rem;
+    align-self:first baseline;
   }
   
   .statusDot {

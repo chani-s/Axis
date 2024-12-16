@@ -5,21 +5,42 @@ import { MongoClient, ObjectId } from "mongodb";
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
+// export async function connectDatabase() {
+//   console.log(" inconnetDB");
+//   if (!client) {
+//     const dbConnectionString = process.env.PUBLIC_DB_CONNECTION;
+//     if (!dbConnectionString) {
+//       throw new Error("Database connection string is not defined");
+//     }
+//     client = new MongoClient(dbConnectionString);
+//     console.log(" after client");
+//   }
+//   clientPromise = client.connect();
+//   console.log(" after connect");
+
+//   return clientPromise;
+// }
+
 export async function connectDatabase() {
-  console.log(" inconnetDB");
-  if (!client) {
-    const dbConnectionString = process.env.PUBLIC_DB_CONNECTION;
-    if (!dbConnectionString) {
-      throw new Error("Database connection string is not defined");
+  try {
+    if (!client) {
+      const dbConnectionString = process.env.PUBLIC_DB_CONNECTION;
+      if (!dbConnectionString) {
+        throw new Error("Database connection string is not defined");
+      }
+      client = new MongoClient(dbConnectionString);
     }
-    client = new MongoClient(dbConnectionString);
-    console.log(" after client");
+    clientPromise = client.connect();
+    await clientPromise; // וודא שהחיבור נוצר
+    console.log("Connected to MongoDB successfully");
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+    throw error;
   }
-  clientPromise = client.connect();
-  console.log(" after connect");
 
   return clientPromise;
 }
+
 
 export async function getAllDocuments(client: any, collection: string) {
   const db = client.db("Axis");
@@ -86,7 +107,7 @@ export async function isExist(
 ): Promise<boolean> {
   const db = client.db("Axis");
   const exists = await db.collection(collection).findOne(filter);
-  return !!exists; // Returns true if the document exists, false otherwise
+  return !!exists; 
 }
 
 export async function isEqual(
@@ -104,7 +125,6 @@ export async function isEqual(
   return isMatch; 
 }
 
-//await upsertDocument(client, "users", { name: "Jane Doe" }(<-מחפש שדה כזה), { age: 28 }(<-משנה את השדה הזה));
 export async function upsertDocument(
   client: MongoClient,
   collection: string,
@@ -135,10 +155,13 @@ export async function getSpecificFields(
   console.log(documents);
   return documents;
 }
+
+
+
 export async function getDocumentsByIds(
   client: MongoClient,
   collection: string,
-  ids?: ObjectId[], // Array of ObjectId values
+  ids?: ObjectId[], 
   include: boolean = true, // If true, fetch IDs in the list; if false, exclude them
   fields?: object // Optional projection for specific fields
 ) {
