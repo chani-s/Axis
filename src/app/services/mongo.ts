@@ -72,7 +72,7 @@ export async function insertDocument(
   return insertedDocument;
 }
 
-export async function updateDocument(
+export async function updateByUserId(
   client: MongoClient,
   collection: string,
   documentId: string,
@@ -81,10 +81,25 @@ export async function updateDocument(
   const db = client.db("Axis");
   const result = await db
     .collection(collection)
-    .updateOne({ _id: new ObjectId(documentId) }, { $set: updateData });
+    .updateOne({ user_id: documentId }, { $set: updateData });
   const updatedDocument = await db
     .collection(collection)
-    .findOne({ _id: new ObjectId(documentId) });
+    .findOne({ user_id: documentId});
+  return updatedDocument;
+}
+export async function updateByEmail(
+  client: MongoClient,
+  collection: string,
+  documentEmail: string,
+  updateData: object
+) {
+  const db = client.db("Axis");
+  const result = await db
+    .collection(collection)
+    .updateOne({ email: documentEmail }, { $set: updateData });
+  const updatedDocument = await db
+    .collection(collection)
+    .findOne({ email: documentEmail });
   return updatedDocument;
 }
 
@@ -100,6 +115,18 @@ export async function deleteDocument(
   return { message: `Document with ID ${documentId} has been deleted.` };
 }
 
+export async function deleteDocumentByEmail(
+  client: MongoClient,
+  collection: string,
+  documentEmail: string
+) {
+  const db = client.db("Axis");
+  const result = await db
+    .collection(collection)
+    .deleteOne({ email: documentEmail});
+  return { message: `Document with ID ${documentEmail} has been deleted.` };
+}
+
 export async function isExist(
   client: MongoClient,
   collection: string,
@@ -110,20 +137,20 @@ export async function isExist(
   return !!exists; 
 }
 
-export async function isEqual(
-  client: MongoClient,
-  collection: string,
-  filter: object,
-  data: string
-): Promise<boolean> {
-  const db = client.db("Axis"); 
-  const user = await db.collection(collection).findOne(filter); 
-  if (!user) {
-    return false; 
-  }
-  const isMatch = data==user.password;
-  return isMatch; 
-}
+// export async function isEqual(
+//   client: MongoClient,
+//   collection: string,
+//   filter: object,
+//   data: string
+// ): Promise<boolean> {
+//   const db = client.db("Axis"); 
+//   const user = await db.collection(collection).findOne(filter); 
+//   if (!user) {
+//     return false; 
+//   }
+//   const isMatch = data==user.password;
+//   return isMatch; 
+// }
 
 export async function upsertDocument(
   client: MongoClient,
@@ -152,7 +179,7 @@ export async function getSpecificFields(
     .collection(collection)
     .find(filter, { projection: fields })
     .toArray();
-  console.log(documents);
+  console.log(documents); 
   return documents;
 }
 

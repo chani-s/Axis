@@ -144,6 +144,13 @@
   }
 
   .resetPassword{
-    
+    margin:0;
+    color: #45474b;
+    text-decoration: none;
+    text-align: right;
+    font-size: 14px;
+    cursor: pointer;
+    background-color:#fff;
+    border: none;
   }
   

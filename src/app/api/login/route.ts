@@ -5,8 +5,8 @@ import { verifyPassword } from "../../services/hash";
 import jwt from "jsonwebtoken";
 
 export async function POST(req: NextRequest) {
-
-  const SECRET_KEY = "m10r07w24";
+  
+  const SECRET_KEY = process.env.SECRET_KEY;
   const responseDetails = {
     message: "",
     userDetails: {},
@@ -28,7 +28,6 @@ export async function POST(req: NextRequest) {
 
     if (userExist[0]) {
       const userId = userExist[0]._id.toString();
-      console.log(userId);
       const userPassword = await getSpecificFields(
         client,
         "hashed_passwords",
@@ -46,12 +45,12 @@ export async function POST(req: NextRequest) {
           );
           const token = jwt.sign(
             { userId: userDetails._id },
-            SECRET_KEY,
-            { expiresIn: "1h" }
+            SECRET_KEY?SECRET_KEY:"", 
+            { expiresIn: "1h" } 
           );
           responseDetails.message = "User login successfully";
           const { _id, ...userWithoutId } = userDetails;
-          responseDetails.userDetails = userWithoutId;
+          responseDetails.userDetails = userDetails;
           responseDetails.token = token;
 
           const response = NextResponse.json(responseDetails);
@@ -74,7 +73,6 @@ export async function POST(req: NextRequest) {
     else
       responseDetails.message = "User does not exist";
     await client.close();
-    console.log(responseDetails);
     return NextResponse.json(responseDetails);
   }
   catch (error) {
