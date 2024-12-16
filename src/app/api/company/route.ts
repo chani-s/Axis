@@ -15,7 +15,7 @@ export async function GET(request: Request) {
       : [];
 
     let result;
-
+    console.log("in get")
     switch (type) {
       case "nameAndProfile":
         result = await getDocumentsByIds(client, "companies", ids, false, {

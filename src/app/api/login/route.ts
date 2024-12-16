@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
           );
           responseDetails.message = "User login successfully";
           const { _id, ...userWithoutId } = userDetails;
-          responseDetails.userDetails = userWithoutId;
+          responseDetails.userDetails = userDetails;
           responseDetails.token = token;
   
           const response = NextResponse.json(responseDetails);
