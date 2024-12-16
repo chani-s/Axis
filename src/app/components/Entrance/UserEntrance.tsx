@@ -9,7 +9,8 @@ import { useMutation } from '@tanstack/react-query';
 import { signUpUser, loginUser, registerWithGoogle } from '../../services/user';
 import { useRouter } from 'next/navigation';
 import { userDetailsStore } from '../../services/zustand';
-import Swal from 'sweetalert2';
+import ForgetPassword from "../Entrance/ForgotPassword";
+import {showError} from "../../services/messeges";
 
 export const Entrance = ({ type }: any) => {
     const [email, setEmail] = useState("");
@@ -17,8 +18,8 @@ export const Entrance = ({ type }: any) => {
     const [name, setName] = useState("");
     const [isWithGoogle, setIsWithGoogle] = useState(false);
     const [isLoadding, setIsLoadding] = useState(false);
+    const [forgetPassword, setForgetPassword] = useState(false);
     const router = useRouter();
-    const userDetails = userDetailsStore((state) => state.userDetails);
     const setUserDetails = userDetailsStore((state) => state.setUserDetails);
 
     const mutationSignUp = useMutation({
@@ -81,18 +82,6 @@ export const Entrance = ({ type }: any) => {
         },
     });
 
-    const showError = (message: string) => {
-        Swal.fire({
-            icon: 'error',
-            title: 'משהו השתבש😳',
-            text: message,
-            confirmButtonText: 'OK',
-            customClass: {
-                confirmButton: style.custom_confirm_button
-            }
-        });
-    }
-
     const setDetails = (data: any) => {
         if (data.userDetails.user_type == "user") {
             const userDetails = { // Details should be update according to types and popup new details
@@ -142,7 +131,7 @@ export const Entrance = ({ type }: any) => {
     }
 
     const handleSubmit = (e: any) => {
-        // e.preventDefault();  Ruti - ma ze??
+        e.preventDefault();  
         if (type == "signup") {
             const userData = {
                 email: email,
@@ -200,8 +189,9 @@ export const Entrance = ({ type }: any) => {
                             onChange={(e) => setPassword(e.target.value)}
                             title=" הסיסמה חייבת לכלול אותיות קטנות וגדולות ומספרים, באורך לפחות 6 תווים"
                             required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$" />
-                        {type == "login" && <button className={style.resetPassword}>שכחתי סיסמא</button>}
+                        {type == "login" && <button onClick={(e)=> {e.preventDefault(); setForgetPassword(true)}}  className={style.resetPassword}>שכחתי סיסמא</button>}
                     </div>
+                    {forgetPassword && <ForgetPassword setForgetPassword={setForgetPassword}/>}
                     < button onClick={entranceExempleUser} className={style.exempleUser} >  <FaSignInAlt className={style.entranceIcon} />  התחבר כמשתמש לדוגמא</button>
                     < button className={style.googleButton} onClick={signupHandler} ><FcGoogle className={style.googleIcon} /> register with Google </button>
                     < button className={style.submitButton} type="submit" > {type == "login" ? "הכנס" : "הרשם"} </button>

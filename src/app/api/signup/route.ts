@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 
 export async function POST(req: NextRequest) {
 
-  const SECRET_KEY = "m10r07w24";
+  const SECRET_KEY = process.env.SECRET_KEY;
   const userData = await req.json();
   const responseDetails = {
     message: "",
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
         "users",
         { email: userData.email, google_auth: userData.isWithGoogle, user_type: userData.userType }
       );
-      console.log(insertUserDetails);
+
       if (insertUserDetails) {
         const hashedPassword = await hashPassword(userData.password);
         const insertUserPassword = await insertDocument(
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
 
         const token = jwt.sign(
           { userId: insertUserDetails._id },
-          SECRET_KEY, 
+          SECRET_KEY?SECRET_KEY:"", 
           { expiresIn: "1h" } 
         );
 
