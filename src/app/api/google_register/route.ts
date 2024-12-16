@@ -5,15 +5,14 @@ import jwt from "jsonwebtoken";
 
 export async function POST(req: NextRequest) {
 
-    const SECRET_KEY = "m10r07w24";
+    const SECRET_KEY = process.env.SECRET_KEY;
     const responseDetails = {
         message: "",
-        userDetails: {},
+        userDetails: {}, 
         token: ""
     }
     try {
         const userData = await req.json();
-        console.log(userData);
 
         if (!userData.email) {
             return NextResponse.json({ message: "Missing email" }, { status: 400 });
@@ -26,8 +25,6 @@ export async function POST(req: NextRequest) {
             { _id: 1 }
         );
 
-        console.log(userExist);
-
         if (userExist[0]) {
             const userId = userExist[0]._id.toString();
             const userDetails = await getById(
@@ -38,7 +35,7 @@ export async function POST(req: NextRequest) {
     
               const token = jwt.sign(
                 { userId: userDetails._id },
-                SECRET_KEY, 
+                SECRET_KEY?SECRET_KEY:"", 
                 { expiresIn: "1h" } 
               );
               responseDetails.message = "User register successfully";
@@ -63,12 +60,11 @@ export async function POST(req: NextRequest) {
                 "users",
                 { email: userData.email, name: userData.name, google_auth: userData.isWithGoogle, user_type: userData.userType }
             );
-            console.log(insertUserDetails);
-
+            
             if (insertUserDetails) {
                 const token = jwt.sign(
                     { userId: insertUserDetails._id },
-                    SECRET_KEY, 
+                    SECRET_KEY?SECRET_KEY:"", 
                     { expiresIn: "1h" } 
                   );
           
