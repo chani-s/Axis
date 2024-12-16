@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import styles from "./SideBar.module.css";
-import { conversationsStore } from "../../../services/zustand";
+import { conversationsStore, userDetailsStore } from "../../../services/zustand";
 import { getConversations } from "@/app/services/conversation";
 import { Conversation } from "@/app/models/Conversation";
 
@@ -26,6 +26,8 @@ const SideBar: React.FC<SideBarProps> = ({
   const [chatSearchTerm, setChatSearchTerm] = useState(""); // Search term for chat search
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Dropdown visibility
   const [filteredCompanies, setFilteredCompanies] = useState<any[]>([]);
+  const userDetails = userDetailsStore((state) => state.userDetails);
+
   const [filteredConversations, setFilteredConversations] = useState<
     Conversation[]
   >([]);
@@ -80,9 +82,9 @@ const SideBar: React.FC<SideBarProps> = ({
       company_profilePicture: company.profilePicture,
       company_name: company.name,
       last_use: new Date(),
-      user_name: "",
+      user_name: userDetails.user_name,
       user_profilePicture:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s",
+        "",
     };
     createConversation(newConversation);
 
@@ -96,7 +98,9 @@ const SideBar: React.FC<SideBarProps> = ({
   };
 
   const handleConversationClick = (con: Conversation) => {
+    
     if (con._id) {
+      console.log("in handleConversationClick"+con._id)
       setConversation({ _id: con._id.toString() });
     }
   };

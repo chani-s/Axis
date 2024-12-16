@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { insertDocument } from "@/app/services/mongo";
 import Pusher from "pusher";
 import jwt from "jsonwebtoken";
+import { verifyAuthToken } from "@/app/services/decodeToken";
 
 const secret = process.env.TOKEN_SECRET_KEY;
 
@@ -15,15 +16,9 @@ export async function GET(request:NextRequest) {
     if (!authToken) {
       return new Response("Missing authToken", { status: 401 });
     }
-    if (!secret) {
-      return new Response("Missing key", { status: 401 });
-    }
-    const decodedToken = jwt.verify(authToken, secret) as { userId: string };
 
-    if (!decodedToken || !decodedToken.userId) {
-      return new Response("Invalid token", { status: 401 });
-    }
-    const userId = new ObjectId(decodedToken.userId);
+    // Verify token and get userId
+    const userId = await verifyAuthToken(authToken);
   
     const client = await connectDatabase();
 
@@ -61,15 +56,9 @@ export async function POST(request: NextRequest) {
     if (!authToken) {
       return new Response("Missing authToken", { status: 401 });
     }
-    if (!secret) {
-      return new Response("Missing key", { status: 401 });
-    }
-    const decodedToken = jwt.verify(authToken, secret) as { userId: string };
 
-    if (!decodedToken || !decodedToken.userId) {
-      return new Response("Invalid token", { status: 401 });
-    }
-    const userId = new ObjectId(decodedToken.userId);
+    // Verify token and get userId
+    const userId = await verifyAuthToken(authToken);
     // Fetch representatives for the specified company
     const representatives = await db
       .collection("users")
