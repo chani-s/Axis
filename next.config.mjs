@@ -9,6 +9,8 @@ const nextConfig = {
     EMAIL_ADDRESS: "axiss1chat@gmail.com",
     EMAIL_PASSWORD: "ipun gfeb xesp wrko",
     SECRET_KEY : "m10r07w24",
+    TOKEN_SECRET_KEY:"m10r07w24"
+
 
   },
 };
