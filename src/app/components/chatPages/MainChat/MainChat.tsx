@@ -163,15 +163,15 @@ const MainChat = ({ type }: any) => {
             <FaWindowMinimize />
           </button>
         </div>
-        <button
+        {isUser && <button
           className={styles.hamburger}
           onClick={managePermissions}
           data-tooltip={"ניהול ההרשאות לנתונים שלך"}
         >
           <FaBars />
-        </button>
+        </button>}
       </div>
-      {isPermissionPanelOpen && <PermissionPanel />}
+      {isPermissionPanelOpen && <DetailsBar type="user"/>}
 
       <div className={styles.chatMessages}>
         {messages
@@ -203,7 +203,7 @@ const MainChat = ({ type }: any) => {
             פרטי לקוח
           </button>
         )}
-        {isShowDetails && <DetailsBar />}
+        {isShowDetails && <DetailsBar type="representative" />}
 
         <input
           className={styles.inputField}

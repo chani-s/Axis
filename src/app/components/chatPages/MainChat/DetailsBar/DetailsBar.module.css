@@ -7,7 +7,17 @@
     background: rgba(0, 0, 0, 0.8);
     border-radius: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    /* transform: translate(-100%, -100%); */
+}
+
+.permissionPanel.defaultPosition {
     transform: translate(-100%, -100%);
+}
+
+.permissionPanel.userPosition {
+    transform: translate(-50%, -50%);
+    top: 20px;
+    left: 20px;
 }
 
 
