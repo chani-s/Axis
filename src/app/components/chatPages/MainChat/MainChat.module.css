@@ -34,16 +34,16 @@
 
 .closeButton,
 .minimizeButton,
-.hamburger {
+.detailsIcon {
     width: 20px;
     height: 20px;
     border: none;
     cursor: pointer;
     position: relative;
-
+    font-size: 17px;
 }
 
-.hamburger::after {
+.detailsIcon::after {
     content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
@@ -56,7 +56,6 @@
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
-    font-size: 12px;
     transition: opacity 0.3s, visibility 0.3s;
     z-index: 1001;
 }
@@ -83,7 +82,7 @@
 .userMessage {
     align-self: flex-end;
     color: #45474b;
-    background-color: #e0dddd; 
+    background-color: #e0dddd;
 }
 
 .otherMessage {
@@ -131,7 +130,7 @@
     bottom: 0;
     position: absolute;
     width: 100%;
-} 
+}
 
 .sendingBar[type="text"] {
     flex: 1;
@@ -151,12 +150,12 @@
     cursor: pointer;
 }
 
-.detailsButton{
+.detailsButton {
     padding: 10px 20px;
     background-color: #ddba0e;
     color: white;
     border: none;
     border-radius: 15px;
     cursor: pointer;
-    
+
 }

@@ -7,7 +7,6 @@
     background: rgba(0, 0, 0, 0.8);
     border-radius: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    /* transform: translate(-100%, -100%); */
 }
 
 .permissionPanel.defaultPosition {
@@ -15,7 +14,7 @@
 }
 
 .permissionPanel.userPosition {
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%, 0);
     top: 20px;
     left: 20px;
 }

@@ -2,13 +2,14 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./MainChat.module.css";
 import Pusher from "pusher-js";
 import PermissionPanel from "../PermissionPanel/PermissionPanel";
-import { FaTimes, FaBars, FaArrowLeft, FaWindowMinimize } from "react-icons/fa";
+import { FaTimes, FaBars, FaArrowLeft, FaWindowMinimize, FaInfoCircle } from "react-icons/fa";
 import DetailsBar from "./DetailsBar/DetailsBar";
 import {
   conversationsStore,
   userDetailsStore,
 } from "../../../services/zustand";
 import { getMessages } from "@/app/services/message";
+import { FaPerson, FaPersonRifle } from "react-icons/fa6";
 
 interface MessageObj {
   time: Date;
@@ -164,11 +165,11 @@ const MainChat = ({ type }: any) => {
           </button>
         </div>
         {isUser && <button
-          className={styles.hamburger}
+          className={styles.detailsIcon}
           onClick={managePermissions}
           data-tooltip={"ניהול ההרשאות לנתונים שלך"}
         >
-          <FaBars />
+          <FaInfoCircle />
         </button>}
       </div>
       {isPermissionPanelOpen && <DetailsBar type="user"/>}
