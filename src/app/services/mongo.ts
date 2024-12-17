@@ -5,21 +5,42 @@ import { MongoClient, ObjectId } from "mongodb";
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
+// export async function connectDatabase() {
+//   console.log(" inconnetDB");
+//   if (!client) {
+//     const dbConnectionString = process.env.PUBLIC_DB_CONNECTION;
+//     if (!dbConnectionString) {
+//       throw new Error("Database connection string is not defined");
+//     }
+//     client = new MongoClient(dbConnectionString);
+//     console.log(" after client");
+//   }
+//   clientPromise = client.connect();
+//   console.log(" after connect");
+
+//   return clientPromise;
+// }
+
 export async function connectDatabase() {
-  console.log(" inconnetDB");
-  if (!client) {
-    const dbConnectionString = process.env.PUBLIC_DB_CONNECTION;
-    if (!dbConnectionString) {
-      throw new Error("Database connection string is not defined");
+  try {
+    if (!client) {
+      const dbConnectionString = process.env.PUBLIC_DB_CONNECTION;
+      if (!dbConnectionString) {
+        throw new Error("Database connection string is not defined");
+      }
+      client = new MongoClient(dbConnectionString);
     }
-    client = new MongoClient(dbConnectionString);
-    console.log(" after client");
+    clientPromise = client.connect();
+    await clientPromise; // וודא שהחיבור נוצר
+    console.log("Connected to MongoDB successfully");
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+    throw error;
   }
-  clientPromise = client.connect();
-  console.log(" after connect");
 
   return clientPromise;
 }
+
 
 export async function getAllDocuments(client: any, collection: string) {
   const db = client.db("Axis");
@@ -51,7 +72,7 @@ export async function insertDocument(
   return insertedDocument;
 }
 
-export async function updateDocument(
+export async function updateByUserId(
   client: MongoClient,
   collection: string,
   documentId: string,
@@ -60,10 +81,25 @@ export async function updateDocument(
   const db = client.db("Axis");
   const result = await db
     .collection(collection)
-    .updateOne({ _id: new ObjectId(documentId) }, { $set: updateData });
+    .updateOne({ user_id: documentId }, { $set: updateData });
   const updatedDocument = await db
     .collection(collection)
-    .findOne({ _id: new ObjectId(documentId) });
+    .findOne({ user_id: documentId});
+  return updatedDocument;
+}
+export async function updateByEmail(
+  client: MongoClient,
+  collection: string,
+  documentEmail: string,
+  updateData: object
+) {
+  const db = client.db("Axis");
+  const result = await db
+    .collection(collection)
+    .updateOne({ email: documentEmail }, { $set: updateData });
+  const updatedDocument = await db
+    .collection(collection)
+    .findOne({ email: documentEmail });
   return updatedDocument;
 }
 
@@ -79,6 +115,18 @@ export async function deleteDocument(
   return { message: `Document with ID ${documentId} has been deleted.` };
 }
 
+export async function deleteDocumentByEmail(
+  client: MongoClient,
+  collection: string,
+  documentEmail: string
+) {
+  const db = client.db("Axis");
+  const result = await db
+    .collection(collection)
+    .deleteOne({ email: documentEmail});
+  return { message: `Document with ID ${documentEmail} has been deleted.` };
+}
+
 export async function isExist(
   client: MongoClient,
   collection: string,
@@ -86,25 +134,24 @@ export async function isExist(
 ): Promise<boolean> {
   const db = client.db("Axis");
   const exists = await db.collection(collection).findOne(filter);
-  return !!exists; // Returns true if the document exists, false otherwise
+  return !!exists; 
 }
 
-export async function isEqual(
-  client: MongoClient,
-  collection: string,
-  filter: object,
-  data: string
-): Promise<boolean> {
-  const db = client.db("Axis"); 
-  const user = await db.collection(collection).findOne(filter); 
-  if (!user) {
-    return false; 
-  }
-  const isMatch = data==user.password;
-  return isMatch; 
-}
+// export async function isEqual(
+//   client: MongoClient,
+//   collection: string,
+//   filter: object,
+//   data: string
+// ): Promise<boolean> {
+//   const db = client.db("Axis"); 
+//   const user = await db.collection(collection).findOne(filter); 
+//   if (!user) {
+//     return false; 
+//   }
+//   const isMatch = data==user.password;
+//   return isMatch; 
+// }
 
-//await upsertDocument(client, "users", { name: "Jane Doe" }(<-מחפש שדה כזה), { age: 28 }(<-משנה את השדה הזה));
 export async function upsertDocument(
   client: MongoClient,
   collection: string,
@@ -132,6 +179,31 @@ export async function getSpecificFields(
     .collection(collection)
     .find(filter, { projection: fields })
     .toArray();
-  console.log(documents);
+  console.log(documents); 
   return documents;
+}
+
+
+
+export async function getDocumentsByIds(
+  client: MongoClient,
+  collection: string,
+  ids?: ObjectId[], 
+  include: boolean = true, // If true, fetch IDs in the list; if false, exclude them
+  fields?: object // Optional projection for specific fields
+) {
+  const db = client.db("Axis");
+  if (ids!=null){
+    const query = { _id: { [include ? "$in" : "$nin"]: ids } }; // Use $in or $nin based on 'includ
+
+    const options = fields ? { projection: fields } : {}; // Handle optional projection
+    return await db.collection(collection).find(query, options).toArray();
+  }
+  else{
+    const options = fields ? { projection: fields } : {}; // Handle optional projection
+    return await db.collection(collection).find(options).toArray();
+
+  }
+ 
+
 }

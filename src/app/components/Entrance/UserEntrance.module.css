@@ -12,7 +12,7 @@
   }
 
   .title {
-    margin-bottom: 4vh;
+    margin-bottom: 1vh;
     font-size: 24px;
     color: #45474b;
   }
@@ -24,7 +24,7 @@
   .input {
     width: 100%;
     padding: 10px;
-    margin-bottom: 3vh;
+    margin-top: 3vh;
     border: 1px solid #e0dddd;
     background-color: #e0dddd;
     border-radius: 5px;
@@ -126,5 +126,31 @@
   
   .custom_confirm_button:hover {
     background-color: #cdac09f0;  
+  }
+
+  .exempleUser{
+    margin-top: 0;
+    margin-bottom: 2vh;
+    color: #cdac09f0;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    background-color:#fff;
+    border: none;
+  }
+
+  .entranceIcon:hover{
+    color: #f9d520d2;;
+  }
+
+  .resetPassword{
+    margin:0;
+    color: #45474b;
+    text-decoration: none;
+    text-align: right;
+    font-size: 14px;
+    cursor: pointer;
+    background-color:#fff;
+    border: none;
   }
   

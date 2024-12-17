@@ -1,51 +1,63 @@
+import { verifyAuthToken } from "@/app/services/decodeToken";
+import { connectDatabase, insertDocument } from "@/app/services/mongo";
+import { ObjectId } from "mongodb";
 import Pusher from "pusher";
 
 declare global {
-    namespace NodeJS {
-        interface ProcessEnv {
-            PUSHER_APP_ID: string;
-            PUSHER_KEY: string;
-            PUSHER_SECRET: string;
-            PUSHER_CLUSTER: string;
-        }
+  namespace NodeJS {
+    interface ProcessEnv {
+      PUSHER_APP_ID: string;
+      PUSHER_KEY: string;
+      PUSHER_SECRET: string;
+      PUSHER_CLUSTER: string;
     }
+  }
 }
 
 const pusher = new Pusher({
-    appId: process.env.PUSHER_APP_ID,
-    key: process.env.PUSHER_KEY,
-    secret: process.env.PUSHER_SECRET,
-    cluster: process.env.PUSHER_CLUSTER,
-    useTLS: true,
+  appId: process.env.PUSHER_APP_ID,
+  key: process.env.PUSHER_KEY,
+  secret: process.env.PUSHER_SECRET,
+  cluster: process.env.PUSHER_CLUSTER,
+  useTLS: true,
 });
-
-// export async function POST(req: any) {
-//     try {
-//         const { channel, event, message } = await req.json();
-//         // await pusher.trigger(channel, event, { message });
-
-//         await pusher.trigger("chat-channel", "new-message", {
-//             time: new Date(),
-//             text: message.text,
-//             sender: message.sender,
-//         });
-//         return new Response(JSON.stringify({ success: true }), { status: 200 });
-//     } catch (error) {
-//         console.error(error);
-//         return new Response(JSON.stringify({ success: false, error }), { status: 500 });
-//     }
-
-// }
 
 export async function POST(req: any) {
     try {
-        const { channel = "chat-channel", event = "new-message", message } = await req.json();
-        if (!message) throw new Error("Message is required");
-        await pusher.trigger(channel, event, message);
-        return new Response(JSON.stringify({ success: true }), { status: 200 });
-    } catch (error: any) {
-        console.error("Error in POST handler:", error);
-        return new Response(JSON.stringify({ success: false, error: error.message }), { status: 500 });
-    }
-}
+      const authToken = req.cookies.get("authToken")?.value;
+  
+      if (!authToken) {
+        return new Response("Missing authToken", { status: 401 });
+      }
+  
+      const userId = await verifyAuthToken(authToken);
+      const { conversationId = "", message, channel = "chat-channel", event = "new-message" } = await req.json();
+  
+      if (!message) throw new Error("Message is required");
+  
+      // Define a unique channel for each conversation
+      const conversationChannel = `chat-channel-${conversationId}`;
+  
+      const messageData = {
+        text: message.text,
+        time:message.time,
+        sender: userId,
+        conversationId,
+      };
+  
+      console.log(`Broadcasting message to ${conversationChannel}:`, messageData);
+      const client = await connectDatabase();
+      const result=await insertDocument(client,"massages",messageData);
 
+
+
+      
+      await pusher.trigger(conversationChannel, event, messageData);
+  
+      return new Response(JSON.stringify({ success: true }), { status: 200 });
+    } catch (error: any) {
+      console.error("Error in POST handler:", error.message);
+      return new Response(JSON.stringify({ success: false, error: error.message }), { status: 500 });
+    }
+  }
+  

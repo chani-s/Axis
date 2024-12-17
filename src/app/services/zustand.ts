@@ -1,36 +1,44 @@
+import { create } from "zustand";
+import { ObjectId } from "mongodb";
 
-import {create} from 'zustand';
-import { ObjectId } from 'mongodb';
+interface User {
+  _id: string;
+  email: string;
+  google_auth: boolean;
+  user_type: string;
+  user_name:string
+}
 
-interface User{
-    _id: string;
-    email: string;
-    google_auth: boolean;
-    user_type: string;
-  }
+interface Conversation {
+  _id: string;
+}
 
-  interface Conversation{
-    _id: string;
-  }
+interface Conversation {
+  _id: string;
+}
 
 type UserStore = {
-    userDetails: User;
-    setUserDetails: (details: User) => void; 
+  userDetails: User;
+  setUserDetails: (details: User) => void;
 };
 
 type Conversations = {
-    conversation: Conversation;
-    setConversation: (details: Conversation) => void; 
+  conversation: Conversation;
+  setConversation: (details: Conversation) => void;
 };
 
 export const userDetailsStore = create<UserStore>((set) => ({
-    userDetails: { _id: "", email: "", google_auth: false, user_type: "",},
-    setUserDetails: (details: User) => set({ userDetails : details }),
+  userDetails: {
+    _id: "",
+    email: "",
+    google_auth: false,
+    user_type: "",
+    user_name: "",
+  },
+  setUserDetails: (details: User) => set({ userDetails: details }),
 }));
 
 export const conversationsStore = create<Conversations>((set) => ({
-    conversation: { _id: ""},
-    setConversation: (details: Conversation) => set({ conversation : details }),
+  conversation: { _id: "" },
+  setConversation: (details: Conversation) => set({ conversation: details }),
 }));
-
-
