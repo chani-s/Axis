@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./MainChat.module.css";
 import Pusher from "pusher-js";
-import PermissionPanel from "../PermissionPanel/PermissionPanel";
+// import PermissionPanel from "../PermissionPanel/PermissionPanel";
 import { FaTimes, FaBars, FaArrowLeft, FaWindowMinimize } from "react-icons/fa";
 import DetailsBar from "./DetailsBar/DetailsBar";
+import DetailsPopUp from "./DetailsPopUp/DetailsPopUp";
+
 import {
   conversationsStore,
   userDetailsStore,
