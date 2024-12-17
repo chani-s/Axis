@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./MainChat.module.css";
 import Pusher from "pusher-js";
-// import PermissionPanel from "../PermissionPanel/PermissionPanel";
-import { FaTimes, FaBars, FaArrowLeft, FaWindowMinimize } from "react-icons/fa";
+import PermissionPanel from "../PermissionPanel/PermissionPanel";
+import { FaTimes, FaBars, FaArrowLeft, FaWindowMinimize, FaInfoCircle } from "react-icons/fa";
 import DetailsBar from "./DetailsBar/DetailsBar";
 import DetailsPopUp from "./DetailsPopUp/DetailsPopUp";
 
@@ -11,6 +11,7 @@ import {
   userDetailsStore,
 } from "../../../services/zustand";
 import { getMessages } from "@/app/services/message";
+import { FaPerson, FaPersonRifle } from "react-icons/fa6";
 
 interface MessageObj {
   time: Date;
@@ -165,15 +166,15 @@ const MainChat = ({ type }: any) => {
             <FaWindowMinimize />
           </button>
         </div>
-        <button
-          className={styles.hamburger}
+        {isUser && <button
+          className={styles.detailsIcon}
           onClick={managePermissions}
           data-tooltip={"ניהול ההרשאות לנתונים שלך"}
         >
-          <FaBars />
-        </button>
+          <FaInfoCircle />
+        </button>}
       </div>
-      {isPermissionPanelOpen && <PermissionPanel />}
+      {isPermissionPanelOpen && <DetailsBar type="user"/>}
 
       <div className={styles.chatMessages}>
         {messages
@@ -205,7 +206,7 @@ const MainChat = ({ type }: any) => {
             פרטי לקוח
           </button>
         )}
-        {isShowDetails && <DetailsBar />}
+        {isShowDetails && <DetailsBar type="representative" />}
 
         <input
           className={styles.inputField}
