@@ -86,7 +86,7 @@ export const Entrance = ({ type }: any) => {
         email: data.userDetails.email,
         google_auth: data.userDetails.google_auth || false,
         user_type: data.userDetails.user_type,
-        user_name: data.userDetails.name,
+        name: data.userDetails.name,
         id_number: data.userDetails.id_number,
         address: data.userDetails.address,
       };
@@ -99,7 +99,7 @@ export const Entrance = ({ type }: any) => {
         email: data.userDetails.email,
         google_auth: data.userDetails.google_auth || false,
         user_type: data.userDetails.user_type,
-        user_name: data.userDetails.name,
+        name: data.userDetails.name,
         id_number: data.userDetails.id_number,
         address: data.userDetails.address,
 
@@ -113,7 +113,7 @@ export const Entrance = ({ type }: any) => {
         email: data.userDetails.email,
         google_auth: data.userDetails.google_auth || false,
         user_type: data.userDetails.user_type,
-        user_name: data.userDetails.name,
+        name: data.userDetails.name,
         id_number: data.userDetails.id_number,
         address: data.userDetails.address,
 

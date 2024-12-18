@@ -5,7 +5,7 @@ interface User {
     email: string;
     google_auth: boolean;
     user_type: string;
-    user_name: string;
+    name: string;
     id_number: string | null;
     address: string | null;
 
@@ -18,7 +18,7 @@ interface Conversation {
 type UserStore = {
     userDetails: User;
     setUserDetails: (details: User) => void;
-    getMissingDetails: () => string[];  // פונקציה לקבלת השדות החסרים
+    getMissingDetails: () => string[];  
 };
 
 type Conversations = {
@@ -32,7 +32,7 @@ export const userDetailsStore = create<UserStore>((set) => ({
         email: "",
         google_auth: false,
         user_type: "",
-        user_name: "",
+        name: "",
         id_number: null,
         address: null,
     },
@@ -42,7 +42,7 @@ export const userDetailsStore = create<UserStore>((set) => ({
         const missing: string[] = [];
         const userDetails = userDetailsStore.getState().userDetails;
 
-        if (!userDetails.user_name) missing.push("user_name");
+        if (!userDetails.name) missing.push("name");
         if (!userDetails.id_number) missing.push("id_number");
         if (!userDetails.address) missing.push("address");
         return missing;

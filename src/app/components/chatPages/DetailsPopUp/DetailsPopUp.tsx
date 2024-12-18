@@ -5,7 +5,7 @@ import { updateUserByEmail } from "@/app/services/details";
 
 const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
   const { userDetails, setUserDetails, getMissingDetails } = userDetailsStore();
-  const [fullName, setFullName] = React.useState(userDetails.user_name || "");
+  const [fullName, setFullName] = React.useState(userDetails.name || "");
   const [address, setAddress] = React.useState(userDetails.address || "");
   const [idNumber, setIdNumber] = React.useState(userDetails.id_number || "");
 
@@ -15,7 +15,7 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
     e.preventDefault();
   
     const updatedDetails = {
-      user_name: fullName,
+      name: fullName,
       address: address,
       id_number: idNumber, 
     };
@@ -26,7 +26,7 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
       if (response.data.success) {
         setUserDetails({
           ...userDetails,
-          user_name: updatedDetails.user_name,
+          name: updatedDetails.name,
           address: updatedDetails.address,
           id_number: updatedDetails.id_number,
         });
@@ -47,7 +47,7 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
   return (
     <form onSubmit={handleSubmit} className={style.container}>
       <h2 className={style.title}>השלמת פרטים</h2>
-      {missingDetails.includes("user_name") && (
+      {missingDetails.includes("name") && (
         <div className={style.inputContainer}>
           <input
             type="text"
