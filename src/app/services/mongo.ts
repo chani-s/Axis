@@ -88,16 +88,6 @@ export async function updateByEmail(
   return updatedDocument;
 }
 
-// export const updateByEmail = async (client: MongoClient, collectionName: string, email: string, updateData: object) => {
-//   const collection = client.db().collection(collectionName);
-//   const result = await collection.updateOne(
-//     { email }, 
-//     { $set: updateData },
-//   );
-//   console.log(result);
-//   return result; 
-// };
-
 export async function deleteDocument(
   client: MongoClient,
   collection: string,

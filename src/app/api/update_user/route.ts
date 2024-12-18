@@ -11,7 +11,6 @@ export async function POST(req: NextRequest) {
 
     const client = await connectDatabase();
     const updatedDocument = await updateByEmail(client, 'users', email, updateData);
-    console.log(updatedDocument);
     return NextResponse.json({ success: true, user: updatedDocument }, { status: 200 });
   } catch (error) {
     console.error("Error updating user:", error);

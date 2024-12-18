@@ -17,15 +17,13 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
     const updatedDetails = {
       user_name: fullName,
       address: address,
-      id_number: idNumber, // תעודת זהות
+      id_number: idNumber, 
     };
   
     try {
-      // שלח את הנתונים לשרת ולעדכן את המשתמש במונגו
       const response = await updateUserByEmail(userDetails.email, updatedDetails);
   
       if (response.data.success) {
-        // עדכון הסטור רק אם השמירה במונגו הצליחה
         setUserDetails({
           ...userDetails,
           user_name: updatedDetails.user_name,
@@ -43,32 +41,6 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
       alert("שגיאה בשמירת הנתונים");
     }
   };
-  
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-
-//     const updatedDetails = {
-//       user_name: fullName,
-//       address: address,
-//     };
-
-//     try {
-      
-//       setUserDetails({
-//         ...userDetails,
-//         user_name: fullName,
-//         id_number: idNumber,
-//         address: address,
-//       });
-//       alert("הפרטים נשמרו בהצלחה!");
-//       console.log(userDetails);
-//       onClose();
-//     } catch (error) {
-//       console.error("שגיאה:", error);
-//       alert("שגיאה בשמירת הנתונים");
-//     }
-//   };
 
   if (missingDetails.length === 0) return null;
 
