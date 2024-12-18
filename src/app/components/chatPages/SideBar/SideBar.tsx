@@ -82,7 +82,7 @@ const SideBar: React.FC<SideBarProps> = ({
       company_profilePicture: company.profilePicture,
       company_name: company.name,
       last_use: new Date(),
-      user_name: userDetails.user_name,
+      user_name: userDetails.name,
       user_profilePicture:
         "",
     };
