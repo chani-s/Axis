@@ -1,7 +1,7 @@
 
 import { connectDatabase, getSpecificFields, getById } from "@/app/services/mongo";
 import { NextResponse, NextRequest } from "next/server";
-import {verifyPassword} from "../../services/hash";
+import { verifyPassword } from "../../services/hash";
 import jwt from "jsonwebtoken";
 
 export async function POST(req: NextRequest) {
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
         { user_id: userId },
         { password: 1 }
       );
-      
+
       if (userPassword[0]) {
         const isCorrect = await verifyPassword(userData.password, userPassword[0].password);
         if (isCorrect) {
@@ -43,7 +43,6 @@ export async function POST(req: NextRequest) {
             "users",
             userId
           );
-
           const token = jwt.sign(
             { userId: userDetails._id },
             SECRET_KEY?SECRET_KEY:"", 
@@ -53,15 +52,15 @@ export async function POST(req: NextRequest) {
           const { _id, ...userWithoutId } = userDetails;
           responseDetails.userDetails = userDetails;
           responseDetails.token = token;
-  
+
           const response = NextResponse.json(responseDetails);
           response.cookies.set("authToken", token, {
             httpOnly: true,
             secure: true,
             sameSite: "strict",
-            maxAge: 3600 
-          });
-  
+            maxAge: 3600
+          });          
+
           await client.close();
           return response;
         }
