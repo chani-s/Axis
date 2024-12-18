@@ -5,6 +5,7 @@ import { insertDocument } from "@/app/services/mongo";
 import Pusher from "pusher";
 import jwt from "jsonwebtoken";
 import { verifyAuthToken } from "@/app/services/decodeToken";
+import { Conversation } from "@/app/models/Conversation";
 
 const secret = process.env.TOKEN_SECRET_KEY;
 
@@ -56,9 +57,15 @@ export async function POST(request: NextRequest) {
     if (!authToken) {
       return new Response("Missing authToken", { status: 401 });
     }
+    if (!secret) {
+      return new Response("Missing key", { status: 401 });
+    }
+    const decodedToken = jwt.verify(authToken, secret) as { userId: string };
 
-    // Verify token and get userId
-    const userId = await verifyAuthToken(authToken);
+    if (!decodedToken || !decodedToken.userId) {
+      return new Response("Invalid token", { status: 401 });
+    }
+    const userId = new ObjectId(decodedToken.userId);
     // Fetch representatives for the specified company
     const representatives = await db
       .collection("users")
@@ -69,6 +76,7 @@ export async function POST(request: NextRequest) {
       .toArray();
 
     let representativeId = null;
+    let result;
 
     if (representatives.length > 0) {
       // Find the representative with the minimum number of conversations
@@ -81,9 +89,8 @@ export async function POST(request: NextRequest) {
       );
 
       representativeId = representativeWithMinConversations._id;
-
       // Update the representative's conversation list
-      const conversationId = await db.collection("conversations").insertOne({
+      result = await insertDocument(client,"conversations",{
         ...body,
         company_id: new ObjectId(companyId),
         user_id: new ObjectId(userId),
@@ -91,14 +98,19 @@ export async function POST(request: NextRequest) {
         last_use: Date.now(),
         representative_id: representativeId,
       });
+if(!result||!result._id){
+  return NextResponse.json(
+    { message: "prob with id" },
+  )
 
+}
       await db.collection("users").updateOne(
         { _id: representativeWithMinConversations._id },
-        { $addToSet: { conversations: conversationId.insertedId } } // Add conversation to representative's list
+        { $addToSet: { conversations: result._id } } // Add conversation to representative's list
       );
     } else {
       // Create a conversation without assigning a representative
-      const result = await db.collection("conversations").insertOne({
+       result = await insertDocument(client,"conversations",{
         ...body,
         company_id: new ObjectId(companyId),
         user_id: new ObjectId(userId),
@@ -112,7 +124,7 @@ export async function POST(request: NextRequest) {
     }
 
     await client.close();
-    return NextResponse.json({ message: "Conversation created successfully." });
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Error creating conversation:", error);
     return NextResponse.json(
