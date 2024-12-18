@@ -76,6 +76,7 @@ const SideBar: React.FC<SideBarProps> = ({
 
   const handleCreateConversation = (company: any) => {
     const newConversation = {
+      
       company_id: company._id,
       representative_id: null,
       status_code: 2,
