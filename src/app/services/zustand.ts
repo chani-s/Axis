@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { ObjectId } from "mongodb";
 
 interface User {
     _id: string;
@@ -46,7 +45,6 @@ export const userDetailsStore = create<UserStore>((set) => ({
         if (!userDetails.user_name) missing.push("user_name");
         if (!userDetails.id_number) missing.push("id_number");
         if (!userDetails.address) missing.push("address");
-        console.log(missing);
         return missing;
     },
 }));
