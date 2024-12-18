@@ -80,3 +80,9 @@
 .cancelButton:hover {
   background-color: #ccc;
 }
+
+.error {
+  color: #d93025; 
+  font-size: 14px;
+  font-weight: bold;
+}
