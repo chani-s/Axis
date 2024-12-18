@@ -45,7 +45,6 @@ export async function GET(request:NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    console.log("a")
     const url = new URL(request.url);
     const companyId = url.searchParams.get("company_id") || "";
     const body = await request.json();
@@ -53,23 +52,19 @@ export async function POST(request: NextRequest) {
     const db = client.db("Axis");
 
     const authToken = request.cookies.get("authToken")?.value;
-    console.log("b")
+
     if (!authToken) {
       return new Response("Missing authToken", { status: 401 });
     }
-let userId;
-    // Verify token and get userId\
-    console.log("c")
-
-    try{
-       userId = await verifyAuthToken(authToken);
+    if (!secret) {
+      return new Response("Missing key", { status: 401 });
     }
-    catch(error:any){
-      return NextResponse.json({ message: "problem in verifyng"+error});
-    }
-    console.log("d")
+    const decodedToken = jwt.verify(authToken, secret) as { userId: string };
 
-    // Fetch representatives for the specified company
+    if (!decodedToken || !decodedToken.userId) {
+      return new Response("Invalid token", { status: 401 });
+    }
+    const userId = new ObjectId(decodedToken.userId);
     // Fetch representatives for the specified company
     const representatives = await db
       .collection("users")
@@ -78,10 +73,8 @@ let userId;
         company_id: new ObjectId(companyId),
       })
       .toArray();
-      console.log("e")
 
-  let representativeId = null;
-  console.log("f")
+    let representativeId = null;
 
     if (representatives.length > 0) {
       // Find the representative with the minimum number of conversations
@@ -92,10 +85,9 @@ let userId;
           return currentLength < minLength ? currentRep : minRep;
         }
       );
-      console.log("g")
 
       representativeId = representativeWithMinConversations._id;
-console.log("befor insert1 conver")
+let result;
       // Update the representative's conversation list
       const conversationId = await db.collection("conversations").insertOne({
         ...body,
@@ -105,14 +97,11 @@ console.log("befor insert1 conver")
         last_use: Date.now(),
         representative_id: representativeId,
       });
-      console.log("after  insert1 converr")
 
       await db.collection("users").updateOne(
         { _id: representativeWithMinConversations._id },
         { $addToSet: { conversations: conversationId.insertedId } } // Add conversation to representative's list
       );
-      console.log("after update rep ")
-
     } else {
       // Create a conversation without assigning a representative
       const result = await db.collection("conversations").insertOne({
@@ -123,14 +112,13 @@ console.log("befor insert1 conver")
         last_use: Date.now(),
         representative_id: null,
       });
-      console.log("after insert2 ")
 
       await client.close();
       return NextResponse.json(result);
     }
 
     await client.close();
-    return NextResponse.json({ message: "Conversation created successfully." });
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Error creating conversation:", error);
     return NextResponse.json(

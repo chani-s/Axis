@@ -16,15 +16,12 @@ export async function GET(request: Request) {
 
     let result;
     console.log("in get")
-    switch (type) {
-      case "nameAndProfile":
+    
         result = await getDocumentsByIds(client, "companies", ids, false, {
           _id: 1,
           name: 1,
           profilePicture: 1
-        });
-        break;
-    }
+    })
     await client.close();
 
     return NextResponse.json(result);
