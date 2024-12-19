@@ -20,7 +20,6 @@ const SideBar: React.FC<SideBarProps> = ({
   createConversation,
   chosenConversationId,
 }) => {
-  // const id = "67504b0fbe15427c891d0cbe";
 
   const [searchTerm, setSearchTerm] = useState(""); // Search term for company search
   const [chatSearchTerm, setChatSearchTerm] = useState(""); // Search term for chat search
@@ -50,7 +49,7 @@ const SideBar: React.FC<SideBarProps> = ({
         return company.name.toLowerCase().includes(searchTerm.toLowerCase());
       }) || []
     );
-    console.log("term" + searchTerm);
+    // console.log("term" + searchTerm);
   }, [searchTerm, companiesData]);
 
   useEffect(() => {
@@ -83,7 +82,7 @@ const SideBar: React.FC<SideBarProps> = ({
       company_profilePicture: company.profilePicture,
       company_name: company.name,
       last_use: new Date(),
-      user_name: userDetails.user_name,
+      user_name: userDetails.name,
       user_profilePicture:
         "",
     };
