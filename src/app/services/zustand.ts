@@ -6,7 +6,8 @@ interface User {
   email: string;
   google_auth: boolean;
   user_type: string;
-  user_name:string
+  user_name:string;
+  user_company_id?:string
 }
 
 interface Conversation {
@@ -34,6 +35,7 @@ export const userDetailsStore = create<UserStore>((set) => ({
     google_auth: false,
     user_type: "",
     user_name: "",
+    user_company_id:""
   },
   setUserDetails: (details: User) => set({ userDetails: details }),
 }));

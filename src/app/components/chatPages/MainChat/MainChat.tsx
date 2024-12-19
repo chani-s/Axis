@@ -9,6 +9,7 @@ import {
   userDetailsStore,
 } from "../../../services/zustand";
 import { getMessages } from "@/app/services/message";
+import { getUser } from "@/app/services/user";
 
 interface MessageObj {
   time: Date;
@@ -27,9 +28,26 @@ const MainChat = ({ type }: any) => {
   const [isUser, setIsUser] = useState(true);
   const [isShowDetails, setIsShowDetails] = useState(false);
   const userDetails = userDetailsStore((state) => state.userDetails);
+  const setUserDetails = userDetailsStore((state) => state.setUserDetails);
   const conversation = conversationsStore((state) => state.conversation);
 
+const getLiveUser=async()=>{
+    const user = await getUser();
+    const userDetails = {
+        // Details should be update according to types and popup new details
+        _id: user._id,
+        email: user.email,
+        google_auth: user.google_auth || false,
+        user_type: user.user_type,
+        user_name: user.name,
+        user_company_id:user.compamy_id
+      };
+      setUserDetails(userDetails);
+}
+useEffect(()=>{
+     getLiveUser();
 
+},[])
   useEffect(() => {
     if (!conversation?._id) return;
       const loadConversationMessages = async () => {
@@ -39,7 +57,6 @@ const MainChat = ({ type }: any) => {
         if(previousMessages.length>0){
             setMessages(previousMessages);
         }
-        
       } catch (error) {
         console.error("Failed to load previous conversation messages", error);
       }
@@ -48,7 +65,6 @@ const MainChat = ({ type }: any) => {
 
   loadConversationMessages();
     
-  
     const pusher = new Pusher('ff054817599b88393e16', {
       cluster: 'ap2',
     });

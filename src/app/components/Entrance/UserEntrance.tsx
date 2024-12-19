@@ -13,6 +13,7 @@ import ForgetPassword from "../Entrance/ForgotPassword";
 import { showError } from "../../services/messeges";
 
 export const Entrance = ({ type }: any) => {
+    const [profile,setProfile]=useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -99,6 +100,7 @@ export const Entrance = ({ type }: any) => {
         google_auth: data.userDetails.google_auth || false,
         user_type: data.userDetails.user_type,
         user_name: data.userDetails.name,
+        user_company_id:data.userDetails.company_id
       };
       setUserDetails(userDetails);
       router.push("/chat/representative");
@@ -110,6 +112,7 @@ export const Entrance = ({ type }: any) => {
         google_auth: data.userDetails.google_auth || false,
         user_type: data.userDetails.user_type,
         user_name: data.userDetails.name,
+        user_company_id:data.userDetails.company_id
       };
       setUserDetails(userDetails);
       router.push("/chat/manager");
@@ -150,12 +153,17 @@ export const Entrance = ({ type }: any) => {
   const signupHandler = async (e: any) => {
     e.preventDefault();
     const res = await googleSignup();
+    console.log(res);
     setIsWithGoogle(true);
     const emailFromGoogle = res.user.email;
     setEmail(emailFromGoogle);
     const nameFromGoogle = res.user.displayName;
     setName(nameFromGoogle);
     console.log(emailFromGoogle, nameFromGoogle);
+    const profilePictureFromGoogle = res.user.photoURL;
+    setProfile(profilePictureFromGoogle);
+    console.log(profilePictureFromGoogle);
+
     const userData = {
       email: emailFromGoogle,
       name: nameFromGoogle,
