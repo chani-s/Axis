@@ -1,7 +1,8 @@
 import { connectDatabase, getDocumentsByIds, getSpecificFields } from "@/app/services/mongo";
 import { log } from "console";
 import { ObjectId } from "mongodb";
-import { NextResponse } from "next/server"
+import { NextResponse } from "next/server";
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   try {

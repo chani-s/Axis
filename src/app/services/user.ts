@@ -1,6 +1,7 @@
 "use client"
 import { AxiosResponse } from "axios";
 import { http } from "./http";
+export const dynamic = 'force-dynamic';
 
 
 export const signUpUser = async (userData: {

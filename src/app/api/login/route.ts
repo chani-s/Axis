@@ -3,6 +3,7 @@ import { connectDatabase, getSpecificFields, getById, updateByEmail } from "@/ap
 import { NextResponse, NextRequest } from "next/server";
 import { verifyPassword } from "../../services/hash";
 import jwt from "jsonwebtoken";
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   
