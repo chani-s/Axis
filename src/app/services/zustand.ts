@@ -8,6 +8,8 @@ interface User {
     name: string;
     id_number: string | null;
     address: string | null;
+    profile_picture: string | null;
+
 
 }
 
@@ -33,8 +35,9 @@ export const userDetailsStore = create<UserStore>((set) => ({
         google_auth: false,
         user_type: "",
         name: "",
-        id_number: null,
-        address: null,
+        id_number: "",
+        address: "",
+        profile_picture: "",
     },
     setUserDetails: (details: User) => set({ userDetails: details }),
 

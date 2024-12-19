@@ -15,7 +15,6 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
         id_number: "",
         address: "",
     });
-    console.log(userDetails);
     
     const isValidIsraeliId = (id: string): boolean => {
         if (id.length > 9) return false;

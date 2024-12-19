@@ -9,7 +9,10 @@ const nextConfig = {
     EMAIL_ADDRESS: "axiss1chat@gmail.com",
     EMAIL_PASSWORD: "ipun gfeb xesp wrko",
     SECRET_KEY : "m10r07w24",
-    TOKEN_SECRET_KEY:"m10r07w24"
+    TOKEN_SECRET_KEY:"m10r07w24",
+    CLOUDINARY_CLOUD_NAME: "dmyly6bfr",
+    CLOUDINARY_API_KEY: "966972565264862",
+    CLOUDINARY_API_SECRET: "YEpeBDvOx_7V4AcRFqbNzWXMDoM"
 
 
   },

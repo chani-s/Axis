@@ -44,11 +44,11 @@ const Header = () => {
 
             {isPopupOpen && (
                 <ProfilePopup
-                    userName={userDetails.name}
-                    userEmail={userDetails.email}
-                    profilePicture={profilePicture}
+                    // userName={userDetails.name}
+                    // userEmail={userDetails.email}
+                    // profilePicture={profilePicture}
                     onClose={closePopup}
-                    onSave={saveProfile}
+                    // onSave={saveProfile}
                 />
             )}
         </div>
