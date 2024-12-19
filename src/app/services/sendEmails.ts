@@ -2,6 +2,7 @@
 const nodemailer = require('nodemailer');
 import path from 'path';
 import querystring from 'querystring';
+export const dynamic = 'force-dynamic';
 
 async function sendEmail(to: string, subject: string, text: string, isRepresentative: boolean) {
     if (!to || !subject || !text) {

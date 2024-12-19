@@ -3,6 +3,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { randomBytes } from "crypto";
 import { hashPassword } from "../../services/hash";
 import sendEmail from "../../services/sendEmails";
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
 

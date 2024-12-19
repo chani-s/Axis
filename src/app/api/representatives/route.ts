@@ -2,6 +2,7 @@ import { connectDatabase, getSpecificFields, insertDocument, isExist } from "@/a
 import { NextResponse, NextRequest } from "next/server";
 import sendEmail from "../../services/sendEmails";
 import { ObjectId } from 'mongodb';
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
     try {
