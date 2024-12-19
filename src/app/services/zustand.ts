@@ -8,6 +8,7 @@ interface User {
     name: string;
     id_number: string | null;
     address: string | null;
+    status: string | null;
 
 }
 
@@ -35,6 +36,7 @@ export const userDetailsStore = create<UserStore>((set) => ({
         name: "",
         id_number: null,
         address: null,
+        status: null,
     },
     setUserDetails: (details: User) => set({ userDetails: details }),
 
