@@ -11,16 +11,21 @@ import { useRouter } from "next/navigation";
 import { userDetailsStore } from "../../services/zustand";
 import ForgetPassword from "../Entrance/ForgotPassword";
 import { showError } from "../../services/messeges";
+import { useSearchParams } from 'next/navigation';
 
 export const Entrance = ({ type }: any) => {
-  const [email, setEmail] = useState("");
+  const searchParams = useSearchParams();
+  const emailFromUrl = searchParams.get('email');
+  const typeFromUrl = searchParams.get('type');
+  const [email, setEmail] = useState(emailFromUrl ||"");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isWithGoogle, setIsWithGoogle] = useState(false);
   const [isLoadding, setIsLoadding] = useState(false);
   const [forgetPassword, setForgetPassword] = useState(false);
-  const router = useRouter();
   const setUserDetails = userDetailsStore((state) => state.setUserDetails);
+  const router = useRouter();
+  
 
   const mutationSignUp = useMutation({
     mutationFn: signUpUser,
@@ -140,7 +145,7 @@ export const Entrance = ({ type }: any) => {
         email: email,
         password: password,
         isWithGoogle: false,
-        userType: "user",
+        userType:typeFromUrl?"representative": "user",
       };
       mutationSignUp.mutate(userData);
     }
@@ -190,6 +195,8 @@ export const Entrance = ({ type }: any) => {
             <input
               type="email"
               placeholder="אימייל"
+              value={email}
+              readOnly={!!emailFromUrl}
               className={style.input}
               onChange={(e) => setEmail(e.target.value)}
               title="אנא הכנס כתובת אימייל תקינה"
