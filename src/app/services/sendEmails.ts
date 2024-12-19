@@ -1,4 +1,4 @@
-"use server"
+"use service";
 const nodemailer = require('nodemailer');
 import path from 'path';
 import querystring from 'querystring';
