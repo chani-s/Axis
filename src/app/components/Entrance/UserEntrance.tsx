@@ -18,6 +18,7 @@ export const Entrance = ({ type }: any) => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isWithGoogle, setIsWithGoogle] = useState(false);
+  const [isRepresentative, setIsRepresentative] = useState(false);
   const [isLoadding, setIsLoadding] = useState(false);
   const [forgetPassword, setForgetPassword] = useState(false);
   const setUserDetails = userDetailsStore((state) => state.setUserDetails);
@@ -30,6 +31,9 @@ export const Entrance = ({ type }: any) => {
     const emailFromUrl = params.get("email");
     if (emailFromUrl) {
       setEmail(emailFromUrl);
+    }
+    if(typeFromUrl=="representative"){
+      setIsRepresentative(true);
     }
   }, []);
 
@@ -202,7 +206,7 @@ export const Entrance = ({ type }: any) => {
               type="email"
               placeholder="אימייל"
               value={email}
-              readOnly={!!email}
+              readOnly={isRepresentative}
               className={style.input}
               onChange={(e) => setEmail(e.target.value)}
               title="אנא הכנס כתובת אימייל תקינה"
