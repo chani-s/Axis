@@ -2,6 +2,7 @@
 import React from "react";
 import { Entrance } from "../components/Entrance/UserEntrance";
 import style from './login.module.css';
+export const dynamic = 'force-dynamic';
 
 const LoginPage = () => {
     return (
@@ -11,6 +12,5 @@ const LoginPage = () => {
         </div>
     );
 };
-
 
 export default LoginPage;

@@ -52,7 +52,7 @@ export const Representatives = () => {
         setLoading(true);
         setError(null);
         try {
-            const newRepresentative = await inviteRepresentative(inviteEmail);
+            const newRepresentative = await inviteRepresentative(inviteEmail, "6756bc39d4cf4f15a0da3ff6");
             setRepresentatives((prev) => [...prev, newRepresentative]);
             setInviteEmail("");
             setIsInviteRepresentative(false);

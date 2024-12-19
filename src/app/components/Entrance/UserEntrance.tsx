@@ -1,5 +1,5 @@
-"use client";
-import React, { useState } from "react";
+'use client';
+import React, { useState, Suspense,useEffect } from "react";
 import Link from "next/link";
 import style from "./UserEntrance.module.css";
 import { googleSignup } from "../../services/auth";
@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { userDetailsStore } from "../../services/zustand";
 import ForgetPassword from "../Entrance/ForgotPassword";
 import { showError } from "../../services/messeges";
+export const dynamic = 'force-dynamic';
 
 export const Entrance = ({ type }: any) => {
   const [email, setEmail] = useState("");
@@ -19,8 +20,18 @@ export const Entrance = ({ type }: any) => {
   const [isWithGoogle, setIsWithGoogle] = useState(false);
   const [isLoadding, setIsLoadding] = useState(false);
   const [forgetPassword, setForgetPassword] = useState(false);
-  const router = useRouter();
   const setUserDetails = userDetailsStore((state) => state.setUserDetails);
+  const router = useRouter();
+  let typeFromUrl="";
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    typeFromUrl = params?.get("type") ||"";
+    const emailFromUrl = params.get("email");
+    if (emailFromUrl) {
+      setEmail(emailFromUrl);
+    }
+  }, []);
 
   const mutationSignUp = useMutation({
     mutationFn: signUpUser,
@@ -29,7 +40,6 @@ export const Entrance = ({ type }: any) => {
     },
     onSuccess: (data: any) => {
       console.log(isLoadding);
-
       console.log(data);
       if (data.userDetails.email) setDetails(data);
       else {
@@ -82,12 +92,14 @@ export const Entrance = ({ type }: any) => {
   const setDetails = (data: any) => {
     if (data.userDetails.user_type == "user") {
       const userDetails = {
-        // Details should be update according to types and popup new details
         _id: data.userDetails._id,
         email: data.userDetails.email,
         google_auth: data.userDetails.google_auth || false,
         user_type: data.userDetails.user_type,
-        user_name: data.userDetails.name,
+        name: data.userDetails.name,
+        id_number: data.userDetails.id_number,
+        address: data.userDetails.address,
+        status: null
       };
       setUserDetails(userDetails);
       router.push("/chat/user");
@@ -98,7 +110,10 @@ export const Entrance = ({ type }: any) => {
         email: data.userDetails.email,
         google_auth: data.userDetails.google_auth || false,
         user_type: data.userDetails.user_type,
-        user_name: data.userDetails.name,
+        name: data.userDetails.name,
+        id_number: data.userDetails.id_number,
+        address: data.userDetails.address,
+        status: data.userDetails.status
       };
       setUserDetails(userDetails);
       router.push("/chat/representative");
@@ -109,7 +124,10 @@ export const Entrance = ({ type }: any) => {
         email: data.userDetails.email,
         google_auth: data.userDetails.google_auth || false,
         user_type: data.userDetails.user_type,
-        user_name: data.userDetails.name,
+        name: data.userDetails.name,
+        id_number: data.userDetails.id_number,
+        address: data.userDetails.address,
+        status: null
       };
       setUserDetails(userDetails);
       router.push("/chat/manager");
@@ -133,7 +151,7 @@ export const Entrance = ({ type }: any) => {
         email: email,
         password: password,
         isWithGoogle: false,
-        userType: "user",
+        userType: typeFromUrl ? "representative" : "user",
       };
       mutationSignUp.mutate(userData);
     }
@@ -183,6 +201,8 @@ export const Entrance = ({ type }: any) => {
             <input
               type="email"
               placeholder="אימייל"
+              value={email}
+              readOnly={!!email}
               className={style.input}
               onChange={(e) => setEmail(e.target.value)}
               title="אנא הכנס כתובת אימייל תקינה"

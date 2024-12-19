@@ -1,8 +1,9 @@
 
-import { connectDatabase, getSpecificFields, getById } from "@/app/services/mongo";
+import { connectDatabase, getSpecificFields, getById, updateByEmail } from "@/app/services/mongo";
 import { NextResponse, NextRequest } from "next/server";
 import { verifyPassword } from "../../services/hash";
 import jwt from "jsonwebtoken";
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   
@@ -43,6 +44,20 @@ export async function POST(req: NextRequest) {
             "users",
             userId
           );
+          if(userDetails.user_type =="representative")
+          {
+            const updateStatus = await updateByEmail(
+              client,
+              "users",
+              userDetails.email,
+              { status: "active" }
+            ) 
+            userDetails.status ="active";
+          }
+
+          console.log(userDetails);
+          
+          
           const token = jwt.sign(
             { userId: userDetails._id },
             SECRET_KEY?SECRET_KEY:"", 

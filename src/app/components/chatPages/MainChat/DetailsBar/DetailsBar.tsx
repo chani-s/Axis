@@ -16,9 +16,12 @@ const defaultDetails = {
     bank: false,
 };
 
-const DetailsBar = () => {
-
+const DetailsBar = ({ type }: { type: string }) => {
+    const [isUser, setIsUser] = useState(true);
     const [details, setDetails] = useState<typeof defaultDetails>(defaultDetails);
+
+    if (type != "user")
+        setIsUser(false);
 
     useEffect(() => {
         const storedPermissions = localStorage.getItem("details");
@@ -58,7 +61,8 @@ const DetailsBar = () => {
     };
 
     return (
-        <div className={styles.permissionPanel}>
+        <div className={`${styles.permissionPanel} ${isUser ? styles.userPosition : styles.defaultPosition}`}
+>
             {Object.entries(details).map(([key, hasDetail], index) => {
                 let buttonType: "allowed" | "denied" | "missing" =
                     index === 0

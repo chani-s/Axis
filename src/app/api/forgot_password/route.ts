@@ -3,6 +3,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { randomBytes } from "crypto";
 import { hashPassword } from "../../services/hash";
 import sendEmail from "../../services/sendEmails";
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
 
@@ -37,7 +38,7 @@ export async function POST(req: NextRequest) {
                 await sendEmail(email,
                     "קוד אימות לשחזור סיסמא",
                      `הקוד שלך לאימות סיסמא הוא:
-                     ${verificationCode}`);
+                     ${verificationCode}`, false);
 
                 await client.close();
                 return NextResponse.json({ message: "קוד אימות נשלח למייל שלך" });
