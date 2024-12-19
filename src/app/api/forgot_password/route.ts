@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
                 await sendEmail(email,
                     "קוד אימות לשחזור סיסמא",
                      `הקוד שלך לאימות סיסמא הוא:
-                     ${verificationCode}`);
+                     ${verificationCode}`, false);
 
                 await client.close();
                 return NextResponse.json({ message: "קוד אימות נשלח למייל שלך" });

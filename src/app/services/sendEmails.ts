@@ -1,9 +1,9 @@
 "use server"
 const nodemailer = require('nodemailer');
-import fs from 'fs';
 import path from 'path';
+import querystring from 'querystring';
 
-async function sendEmail(to: string, subject: string, text: string) {
+async function sendEmail(to: string, subject: string, text: string, isRepresentative: boolean) {
     if (!to || !subject || !text) {
         throw new Error('Missing required parameters');
     }
@@ -22,15 +22,32 @@ async function sendEmail(to: string, subject: string, text: string) {
         }
     });
 
-    const logoPath = path.join(process.cwd(), 'public/imgs/nonebg1.png');
-    const logoBase64 = fs.readFileSync(logoPath).toString('base64');
+    //const baseURL = "https://axis-brown.vercel.app/signup";
+    const baseURL = "http://localhost:3000/signup";
+    const queryParams = querystring.stringify({ email: to , type: "represwntative" });
+    const fullURL = `${baseURL}?${queryParams}`;
+
 
     const emailBody = `
     <div style="direction: rtl; text-align: right; font-family: Arial, sans-serif; line-height: 1.5;">
         <p>שלום,</p>
         <p>זוהי הודעה מ-<strong>AXIS</strong>:</p>
         <p>${text}</p>
-        <br>
+        ${isRepresentative ? `
+            <p>
+                <a href=${fullURL} style="
+                    display: inline-block;
+                    background-color: #ddbb0ec7;
+                    color: white;
+                    text-decoration: none;
+                    padding: 10px 15px;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    font-size: 14px;
+                    margin-top: 10px;">
+                    הירשם עכשיו
+                </a>
+            </p>` : ''}
         <p>בברכה,</p>
         <p>צוות AXIS</p>
         <br>
