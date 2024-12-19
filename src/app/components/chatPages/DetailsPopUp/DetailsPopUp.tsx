@@ -16,20 +16,7 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
         address: "",
     });
     console.log(userDetails);
-
-    if (!userDetails || !userDetails.email) {
-        console.log("***");
-        return (
-            <div className={style.errorContainer}>
-                <h2>אין חיבור למשתמש</h2>
-                <p>אנא התחבר מחדש על מנת לעדכן את הפרטים.</p>
-                <button className={style.cancelButton} onClick={onClose}>
-                    סגור
-                </button>
-            </div>
-        );
-    }
-
+    
     const isValidIsraeliId = (id: string): boolean => {
         if (id.length > 9) return false;
         id = id.padStart(9, '0'); 

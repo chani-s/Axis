@@ -84,15 +84,7 @@ const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profil
                         onChange={(e) => setNewUserName(e.target.value)}
                     />
                 </div>
-                <div>
-                    <label>אימייל:</label>
-                    <input
-                        className={styles.input}
-                        type="email"
-                        value={newEmail}
-                        onChange={(e) => setNewEmail(e.target.value)}
-                    />
-                </div>
+                
                 <button onClick={onDetailsClick}>הנתונים שלי</button>
                 {isDetailsPopupOpen &&
                     <div>

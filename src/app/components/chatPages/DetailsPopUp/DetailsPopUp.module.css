@@ -43,7 +43,7 @@
 }
 
 .input:focus {
-  border-color: #f8d349;
+  border-color: #ddba0e;
   box-shadow: 0 0 5px rgba(248, 211, 73, 0.5);
 }
 
@@ -54,14 +54,14 @@
   font-size: 1rem;
   font-weight: bold;
   color: white;
-  background-color: #f8d349; 
+  background-color: #ddba0e; 
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .submitButton:hover {
-  background-color: #e1bf3d;
+  background-color: #ddba0e;
 }
 
 .cancelButton {
@@ -86,28 +86,3 @@
   font-size: 14px;
   font-weight: bold;
 }
-
-.errorContainer {
-  display: block;
-  color: #ff4d4f;
-  background-color: #ffe6e6; 
-  border: 1px solid #ff4d4f; 
-  border-radius: 8px; 
-  padding: 15px; 
-  margin-top: 20px; 
-  font-size: 16px; 
-  font-weight: bold; 
-  text-align: center;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); 
-}
-
-/* .errorContainer.rtl {
-  direction: rtl;
-} */
-
-.errorContainer::before {
-  content: "⚠️ "; 
-  font-size: 20px;
-  margin-right: 5px;
-}
-
