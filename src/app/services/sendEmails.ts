@@ -22,8 +22,8 @@ async function sendEmail(to: string, subject: string, text: string, isRepresenta
         }
     });
 
-    const baseURL = "https://axis-brown.vercel.app/signup";
-    //const baseURL = "http://localhost:3000/signup";
+    //const baseURL = "https://axis-brown.vercel.app/signup";
+    const baseURL = "http://localhost:3000/signup";
     const queryParams = querystring.stringify({ email: to , type: "represwntative" });
     const fullURL = `${baseURL}?${queryParams}`;
 
