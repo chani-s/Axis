@@ -15,6 +15,7 @@ export const dynamic = 'force-dynamic';
 
 export const Entrance = ({ type }: any) => {
   const [email, setEmail] = useState("");
+  const [typeUser, setTypeUser] = useState("user");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isWithGoogle, setIsWithGoogle] = useState(false);
@@ -34,6 +35,7 @@ export const Entrance = ({ type }: any) => {
     }
     if(typeFromUrl=="representative"){
       setIsRepresentative(true);
+      setTypeUser("representative");
     }
   }, []);
 
@@ -151,11 +153,13 @@ export const Entrance = ({ type }: any) => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (type == "signup") {
+      console.log(typeFromUrl);
+      
       const userData = {
         email: email,
         password: password,
         isWithGoogle: false,
-        userType: typeFromUrl ? "representative" : "user",
+        userType: typeUser,
       };
       mutationSignUp.mutate(userData);
     }
