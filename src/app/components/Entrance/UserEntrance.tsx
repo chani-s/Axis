@@ -94,6 +94,7 @@ export const Entrance = ({ type }: any) => {
         name: data.userDetails.name,
         id_number: data.userDetails.id_number,
         address: data.userDetails.address,
+        status: null
       };
       setUserDetails(userDetails);
       router.push("/chat/user");
@@ -107,6 +108,7 @@ export const Entrance = ({ type }: any) => {
         name: data.userDetails.name,
         id_number: data.userDetails.id_number,
         address: data.userDetails.address,
+        status: data.userDetails.status
 
       };
       setUserDetails(userDetails);
@@ -121,6 +123,7 @@ export const Entrance = ({ type }: any) => {
         name: data.userDetails.name,
         id_number: data.userDetails.id_number,
         address: data.userDetails.address,
+        status: null
 
       };
       setUserDetails(userDetails);
