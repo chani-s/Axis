@@ -4,20 +4,32 @@ import { userDetailsStore } from "../../../services/zustand";
 import style from "./DetailsPopUp.module.css";
 import { updateUserByEmail } from "@/app/services/details";
 
-const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
+const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {    
     const { userDetails, setUserDetails, getMissingDetails } = userDetailsStore();
     const [fullName, setFullName] = React.useState(userDetails.name || "");
     const [address, setAddress] = React.useState(userDetails.address || "");
     const [idNumber, setIdNumber] = React.useState(userDetails.id_number || "");
+    const missingDetails = getMissingDetails();
     const [errorMessages, setErrorMessages] = React.useState({
         name: "",
         id_number: "",
         address: "",
     });
+    console.log(userDetails);
 
-    const missingDetails = getMissingDetails();
+    if (!userDetails || !userDetails.email) {
+        console.log("***");
+        return (
+            <div className={style.errorContainer}>
+                <h2>אין חיבור למשתמש</h2>
+                <p>אנא התחבר מחדש על מנת לעדכן את הפרטים.</p>
+                <button className={style.cancelButton} onClick={onClose}>
+                    סגור
+                </button>
+            </div>
+        );
+    }
 
-    // פונקציה לבדוק תעודת זהות תקינה
     const isValidIsraeliId = (id: string): boolean => {
         if (id.length > 9) return false;
         id = id.padStart(9, '0'); 
