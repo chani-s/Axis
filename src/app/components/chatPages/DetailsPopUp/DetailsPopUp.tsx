@@ -4,20 +4,18 @@ import { userDetailsStore } from "../../../services/zustand";
 import style from "./DetailsPopUp.module.css";
 import { updateUserByEmail } from "@/app/services/details";
 
-const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
+const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {    
     const { userDetails, setUserDetails, getMissingDetails } = userDetailsStore();
     const [fullName, setFullName] = React.useState(userDetails.name || "");
     const [address, setAddress] = React.useState(userDetails.address || "");
     const [idNumber, setIdNumber] = React.useState(userDetails.id_number || "");
+    const missingDetails = getMissingDetails();
     const [errorMessages, setErrorMessages] = React.useState({
         name: "",
         id_number: "",
         address: "",
     });
-
-    const missingDetails = getMissingDetails();
-
-    // פונקציה לבדוק תעודת זהות תקינה
+    
     const isValidIsraeliId = (id: string): boolean => {
         if (id.length > 9) return false;
         id = id.padStart(9, '0'); 
@@ -51,7 +49,6 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
         };
 
         try {
-            // ולידציה באמצעות Zod
             detailsSchema.parse(updatedDetails);
 
             const response = await updateUserByEmail(userDetails.email, updatedDetails);
@@ -63,8 +60,6 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
                     address: updatedDetails.address,
                     id_number: updatedDetails.id_number,
                 });
-
-                alert("הפרטים נשמרו בהצלחה!");
                 onClose();
             } else {
                 throw new Error("Failed to update user data");
@@ -141,7 +136,7 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
                         value={address}
                         onChange={(e) => {
                             setAddress(e.target.value);
-                            setErrorMessages((prev) => ({ ...prev, address: "" })); // נקה שגיאה כשמשתנים
+                            setErrorMessages((prev) => ({ ...prev, address: "" })); 
                         }}
                     />
                     {errorMessages.address && <p className={style.error}>{errorMessages.address}</p>}
@@ -150,7 +145,7 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
             <button type="submit" className={style.submitButton}>
                 סיימתי
             </button>
-            <button type="button" className={style.cancelButton} onClick={onClose}>
+            <button type="submit" className={style.cancelButton}>
                 לא עכשיו
             </button>
         </form>

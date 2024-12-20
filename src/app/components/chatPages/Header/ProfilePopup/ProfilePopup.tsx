@@ -1,48 +1,66 @@
-// ProfilePopup.tsx
-import React, { useRef, useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from './ProfilePopup.module.css';
-import { FaArrowUp, FaCamera, FaTimes } from 'react-icons/fa';
+import { FaCamera, FaTimes } from 'react-icons/fa';
+import { userDetailsStore } from "../../../../services/zustand";
+import { updateUserByEmail } from "@/app/services/details";
+import { uploadPicture } from "@/app/services/uploadPicture"; 
 
+const DEFAULT_PROFILE_PIC = "https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png";
 
-interface ProfilePopupProps {
-    userName: string;
-    userEmail: string;
-    profilePicture: string;
-    onClose: () => void;
-    onSave: (newUserName: string, newEmail: string, newProfilePic: string) => void;
-}
+const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+    const { userDetails, setUserDetails } = userDetailsStore();
+    const [fullName, setFullName] = useState(userDetails.name || "");
+    const [address, setAddress] = useState(userDetails.address || "");
+    const [idNumber, setIdNumber] = useState(userDetails.id_number || "");
+    const [newProfilePic, setNewProfilePic] = useState(userDetails.profile_picture || DEFAULT_PROFILE_PIC);
 
-
-const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profilePicture, onClose, onSave }) => {
-    const [newUserName, setNewUserName] = useState(userName);
-    const [newEmail, setNewEmail] = useState(userEmail);
-    const [newProfilePic, setNewProfilePic] = useState(profilePicture);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const [isDetailsPopupOpen, setIsDetailsPopupOpen] = useState(false);
-
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const handleButtonClick = () => {
         fileInputRef.current?.click();
     };
 
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                if (reader.result) {
-                    setNewProfilePic(reader.result as string);
-                }
-            };
-            reader.readAsDataURL(file);
+            try {
+                const fileUrl = await uploadPicture(file); // קריאה לשירות
+                setNewProfilePic(fileUrl);
+
+                setUserDetails({
+                    ...userDetails,
+                    profile_picture: fileUrl,
+                });
+            } catch (error) {
+                alert("שגיאה בהעלאת התמונה");
+            }
         }
     };
 
+    const handleSave = async () => {
+        try {
+            const updatedDetails = {
+                name: fullName,
+                address: address,
+                id_number: idNumber,
+                profile_picture: newProfilePic,
+            };
 
-    const handleSave = () => {
-        onSave(newUserName, newEmail, newProfilePic);
-        onClose();
+            const response = await updateUserByEmail(userDetails.email, updatedDetails);
+
+            if (response.data.success) {
+                setUserDetails({
+                    ...userDetails,
+                    ...updatedDetails,
+                });
+                onClose();
+            } else {
+                throw new Error("Failed to update user data");
+            }
+        } catch (error) {
+            console.error("Error updating user details:", error);
+            alert("שגיאה בשמירת הנתונים");
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -50,55 +68,49 @@ const ProfilePopup: React.FC<ProfilePopupProps> = ({ userName, userEmail, profil
         handleSave();
     };
 
-    const onDetailsClick = () => {
-        setIsDetailsPopupOpen((prev) => !prev);
-    }
-
     return (
         <div className={styles.popup}>
             <form className={styles.popupContent} onSubmit={handleSubmit}>
                 <button className={styles.closeButton} type="button" onClick={onClose}><FaTimes /></button>
-                <h2>שלום, {userName || "משתמש חדש"}</h2>
+                <h2>שלום {userDetails.name}</h2>
                 <div>
-                    <img
-                        className={styles.profilePicture}
-                        src={newProfilePic}
-                        alt="profilePic"
-                    />
+                    <img className={styles.profilePicture} src={newProfilePic} alt="profilePic" />
                     <FaCamera className={styles.cameraIcon} onClick={handleButtonClick} />
                 </div>
                 <input
                     type="file"
-                    id="file-upload"
                     ref={fileInputRef}
                     accept=".png, .jpg, .jpeg, .gif"
                     onChange={handleFileChange}
                     style={{ display: "none" }}
                 />
                 <div>
-                    <label>שם:</label>
+                    <label>שם מלא:</label>
                     <input
                         className={styles.input}
                         type="text"
-                        value={newUserName}
-                        onChange={(e) => setNewUserName(e.target.value)}
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
                     />
                 </div>
                 <div>
-                    <label>אימייל:</label>
+                    <label>כתובת:</label>
                     <input
                         className={styles.input}
-                        type="email"
-                        value={newEmail}
-                        onChange={(e) => setNewEmail(e.target.value)}
+                        type="text"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
                     />
                 </div>
-                <button onClick={onDetailsClick}>הנתונים שלי</button>
-                {isDetailsPopupOpen &&
-                    <div>
-                        <p>כאן תופיע אפשרות להכנסת נתונים שאינם קיימים?</p>
-                    </div>}
-
+                <div>
+                    <label>תעודת זהות:</label>
+                    <input
+                        className={styles.input}
+                        type="text"
+                        value={idNumber}
+                        onChange={(e) => setIdNumber(e.target.value)}
+                    />
+                </div>
                 <button type="submit" className={styles.saveButton}>שמור</button>
             </form>
         </div>

@@ -9,6 +9,8 @@ interface User {
     id_number: string | null;
     address: string | null;
     status: string | null;
+    profile_picture: string | null;
+
 
 }
 
@@ -34,9 +36,10 @@ export const userDetailsStore = create<UserStore>((set) => ({
         google_auth: false,
         user_type: "",
         name: "",
-        id_number: null,
-        address: null,
-        status: null,
+        id_number: "",
+        address: "",
+        status: "",
+        profile_picture: "",
     },
     setUserDetails: (details: User) => set({ userDetails: details }),
 

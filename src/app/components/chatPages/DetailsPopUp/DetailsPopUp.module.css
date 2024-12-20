@@ -43,7 +43,7 @@
 }
 
 .input:focus {
-  border-color: #f8d349;
+  border-color: #ddba0e;
   box-shadow: 0 0 5px rgba(248, 211, 73, 0.5);
 }
 
@@ -54,14 +54,14 @@
   font-size: 1rem;
   font-weight: bold;
   color: white;
-  background-color: #f8d349; 
+  background-color: #ddba0e; 
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .submitButton:hover {
-  background-color: #e1bf3d;
+  background-color: #ddba0e;
 }
 
 .cancelButton {

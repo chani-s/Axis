@@ -66,7 +66,6 @@ export const Entrance = ({ type }: any) => {
       setIsLoadding(true);
     },
     onSuccess: (data) => {
-      console.log(data);
       if (data.userDetails.email) setDetails(data);
       else {
         setIsLoadding(false);
@@ -105,7 +104,8 @@ export const Entrance = ({ type }: any) => {
         name: data.userDetails.name,
         id_number: data.userDetails.id_number,
         address: data.userDetails.address,
-        status: null
+        status: data.userDetails.status,
+        profile_picture: data.userDetails.profile_picture
       };
       setUserDetails(userDetails);
       router.push("/chat/user");
@@ -119,7 +119,8 @@ export const Entrance = ({ type }: any) => {
         name: data.userDetails.name,
         id_number: data.userDetails.id_number,
         address: data.userDetails.address,
-        status: data.userDetails.status
+        status: data.userDetails.status,
+        profile_picture: data.userDetails.profile_picture
       };
       setUserDetails(userDetails);
       router.push("/chat/representative");
@@ -133,7 +134,8 @@ export const Entrance = ({ type }: any) => {
         name: data.userDetails.name,
         id_number: data.userDetails.id_number,
         address: data.userDetails.address,
-        status: null
+        status: data.userDetails.status,
+        profile_picture: data.userDetails.profile_picture
       };
       setUserDetails(userDetails);
       router.push("/chat/manager");

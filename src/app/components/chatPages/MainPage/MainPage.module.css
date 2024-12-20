@@ -1,15 +1,69 @@
 .page {
-    display: flex;
-    flex-direction: column;
-    height: 100%; 
-  overflow: hidden; 
+  display: flex;
+  flex-direction: column;
+  height: 100%; 
+overflow: hidden; 
 }
 
 .mainArea {
-    display: flex;
-    flex-direction: row;
-    flex: 1;
-    background-color: #e4e2e2;
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  background-color: #e4e2e2;
 }
 
+.popupBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
+.popupContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff; 
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 90%;
+  max-width: 700px;
+  height: 300px;
+}
+
+.popupContainer h2 {
+  font-size: 24px;
+  color: #ddba0e;
+  margin-bottom: 15px;
+}
+
+.popupContainer p {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.popupButton {
+  display: inline-block;
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.popupButton:hover {
+  background-color: #ddba0e;
+}
