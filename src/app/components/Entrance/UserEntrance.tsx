@@ -1,5 +1,5 @@
-"use client";
-import React, { useState } from "react";
+'use client';
+import React, { useState, Suspense,useEffect } from "react";
 import Link from "next/link";
 import style from "./UserEntrance.module.css";
 import { googleSignup } from "../../services/auth";
@@ -11,16 +11,33 @@ import { useRouter } from "next/navigation";
 import { userDetailsStore } from "../../services/zustand";
 import ForgetPassword from "../Entrance/ForgotPassword";
 import { showError } from "../../services/messeges";
+export const dynamic = 'force-dynamic';
 
 export const Entrance = ({ type }: any) => {
   const [email, setEmail] = useState("");
+  const [typeUser, setTypeUser] = useState("user");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isWithGoogle, setIsWithGoogle] = useState(false);
+  const [isRepresentative, setIsRepresentative] = useState(false);
   const [isLoadding, setIsLoadding] = useState(false);
   const [forgetPassword, setForgetPassword] = useState(false);
-  const router = useRouter();
   const setUserDetails = userDetailsStore((state) => state.setUserDetails);
+  const router = useRouter();
+  let typeFromUrl="";
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    typeFromUrl = params?.get("type") ||"";
+    const emailFromUrl = params.get("email");
+    if (emailFromUrl) {
+      setEmail(emailFromUrl);
+    }
+    if(typeFromUrl=="representative"){
+      setIsRepresentative(true);
+      setTypeUser("representative");
+    }
+  }, []);
 
   const mutationSignUp = useMutation({
     mutationFn: signUpUser,
@@ -29,7 +46,6 @@ export const Entrance = ({ type }: any) => {
     },
     onSuccess: (data: any) => {
       console.log(isLoadding);
-
       console.log(data);
       if (data.userDetails.email) setDetails(data);
       else {
@@ -89,6 +105,7 @@ export const Entrance = ({ type }: any) => {
         id_number: data.userDetails.id_number,
         address: data.userDetails.address,
         profile_picture: data.userDetails.profile_picture,
+        status: null
       };
       setUserDetails(userDetails);
       router.push("/chat/user");
@@ -104,6 +121,7 @@ export const Entrance = ({ type }: any) => {
         address: data.userDetails.address,
         profile_picture: data.userDetails.profile_picture,
 
+        status: data.userDetails.status
       };
       setUserDetails(userDetails);
       router.push("/chat/representative");
@@ -118,6 +136,7 @@ export const Entrance = ({ type }: any) => {
         id_number: data.userDetails.id_number,
         address: data.userDetails.address,
         profile_picture: data.userDetails.profile_picture,
+        status: null
       };
       setUserDetails(userDetails);
       router.push("/chat/manager");
@@ -137,11 +156,13 @@ export const Entrance = ({ type }: any) => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (type == "signup") {
+      console.log(typeFromUrl);
+      
       const userData = {
         email: email,
         password: password,
         isWithGoogle: false,
-        userType: "user",
+        userType: typeUser,
       };
       mutationSignUp.mutate(userData);
     }
@@ -191,6 +212,8 @@ export const Entrance = ({ type }: any) => {
             <input
               type="email"
               placeholder="אימייל"
+              value={email}
+              readOnly={isRepresentative}
               className={style.input}
               onChange={(e) => setEmail(e.target.value)}
               title="אנא הכנס כתובת אימייל תקינה"

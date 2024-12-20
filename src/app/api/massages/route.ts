@@ -1,6 +1,7 @@
 import { connectDatabase, getSpecificFields } from "@/app/services/mongo";
 import { MongoClient, ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
+export const dynamic = 'force-dynamic';
 
 
 export async function GET(req:Request) {

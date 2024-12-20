@@ -2,6 +2,7 @@
 import React from "react";
 import { CompanyEntrance } from "../components/Entrance/CompanyEntrance";
 import style from './company_signup.module.css';
+export const dynamic = 'force-dynamic';
 
 const Company_signupPage = () => {
   return (
