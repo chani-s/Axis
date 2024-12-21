@@ -179,25 +179,29 @@ const MainChat = ({ type }: any) => {
                 {messages
                     ?.filter((msg) => msg.conversationId === conversation._id)
                     .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
-                    .map((msg, index) => (
-                        <div
-                            key={index}
-                            className={`${styles.message} ${msg.sender === userDetails._id || !msg.sender
-                                    ? styles.userMessage
-                                    : styles.otherMessage
-                                }`}
-                        >
-                            <p className={styles.messageText}>{msg.text}</p>
-                            <span className={styles.messageTime}>
-                                {new Date(msg.time).toLocaleTimeString([], {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                })}
-                            </span>
-                        </div>
-                    ))}
+                    .map((msg, index) => {
+                        const messageDate = new Date(msg.time);
+                        const isToday = messageDate.toDateString() === new Date().toDateString();
+
+                        return (
+                            <div
+                                key={index}
+                                className={`${styles.message} ${msg.sender === userDetails._id || !msg.sender
+                                        ? styles.userMessage
+                                        : styles.otherMessage
+                                    }`}
+                            >
+                                <p className={styles.messageText}>{msg.text}</p>
+                                <span className={styles.messageTime}>
+                                    {!isToday && `${messageDate.toLocaleDateString()}, `}
+                                    {messageDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                </span>
+                            </div>
+                        );
+                    })}
                 <div ref={chatEndRef}></div>
             </div>
+
             <div className={styles.sendingBar}>
                 {!isUser && (
                     <button className={styles.detailsButton} onClick={showDetails}>
