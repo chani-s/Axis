@@ -37,6 +37,7 @@ const MainChat = ({ type }: any) => {
         const loadConversationMessages = async () => {
             if (conversation?._id) {
                 try {
+                    setIsChatOpen(true);
                     const previousMessages = await getMessages(conversation._id);
                     if (previousMessages.length > 0) {
                         setMessages(previousMessages);

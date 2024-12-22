@@ -35,12 +35,12 @@
 .closeButton,
 .minimizeButton,
 .detailsIcon {
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
     border: none;
     cursor: pointer;
     position: relative;
-    font-size: 17px;
+    font-size: 14px;
 }
 
 .detailsIcon::after {

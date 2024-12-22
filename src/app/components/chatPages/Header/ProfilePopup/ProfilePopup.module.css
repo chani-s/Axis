@@ -24,6 +24,7 @@
 }
 
 .popupContent {
+    display: flex;
     flex-direction: column;
     gap: 10px;
     display: flex;
@@ -38,7 +39,7 @@
     border: 1px solid #e0dddd;
     background-color: #e0dddd;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 14px;
     text-align: right;
 }
 
@@ -52,7 +53,7 @@
     color: white;
     padding: 5px;
     border-radius: 50%;
-    font-size: 18px;
+    font-size: 17px;
     cursor: pointer;
     border: none;
 }

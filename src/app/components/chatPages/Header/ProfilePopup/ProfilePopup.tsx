@@ -3,7 +3,7 @@ import styles from './ProfilePopup.module.css';
 import { FaCamera, FaTimes } from 'react-icons/fa';
 import { userDetailsStore } from "../../../../services/zustand";
 import { updateUserByEmail } from "@/app/services/details";
-import { uploadPicture } from "@/app/services/uploadPicture"; 
+import { uploadPicture } from "@/app/services/uploadPicture";
 
 const DEFAULT_PROFILE_PIC = "https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png";
 
@@ -23,8 +23,11 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            console.log("Selected file:", file);
+
             try {
-                const fileUrl = await uploadPicture(file); // קריאה לשירות
+                const fileUrl = await uploadPicture(file); 
+                console.log("HI THERE"+fileUrl);
                 setNewProfilePic(fileUrl);
 
                 setUserDetails({

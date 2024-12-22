@@ -18,6 +18,7 @@ export const Entrance = ({ type }: any) => {
   const [typeUser, setTypeUser] = useState("user");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
   const [isWithGoogle, setIsWithGoogle] = useState(false);
   const [isRepresentative, setIsRepresentative] = useState(false);
   const [isLoadding, setIsLoadding] = useState(false);
@@ -162,6 +163,8 @@ export const Entrance = ({ type }: any) => {
         password: password,
         isWithGoogle: false,
         userType: typeUser,
+        name: name,
+        profile_picture: profilePicture,
       };
       mutationSignUp.mutate(userData);
     }
@@ -170,6 +173,7 @@ export const Entrance = ({ type }: any) => {
         email: email,
         password: password,
         isWithGoogle: false,
+        profile_picture: profilePicture,
       };
       mutationLogin.mutate(userData);
     }
@@ -183,12 +187,15 @@ export const Entrance = ({ type }: any) => {
     setEmail(emailFromGoogle);
     const nameFromGoogle = res.user.displayName;
     setName(nameFromGoogle);
+    const profilePictureFromGoogle = res.user.photoURL;
+    setProfilePicture(profilePictureFromGoogle);
     console.log(emailFromGoogle, nameFromGoogle);
     const userData = {
       email: emailFromGoogle,
       name: nameFromGoogle,
       isWithGoogle: true,
       userType: "user",
+      profilePicture: profilePictureFromGoogle,
     };
     mutationRegisterWithGoogle.mutate(userData);
   };
