@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
       const passwordIsExist = await isExist(
         client,
         "hashed_passwords",
-        { user_id: userId[0]._id }
+        { user_id: userId[0]._id.toString() }
       )
 
       if (!passwordIsExist) {
