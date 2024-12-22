@@ -18,6 +18,7 @@ const Header = () => {
     const closePopup = () => {
         setIsPopupOpen(false);
     };
+    console.log(userDetails.profile_picture);
 
     return (
         <div className={styles.header}>

@@ -8,7 +8,20 @@
     margin-left: 20px;
     margin-bottom: 20px;
     position: relative;
+}
 
+.mainChatNone {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    width: 75%;
+    background-color: white;
+    border-radius: 15px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    position: relative;
 }
 
 .minimized {

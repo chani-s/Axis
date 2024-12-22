@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, Suspense,useEffect } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
 import style from "./UserEntrance.module.css";
 import { googleSignup } from "../../services/auth";
@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { userDetailsStore } from "../../services/zustand";
 import ForgetPassword from "../Entrance/ForgotPassword";
 import { showError } from "../../services/messeges";
+import { profile } from "console";
 export const dynamic = 'force-dynamic';
 
 export const Entrance = ({ type }: any) => {
@@ -25,16 +26,16 @@ export const Entrance = ({ type }: any) => {
   const [forgetPassword, setForgetPassword] = useState(false);
   const setUserDetails = userDetailsStore((state) => state.setUserDetails);
   const router = useRouter();
-  let typeFromUrl="";
+  let typeFromUrl = "";
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    typeFromUrl = params?.get("type") ||"";
+    typeFromUrl = params?.get("type") || "";
     const emailFromUrl = params.get("email");
     if (emailFromUrl) {
       setEmail(emailFromUrl);
     }
-    if(typeFromUrl=="representative"){
+    if (typeFromUrl == "representative") {
       setIsRepresentative(true);
       setTypeUser("representative");
     }
@@ -157,7 +158,7 @@ export const Entrance = ({ type }: any) => {
     e.preventDefault();
     if (type == "signup") {
       console.log(typeFromUrl);
-      
+
       const userData = {
         email: email,
         password: password,
@@ -188,7 +189,8 @@ export const Entrance = ({ type }: any) => {
     const nameFromGoogle = res.user.displayName;
     setName(nameFromGoogle);
     const profilePictureFromGoogle = res.user.photoURL;
-    setProfilePicture(profilePictureFromGoogle);
+    // setProfilePicture(profilePictureFromGoogle);
+    console.log(profilePicture);
     console.log(emailFromGoogle, nameFromGoogle);
     const userData = {
       email: emailFromGoogle,
@@ -197,6 +199,7 @@ export const Entrance = ({ type }: any) => {
       userType: "user",
       profilePicture: profilePictureFromGoogle,
     };
+    console.log(userData.profilePicture);
     mutationRegisterWithGoogle.mutate(userData);
   };
 

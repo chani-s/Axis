@@ -150,7 +150,10 @@ const MainChat = ({ type }: any) => {
     };
 
     if (!isChatOpen) {
-        return null;
+        return <div className={styles.mainChatNone}>
+            <p>לא נבחרה שיחה...🫣</p><br/>
+            <h3>בחר חברה כדי להתחיל 🤗        </h3>
+        </div>;
     }
 
     return (
@@ -188,8 +191,8 @@ const MainChat = ({ type }: any) => {
                             <div
                                 key={index}
                                 className={`${styles.message} ${msg.sender === userDetails._id || !msg.sender
-                                        ? styles.userMessage
-                                        : styles.otherMessage
+                                    ? styles.userMessage
+                                    : styles.otherMessage
                                     }`}
                             >
                                 <p className={styles.messageText}>{msg.text}</p>
