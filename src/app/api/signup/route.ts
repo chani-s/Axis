@@ -44,12 +44,17 @@ export async function POST(req: NextRequest) {
         {_id:1}
       );
       console.log(userId);
+      console.log(userId[0]._id.toString());
+      
       
       const passwordIsExist = await isExist(
         client,
         "hashed_passwords",
         { user_id: userId[0]._id.toString() }
       )
+
+      console.log(passwordIsExist);
+      
 
       if (!passwordIsExist) {
 
@@ -75,9 +80,11 @@ export async function POST(req: NextRequest) {
 
     }
 
+    console.log("uuu");
+    
     console.log(userDetails);
 
-    if (userDetails) {
+    if (userDetails?._id) {
       const hashedPassword = await hashPassword(userData.password);
       const insertUserPassword = await insertDocument(
         client,
