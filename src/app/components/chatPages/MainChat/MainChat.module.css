@@ -155,11 +155,18 @@
 }
 
 .sendButton {
-    padding: 10px 20px;
-    background-color: #ddba0e;
-    color: white;
+    font-size: larger;
+    background-color: white;
+    color: #ddba0e;
     border: none;
-    border-radius: 15px;
+    cursor: pointer;
+}
+
+.endButton {
+    font-size: larger;
+    background-color: white;
+    color: #ba1f1f;
+    border: none;
     cursor: pointer;
 }
 

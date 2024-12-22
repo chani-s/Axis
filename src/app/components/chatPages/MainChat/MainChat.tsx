@@ -19,7 +19,7 @@ interface MessageObj {
 }
 
 const MainChat = ({ type }: any) => {
-    const [isChatOpen, setIsChatOpen] = useState(true);
+    const [isChatOpen, setIsChatOpen] = useState(false);
     const [isMinimized, setIsMinimized] = useState(false);
     const [isPermissionPanelOpen, setIsPermissionPanelOpen] = useState(false);
     const [messages, setMessages] = useState<MessageObj[]>([]); // Default as empty array
@@ -134,6 +134,10 @@ const MainChat = ({ type }: any) => {
         setIsMinimized(!isMinimized);
     };
 
+    const endConversation = () => {
+        alert("בלחיצה על אישור השיחה תיסגר ולא תופיע יותר אצל הנציג. מאשר?")
+    };
+
     const handleKeyPress = (e: any) => {
         if (e.key === "Enter") {
             sendMessage();
@@ -228,6 +232,12 @@ const MainChat = ({ type }: any) => {
                     onClick={sendMessage}
                 >
                     <FaArrowLeft />
+                </button>
+                <button
+                    className={styles.endButton}
+                    onClick={endConversation}
+                >
+                    <FaTimes/>
                 </button>
             </div>
 
