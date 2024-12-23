@@ -96,6 +96,10 @@ export const Entrance = ({ type }: any) => {
   });
 
   const setDetails = (data: any) => {
+    const saveToLocalStorage = (userDetails: any) => {
+      localStorage.setItem("userDetails", JSON.stringify(userDetails));
+      setUserDetails(userDetails);
+    };
     // if (data.userDetails.user_type == "user") {
     //   const userDetails = {
     //     _id: data.userDetails._id,
@@ -139,6 +143,8 @@ export const Entrance = ({ type }: any) => {
         profile_picture: data.userDetails.profile_picture,
       };
       setUserDetails(userDetails);
+      saveToLocalStorage(userDetails);
+
       router.push(`/chat/${data.userDetails.user_type}`);
     // }
   };
