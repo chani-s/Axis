@@ -24,6 +24,25 @@
     position: relative;
 }
 
+.noneP{
+    z-index: 1;
+}
+
+.pic {
+    width: 350px;
+    position: absolute; 
+    /* bottom: 35px;
+    left: 35px;  */
+    opacity: 0.7; 
+    z-index: 0;
+}
+
+/* .pic:hover {
+    opacity: 1; /* שקיפות מלאה בזמן ריחוף 
+} */
+
+
+
 .minimized {
     height: 400px;
     width: 320px;
