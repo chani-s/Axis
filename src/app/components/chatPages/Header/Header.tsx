@@ -30,7 +30,6 @@ const Header = () => {
         setIsPopupOpen(false);
     };
     console.log(userDetails.profile_picture);
-    console.log(userDetails.name);
 
     return (
         <div className={styles.header}>

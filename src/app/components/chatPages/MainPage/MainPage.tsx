@@ -32,6 +32,7 @@ const MainPage: React.FC<MainPageProps> = ({
 
     useEffect(() => {
         const user = localStorage.getItem("userDetails");
+        console.log(user);
         setIsLogin(true);
 
         if (user) {

@@ -26,8 +26,8 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             console.log("Selected file:", file);
 
             try {
-                const fileUrl = await uploadPicture(file); 
-                console.log("HI THERE"+fileUrl);
+                const fileUrl = await uploadPicture(file);
+                console.log("HI THERE" + fileUrl);
                 setNewProfilePic(fileUrl);
 
                 setUserDetails({
@@ -52,11 +52,15 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             const response = await updateUserByEmail(userDetails.email, updatedDetails);
 
             if (response.data.success) {
-                setUserDetails({
+                const mergedDetails = {
                     ...userDetails,
-                    ...updatedDetails,
-                });
+                    ...updatedDetails, 
+                };
+
+                setUserDetails(mergedDetails);
                 onClose();
+                localStorage.setItem("userDetails", JSON.stringify(mergedDetails));
+
             } else {
                 throw new Error("Failed to update user data");
             }
