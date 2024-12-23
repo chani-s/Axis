@@ -24,9 +24,22 @@
     position: relative;
 }
 
-.noneP{
-    z-index: 1;
+.noneP {
     font-size: 20px;
+    font-weight: 450;
+    color: #45474b;
+    text-align: center;
+    padding: 20px;
+}
+
+.noneP a{
+    font-size: 17px;
+}
+
+.pic {
+    width: 180px;
+    height: 200px;
+    position: bottom left;
 }
 
 

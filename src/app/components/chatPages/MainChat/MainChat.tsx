@@ -25,7 +25,7 @@ const MainChat = ({ type }: any) => {
     const [isShowDetails, setIsShowDetails] = useState(false);
     const userDetails = userDetailsStore((state) => state.userDetails);
     const { conversation, setConversation } = conversationsStore();
-      
+
 
     useEffect(() => {
         if (!conversation?._id) return;
@@ -33,7 +33,7 @@ const MainChat = ({ type }: any) => {
             if (conversation?._id) {
                 try {
                     setIsChatOpen(true);
-                    const previousMessages = await getMessages(conversation._id,type);
+                    const previousMessages = await getMessages(conversation._id, type);
                     if (previousMessages.length > 0) {
                         setMessages(previousMessages);
                     }
@@ -153,10 +153,17 @@ const MainChat = ({ type }: any) => {
         setIsShowDetails((prev) => !prev);
     };
 
+
+
     if (!isChatOpen) {
-        return <div className={styles.mainChatNone}>
-            <p className={styles.noneP}>לא נבחרה שיחה...🫣</p><br/>
-            <h3 className={styles.noneP}>בחר שיחה כדי להתחיל 🤗        </h3>
+        return <div className={styles.mainChatNone} >
+            <div className={styles.noneP}>
+                <a>מממ קצת ריק כאן...</a><br />
+                {userType === "user" ?
+                    <p >בחר חברה כדי שנוכל להתחיל :) </p> :
+                    <h3 >בחר שיחה כדי שנוכל להתחיל :) </h3>}
+            </div>
+            <img src="/imgs/no_messages.png" className={styles.pic}></img>
         </div>;
     }
 
@@ -173,7 +180,7 @@ const MainChat = ({ type }: any) => {
                         <FaWindowMinimize />
                     </button>
                 </div>
-                {userType==="user" && <button
+                {userType === "user" && <button
                     className={styles.detailsIcon}
                     onClick={managePermissions}
                     data-tooltip={"ניהול ההרשאות לנתונים שלך"}
@@ -211,7 +218,7 @@ const MainChat = ({ type }: any) => {
             </div>
 
             <div className={styles.sendingBar}>
-                {userType==="representative" && (
+                {userType === "representative" && (
                     <button className={styles.detailsButton} onClick={showDetails}>
                         פרטי לקוח
                     </button>
@@ -237,7 +244,7 @@ const MainChat = ({ type }: any) => {
                     className={styles.endButton}
                     onClick={endConversation}
                 >
-                    <FaTimes/>
+                    <FaTimes />
                 </button>
             </div>
 
