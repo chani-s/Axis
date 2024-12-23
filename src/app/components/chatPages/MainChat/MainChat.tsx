@@ -33,7 +33,7 @@ const MainChat = ({ type }: any) => {
             if (conversation?._id) {
                 try {
                     setIsChatOpen(true);
-                    const previousMessages = await getMessages(conversation._id);
+                    const previousMessages = await getMessages(conversation._id,type);
                     if (previousMessages.length > 0) {
                         setMessages(previousMessages);
                     }

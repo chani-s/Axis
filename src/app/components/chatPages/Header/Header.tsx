@@ -13,7 +13,15 @@ const Header = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const router = useRouter();
 
-
+    const handleLogout = async () => {
+        try {
+          // Perform logout
+          await logout();
+          router.push("/login");
+        } catch (error) {
+          console.error("Error during logout process:", error);
+        }
+      };
   const showPersonalProfile = () => {
     setIsPopupOpen(true);
   };
@@ -48,5 +56,5 @@ const Header = () => {
             )}
         </div>
     )
-
+}
 export default Header;
