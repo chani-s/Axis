@@ -4,7 +4,7 @@ import path from 'path';
 import querystring from 'querystring';
 export const dynamic = 'force-dynamic';
 
-async function sendEmail(to: string, subject: string, text: string, isRepresentative: boolean) {
+async function sendEmail(to: string, subject: string, text: string, isRepresentative: boolean, isManager: boolean, additionalParameters: any) {
     if (!to || !subject || !text) {
         throw new Error('Missing required parameters');
     }
@@ -23,9 +23,15 @@ async function sendEmail(to: string, subject: string, text: string, isRepresenta
         }
     });
 
-    const baseURL = "https://axis-brown.vercel.app/signup";
-    //const baseURL = "http://localhost:3000/signup";
-    const queryParams = querystring.stringify({ email: to , type: "representative" });
+    const baseURL = isRepresentative?"https://axis-brown.vercel.app/signup"
+    :isManager?"https://axis-brown.vercel.app/api/company/entrance"
+    :"";
+    // const baseURL = isRepresentative?"http://localhost:3000/signup"
+    // :isManager?"http://localhost:3000/api/company_entrance"
+    // :"";
+    const queryParams = isRepresentative?querystring.stringify({ email: to, type: "representative" })
+    :isManager?querystring.stringify({ manager: additionalParameters?.managerId })
+    :'';
     const fullURL = `${baseURL}?${queryParams}`;
 
 
@@ -49,6 +55,26 @@ async function sendEmail(to: string, subject: string, text: string, isRepresenta
                     הירשם עכשיו
                 </a>
             </p>` : ''}
+            ${isManager ? `
+                <p> ${additionalParameters?.officialBusinessName} שם חברה רישמי</p>
+                <p> ${additionalParameters?.businessDisplayName} שם חברה להצגה</p>
+                <p> ${additionalParameters?.businessCode} קוד חברה </p>
+                <p>טפסי חברה מצורפים כקבצים</p>
+                <p>
+                    <a href=${fullURL} target="_blank" style="
+                        display: inline-block;
+                        background-color: #ddbb0ec7;
+                        color: white;
+                        text-decoration: none;
+                        padding: 10px 15px;
+                        border-radius: 5px;
+                        font-weight: bold;
+                        font-size: 14px;
+                        margin-top: 10px;">
+                        אישור חברה
+                    </a>
+                </p>` : ''}
+
         <p>בברכה,</p>
         <p>צוות AXIS</p>
         <br>

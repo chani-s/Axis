@@ -3,7 +3,7 @@ import { http } from "./http";
 import { AxiosResponse } from "axios";
 import { getSpecificFields } from "./mongo";
 import { Conversation } from "../models/Conversation";
-const CompanyService = {
+export const CompanyService = {
   async getNameAndProfile(ids: string[]): Promise<any> {
     try {
       let idsQuery;
@@ -26,6 +26,21 @@ const CompanyService = {
       throw error;
     }
   }
+
 };
 
-export default CompanyService;
+export const signUpCompany = async (userData: {
+  email: string,
+  password: string,
+  officialBusinessName: string,
+  businessDisplayName: string,
+  businessCode:string,
+  profilePicture:string
+}): Promise<AxiosResponse<any>> => {
+  console.log("services");
+  console.log(userData);
+
+  const response = await http.post("/company_entrance", userData);
+  return response.data;
+};
+

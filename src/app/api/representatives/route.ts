@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
                 await sendEmail(email,
                     ` הזמנת הצטרפות כנציג לחברת ${companyName[0].name}`,
                     `${companyName[0].name} ,מזמינה אותך להצטרף לשירותי נציג של החברה
-                    לסיום התחברות לחץ על כפתור הירשם עכשיו  🎉🎉`, true);
+                    לסיום התחברות לחץ על כפתור הירשם עכשיו  🎉🎉`, true, false,{});
 
                 await client.close();
                 return NextResponse.json({ message: "בקשת הצטרפות נשלחה לנציג" });
