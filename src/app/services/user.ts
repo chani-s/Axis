@@ -1,6 +1,7 @@
 "use client"
 import { AxiosResponse } from "axios";
 import { http } from "./http";
+export const dynamic = 'force-dynamic';
 
 
 export const signUpUser = async (userData: {
@@ -8,6 +9,7 @@ export const signUpUser = async (userData: {
   password: string;
   isWithGoogle: boolean;
   userType: string;
+  profilePicture: string;
 }): Promise<AxiosResponse<any>> => {
   console.log("services");
   console.log(userData);
@@ -30,10 +32,30 @@ export const registerWithGoogle = async (userData: {
   name: string;
   isWithGoogle: boolean;
   userType: string;
+  profilePicture: string;
 }): Promise<AxiosResponse<any>> => {
   console.log("google");
   console.log(userData);
 
   const response: AxiosResponse<any> = await http.post('/google_register',userData);
   return response.data;
+};
+
+export const sendVerificationCode = async (email: string) => {
+  try {
+    console.log("service");
+    const response: AxiosResponse<any> = await http.post('/forgot_password', { email });
+    return response.data;
+  } catch (error) {
+    throw new Error('הייתה שגיאה במשלוח המייל');
+  }
+};
+
+export const resetPassword = async (code: string, newPassword: string, email: string) => {
+  try {
+    const response: AxiosResponse<any> =await http.post('/reset_password', { code, newPassword, email });
+    return response.data;
+  } catch (error) {
+    throw new Error('הקוד לא תואם או הייתה שגיאה');
+  }
 };

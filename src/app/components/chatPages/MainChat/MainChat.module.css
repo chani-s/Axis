@@ -8,7 +8,20 @@
     margin-left: 20px;
     margin-bottom: 20px;
     position: relative;
+}
 
+.mainChatNone {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    width: 75%;
+    background-color: white;
+    border-radius: 15px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    position: relative;
 }
 
 .minimized {
@@ -34,16 +47,16 @@
 
 .closeButton,
 .minimizeButton,
-.hamburger {
-    width: 20px;
-    height: 20px;
+.detailsIcon {
+    width: 15px;
+    height: 15px;
     border: none;
     cursor: pointer;
     position: relative;
-
+    font-size: 14px;
 }
 
-.hamburger::after {
+.detailsIcon::after {
     content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
@@ -56,7 +69,6 @@
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
-    font-size: 12px;
     transition: opacity 0.3s, visibility 0.3s;
     z-index: 1001;
 }
@@ -83,7 +95,7 @@
 .userMessage {
     align-self: flex-end;
     color: #45474b;
-    background-color: #e0dddd; 
+    background-color: #e0dddd;
 }
 
 .otherMessage {
@@ -131,7 +143,7 @@
     bottom: 0;
     position: absolute;
     width: 100%;
-} 
+}
 
 .sendingBar[type="text"] {
     flex: 1;
@@ -143,15 +155,22 @@
 }
 
 .sendButton {
-    padding: 10px 20px;
-    background-color: #ddba0e;
-    color: white;
+    font-size: larger;
+    background-color: white;
+    color: #ddba0e;
     border: none;
-    border-radius: 15px;
     cursor: pointer;
 }
 
-.detailsButton{
+.endButton {
+    font-size: larger;
+    background-color: white;
+    color: #ba1f1f;
+    border: none;
+    cursor: pointer;
+}
+
+.detailsButton {
     padding: 10px 20px;
     background-color: #ddba0e;
     color: white;
@@ -159,6 +178,4 @@
     border-radius: 15px;
     cursor: pointer;
 
-    /* background-color: #45474b; */
-    
 }

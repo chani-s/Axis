@@ -5,21 +5,27 @@ import { MongoClient, ObjectId } from "mongodb";
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
+
 export async function connectDatabase() {
-  console.log(" inconnetDB");
-  if (!client) {
-    const dbConnectionString = process.env.PUBLIC_DB_CONNECTION;
-    if (!dbConnectionString) {
-      throw new Error("Database connection string is not defined");
+  try {
+    if (!client) {
+      const dbConnectionString = process.env.PUBLIC_DB_CONNECTION;
+      if (!dbConnectionString) {
+        throw new Error("Database connection string is not defined");
+      }
+      client = new MongoClient(dbConnectionString);
     }
-    client = new MongoClient(dbConnectionString);
-    console.log(" after client");
+    clientPromise = client.connect();
+    await clientPromise; // וודא שהחיבור נוצר
+    console.log("Connected to MongoDB successfully");
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+    throw error;
   }
-  clientPromise = client.connect();
-  console.log(" after connect");
 
   return clientPromise;
 }
+
 
 export async function getAllDocuments(client: any, collection: string) {
   const db = client.db("Axis");
@@ -51,7 +57,7 @@ export async function insertDocument(
   return insertedDocument;
 }
 
-export async function updateDocument(
+export async function updateByUserId(
   client: MongoClient,
   collection: string,
   documentId: string,
@@ -60,10 +66,25 @@ export async function updateDocument(
   const db = client.db("Axis");
   const result = await db
     .collection(collection)
-    .updateOne({ _id: new ObjectId(documentId) }, { $set: updateData });
+    .updateOne({ user_id: documentId }, { $set: updateData });
   const updatedDocument = await db
     .collection(collection)
-    .findOne({ _id: new ObjectId(documentId) });
+    .findOne({ user_id: documentId});
+  return updatedDocument;
+}
+export async function updateByEmail(
+  client: MongoClient,
+  collection: string,
+  documentEmail: string,
+  updateData: object
+) {
+  const db = client.db("Axis");
+  const result = await db
+    .collection(collection)
+    .updateOne({ email: documentEmail }, { $set: updateData });
+  const updatedDocument = await db
+    .collection(collection)
+    .findOne({ email: documentEmail });
   return updatedDocument;
 }
 
@@ -79,6 +100,18 @@ export async function deleteDocument(
   return { message: `Document with ID ${documentId} has been deleted.` };
 }
 
+export async function deleteDocumentByEmail(
+  client: MongoClient,
+  collection: string,
+  documentEmail: string
+) {
+  const db = client.db("Axis");
+  const result = await db
+    .collection(collection)
+    .deleteOne({ email: documentEmail});
+  return { message: `Document with ID ${documentEmail} has been deleted.` };
+}
+
 export async function isExist(
   client: MongoClient,
   collection: string,
@@ -86,25 +119,9 @@ export async function isExist(
 ): Promise<boolean> {
   const db = client.db("Axis");
   const exists = await db.collection(collection).findOne(filter);
-  return !!exists; // Returns true if the document exists, false otherwise
+  return !!exists; 
 }
 
-export async function isEqual(
-  client: MongoClient,
-  collection: string,
-  filter: object,
-  data: string
-): Promise<boolean> {
-  const db = client.db("Axis"); 
-  const user = await db.collection(collection).findOne(filter); 
-  if (!user) {
-    return false; 
-  }
-  const isMatch = data==user.password;
-  return isMatch; 
-}
-
-//await upsertDocument(client, "users", { name: "Jane Doe" }(<-מחפש שדה כזה), { age: 28 }(<-משנה את השדה הזה));
 export async function upsertDocument(
   client: MongoClient,
   collection: string,
@@ -132,6 +149,188 @@ export async function getSpecificFields(
     .collection(collection)
     .find(filter, { projection: fields })
     .toArray();
-  console.log(documents);
+  console.log(documents); 
   return documents;
 }
+
+
+
+export async function getDocumentsByIds(
+  client: MongoClient,
+  collection: string,
+  ids?: ObjectId[], 
+  include: boolean = true, // If true, fetch IDs in the list; if false, exclude them
+  fields?: object // Optional projection for specific fields
+) {
+  const db = client.db("Axis");
+  if (ids!=null){
+    const query = { _id: { [include ? "$in" : "$nin"]: ids } }; // Use $in or $nin based on 'includ
+
+    const options = fields ? { projection: fields } : {}; // Handle optional projection
+    return await db.collection(collection).find(query, options).toArray();
+  }
+  else{
+    const options = fields ? { projection: fields } : {}; // Handle optional projection
+    return await db.collection(collection).find(options).toArray();
+
+  }
+ 
+
+}
+
+// "use server";
+
+// import mongoose, { Schema, Document, Model } from "mongoose";
+
+// interface DefaultDocument extends Document {
+//   name: string;
+//   email: string;
+//   user_id: string;
+//   data?: any;
+//   createdAt: Date;
+//   updatedAt: Date;
+// }
+
+// // הגדרת הסכמה
+// const DefaultSchema: Schema<DefaultDocument> = new Schema(
+//   {
+//     name: { type: String, required: true },
+//     email: { type: String, required: true },
+//     user_id: { type: String, required: true },
+//     data: { type: Schema.Types.Mixed }, // שדה אופציונלי
+//   },
+//   { timestamps: true } // מוסיף createdAt ו-updatedAt אוטומטית
+// );
+
+// // התחברות למסד הנתונים באמצעות Mongoose
+// export async function connectDatabase () {
+//   try {
+//     const dbConnectionString = process.env.PUBLIC_DB_CONNECTION;
+//     if (!dbConnectionString) {
+//       throw new Error("Database connection string is not defined");
+//     }
+
+//     await mongoose.connect(dbConnectionString); // אין צורך ב-useNewUrlParser
+//     console.log("Connected to MongoDB successfully");
+//   } catch (error) {
+//     console.error("Error connecting to MongoDB:", error);
+//     throw error;
+//   }
+// }
+
+
+// const DefaultModel: Model<DefaultDocument> = mongoose.model(
+//   "Default",
+//   DefaultSchema
+// );
+
+// // פונקציות גישה לנתונים באמצעות Mongoose
+
+// export async function getAllDocuments() {
+//   return await DefaultModel.find();
+// }
+
+// export async function getById(id: string) {
+//   try {
+//     return await DefaultModel.findById(id);
+//   } catch (error) {
+//     console.error("Error fetching document by ID:", error);
+//     throw new Error("Failed to fetch document by ID");
+//   }
+// }
+
+// export async function insertDocument(document: Partial<DefaultDocument>) {
+//   const newDocument = new DefaultModel(document);
+//   return await newDocument.save();
+// }
+
+// export async function updateByUserId(userId: string, updateData: object) {
+//   try {
+//     return await DefaultModel.findOneAndUpdate(
+//       { user_id: userId },
+//       { $set: updateData },
+//       { new: true }
+//     );
+//   } catch (error) {
+//     console.error("Error updating document by user ID:", error);
+//     throw error;
+//   }
+// }
+
+// export async function updateByEmail(email: string, updateData: object) {
+//   try {
+//     return await DefaultModel.findOneAndUpdate(
+//       { email },
+//       { $set: updateData },
+//       { new: true }
+//     );
+//   } catch (error) {
+//     console.error("Error updating document by email:", error);
+//     throw error;
+//   }
+// }
+
+// export async function deleteDocument(id: string) {
+//   try {
+//     await DefaultModel.findByIdAndDelete(id);
+//     return { message: `Document with ID ${id} has been deleted.` };
+//   } catch (error) {
+//     console.error("Error deleting document:", error);
+//     throw error;
+//   }
+// }
+
+// export async function deleteDocumentByEmail(email: string) {
+//   try {
+//     await DefaultModel.findOneAndDelete({ email });
+//     return { message: `Document with email ${email} has been deleted.` };
+//   } catch (error) {
+//     console.error("Error deleting document by email:", error);
+//     throw error;
+//   }
+// }
+
+// export async function isExist(filter: object): Promise<boolean> {
+//   const exists = await DefaultModel.exists(filter);
+//   return !!exists;
+// }
+
+// export async function upsertDocument(filter: object, updateData: object) {
+//   try {
+//     const result = await DefaultModel.findOneAndUpdate(
+//       filter,
+//       { $set: updateData },
+//       { new: true, upsert: true }
+//     );
+//     return result;
+//   } catch (error) {
+//     console.error("Error upserting document:", error);
+//     throw error;
+//   }
+// }
+
+// export async function getSpecificFields(filter: object, fields: object) {
+//   try {
+//     return await DefaultModel.find(filter, fields);
+//   } catch (error) {
+//     console.error("Error fetching specific fields:", error);
+//     throw error;
+//   }
+// }
+
+// export async function getDocumentsByIds(
+//   ids?: string[],
+//   include: boolean = true,
+//   fields?: object
+// ) {
+//   try {
+//     const query = ids
+//       ? { _id: { [include ? "$in" : "$nin"]: ids } }
+//       : {};
+//     return await DefaultModel.find(query, fields);
+//   } catch (error) {
+//     console.error("Error fetching documents by IDs:", error);
+//     throw error;
+//   }
+// }
+

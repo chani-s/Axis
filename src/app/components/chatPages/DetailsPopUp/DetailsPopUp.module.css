@@ -1,0 +1,88 @@
+.container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 1000;
+  font-family: Arial, sans-serif;
+  background-image: url("/imgs/backgroundLogo.png");
+  background-size: 250px; 
+  background-repeat: no-repeat;
+  background-position: bottom left; 
+}
+
+.title {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #ddba0e;
+  box-shadow: 0 0 5px rgba(248, 211, 73, 0.5);
+}
+
+.submitButton {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  background-color: #ddba0e; 
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background-color: #ddba0e;
+}
+
+.cancelButton {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  background-color: #ddd;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  background-color: #ccc;
+}
+
+.error {
+  color: #d93025; 
+  font-size: 14px;
+  font-weight: bold;
+}

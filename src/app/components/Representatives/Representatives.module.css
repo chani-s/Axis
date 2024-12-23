@@ -1,0 +1,144 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 50vw;
+    min-height: 85vh;
+    margin: 50px auto;
+    padding: 25px;
+    text-align: center;
+    border: 1px solid #cccccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    z-index: 3;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+    color: #333;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+  .inviteBox {
+    background-color: #ddba0e;
+    padding: 30px;
+    border-radius: 15px;
+    width: 40%;
+    text-align: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+
+  }
+  
+  .input {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .sendInviteButton {
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .sendInviteButton:hover {
+    background-color: #444;
+  }
+  
+  .representativesList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 50%;
+  }
+  
+  .repCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f8f8;
+    padding: 10px;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+  
+  .repTitle {
+    font-size: 1.3rem;
+    align-self:first baseline;
+  }
+  
+  .statusDot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  
+  .active {
+    background-color: #4caf50;
+  }
+  
+  .inactive {
+    background-color: #f44336;
+  }
+  
+  .invited {
+    background-color: #9e9e9e;
+  }
+  
+  .repStatus {
+    font-size: 0.8rem;
+    color: #777;
+  }
+  
+  .newInviteButton {
+    background-color: #ddba0e;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 15px 30px;
+    font-size: 1rem;
+    margin-top: 20px;
+    cursor: pointer;
+    align-self: center;
+}
+
+.newInviteButton:hover {
+    background-color: #ccaa0d;
+}
+
+.detailsPanel {
+    background-color: #f1f1f1;
+    border: 1px solid #ccaa0d;
+    border-radius: 15px;
+    padding: 30px;
+    width: 40%;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    margin-left: 20px; 
+    text-align: right; 
+}
+
+.detailsPanel h3 {
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+    color: #333;
+}
+
+.detailsPanel p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #555;
+}
+
+  
