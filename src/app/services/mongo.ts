@@ -72,6 +72,22 @@ export async function updateByUserId(
     .findOne({ user_id: documentId});
   return updatedDocument;
 }
+
+export async function updateById(
+  client: MongoClient,
+  collection: string,
+  documentId: string,
+  updateData: object
+) {
+  const db = client.db("Axis");
+  const result = await db
+    .collection(collection)
+    .updateOne({ _id: new ObjectId(documentId) }, { $set: updateData });
+  const updatedDocument = await db
+    .collection(collection)
+    .findOne({ _id: new ObjectId(documentId) });
+  return updatedDocument;
+}
 export async function updateByEmail(
   client: MongoClient,
   collection: string,
