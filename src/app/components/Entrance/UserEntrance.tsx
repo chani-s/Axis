@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 import { userDetailsStore } from "../../services/zustand";
 import ForgetPassword from "../Entrance/ForgotPassword";
 import { showError } from "../../services/messeges";
-import { profile } from "console";
 export const dynamic = 'force-dynamic';
 
 export const Entrance = ({ type }: any) => {
@@ -97,7 +96,37 @@ export const Entrance = ({ type }: any) => {
   });
 
   const setDetails = (data: any) => {
-    if (data.userDetails.user_type == "user") {
+    // if (data.userDetails.user_type == "user") {
+    //   const userDetails = {
+    //     _id: data.userDetails._id,
+    //     email: data.userDetails.email,
+    //     google_auth: data.userDetails.google_auth || false,
+    //     user_type: data.userDetails.user_type,
+    //     name: data.userDetails.name,
+    //     id_number: data.userDetails.id_number,
+    //     address: data.userDetails.address,
+    //     status: data.userDetails.status,
+    //     profile_picture: data.userDetails.profile_picture,
+    //   };
+    //   setUserDetails(userDetails);
+    //   router.push(`/chat/${data.userDetails.user_type}`);
+    // }
+    // if (data.userDetails.user_type == "representative") {
+    //   const userDetails = {
+    //     _id: data.userDetails._id,
+    //     email: data.userDetails.email,
+    //     google_auth: data.userDetails.google_auth || false,
+    //     user_type: data.userDetails.user_type,
+    //     name: data.userDetails.name,
+    //     id_number: data.userDetails.id_number,
+    //     address: data.userDetails.address,
+    //     status: data.userDetails.status,
+    //     profile_picture: data.userDetails.profile_picture,
+    //   };
+    //   setUserDetails(userDetails);
+    //   router.push(`/chat/${data.userDetails.user_type}`);
+    // }
+    // if (data.userDetails.user_type == "manager") {
       const userDetails = {
         _id: data.userDetails._id,
         email: data.userDetails.email,
@@ -107,41 +136,11 @@ export const Entrance = ({ type }: any) => {
         id_number: data.userDetails.id_number,
         address: data.userDetails.address,
         status: data.userDetails.status,
-        profile_picture: data.userDetails.profile_picture
+        profile_picture: data.userDetails.profile_picture,
       };
       setUserDetails(userDetails);
-      router.push("/chat/user");
-    }
-    if (data.userDetails.user_type == "representative") {
-      const userDetails = {
-        _id: data.userDetails._id,
-        email: data.userDetails.email,
-        google_auth: data.userDetails.google_auth || false,
-        user_type: data.userDetails.user_type,
-        name: data.userDetails.name,
-        id_number: data.userDetails.id_number,
-        address: data.userDetails.address,
-        status: data.userDetails.status,
-        profile_picture: data.userDetails.profile_picture
-      };
-      setUserDetails(userDetails);
-      router.push("/chat/representative");
-    }
-    if (data.userDetails.user_type == "manager") {
-      const userDetails = {
-        _id: data.userDetails._id,
-        email: data.userDetails.email,
-        google_auth: data.userDetails.google_auth || false,
-        user_type: data.userDetails.user_type,
-        name: data.userDetails.name,
-        id_number: data.userDetails.id_number,
-        address: data.userDetails.address,
-        status: data.userDetails.status,
-        profile_picture: data.userDetails.profile_picture
-      };
-      setUserDetails(userDetails);
-      router.push("/chat/manager");
-    }
+      router.push(`/chat/${data.userDetails.user_type}`);
+    // }
   };
 
   const entranceExempleUser = (e: any) => {
@@ -165,7 +164,7 @@ export const Entrance = ({ type }: any) => {
         isWithGoogle: false,
         userType: typeUser,
         name: name,
-        profile_picture: profilePicture,
+        profilePicture: profilePicture,
       };
       mutationSignUp.mutate(userData);
     }
@@ -174,7 +173,7 @@ export const Entrance = ({ type }: any) => {
         email: email,
         password: password,
         isWithGoogle: false,
-        profile_picture: profilePicture,
+        profilePicture: profilePicture,
       };
       mutationLogin.mutate(userData);
     }
@@ -192,6 +191,7 @@ export const Entrance = ({ type }: any) => {
     // setProfilePicture(profilePictureFromGoogle);
     console.log(profilePicture);
     console.log(emailFromGoogle, nameFromGoogle);
+
     const userData = {
       email: emailFromGoogle,
       name: nameFromGoogle,

@@ -4,11 +4,7 @@ import Pusher from "pusher-js";
 // import PermissionPanel from "../PermissionPanel/PermissionPanel";
 import { FaTimes, FaBars, FaArrowLeft, FaWindowMinimize, FaInfoCircle } from "react-icons/fa";
 import DetailsBar from "./DetailsBar/DetailsBar";
-
-import {
-    conversationsStore,
-    userDetailsStore,
-} from "../../../services/zustand";
+import { conversationsStore, userDetailsStore, } from "../../../services/zustand";
 import { getMessages } from "@/app/services/message";
 
 interface MessageObj {
@@ -28,9 +24,8 @@ const MainChat = ({ type }: any) => {
     const [isUser, setIsUser] = useState(true);
     const [isShowDetails, setIsShowDetails] = useState(false);
     const userDetails = userDetailsStore((state) => state.userDetails);
-    const conversation = conversationsStore((state) => state.conversation);
-
-
+    const { conversation, setConversation } = conversationsStore();
+      
 
     useEffect(() => {
         if (!conversation?._id) return;
@@ -124,6 +119,7 @@ const MainChat = ({ type }: any) => {
 
     const closeChat = () => {
         setIsChatOpen(false);
+        setConversation({ _id: "" });
     };
 
     const managePermissions = () => {
@@ -135,7 +131,8 @@ const MainChat = ({ type }: any) => {
     };
 
     const endConversation = () => {
-        alert("בלחיצה על אישור השיחה תיסגר ולא תופיע יותר אצל הנציג. מאשר?")
+        alert("בלחיצה על אישור השיחה תיסגר ולא תופיע יותר אצל הנציג. מאשר?");
+        closeChat();
     };
 
     const handleKeyPress = (e: any) => {
