@@ -95,6 +95,10 @@ export const Entrance = ({ type }: any) => {
   });
 
   const setDetails = (data: any) => {
+    const saveToLocalStorage = (userDetails: any) => {
+      localStorage.setItem("userDetails", JSON.stringify(userDetails));
+      setUserDetails(userDetails);
+    };
     if (data.userDetails.user_type == "user") {
       const userDetails = {
         _id: data.userDetails._id,
@@ -108,6 +112,7 @@ export const Entrance = ({ type }: any) => {
         profile_picture: data.userDetails.profile_picture
       };
       setUserDetails(userDetails);
+      saveToLocalStorage(userDetails);
       router.push("/chat/user");
     }
     if (data.userDetails.user_type == "representative") {
@@ -123,6 +128,7 @@ export const Entrance = ({ type }: any) => {
         profile_picture: data.userDetails.profile_picture
       };
       setUserDetails(userDetails);
+      saveToLocalStorage(userDetails);
       router.push("/chat/representative");
     }
     if (data.userDetails.user_type == "manager") {
@@ -138,6 +144,7 @@ export const Entrance = ({ type }: any) => {
         profile_picture: data.userDetails.profile_picture
       };
       setUserDetails(userDetails);
+      saveToLocalStorage(userDetails);
       router.push("/chat/manager");
     }
   };

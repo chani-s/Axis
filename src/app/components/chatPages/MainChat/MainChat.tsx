@@ -37,7 +37,7 @@ const MainChat = ({ type }: any) => {
         const loadConversationMessages = async () => {
             if (conversation?._id) {
                 try {
-                    const previousMessages = await getMessages(conversation._id);
+                    const previousMessages = await getMessages(conversation._id,type);
                     if (previousMessages.length > 0) {
                         setMessages(previousMessages);
                     }

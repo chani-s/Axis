@@ -1,32 +1,41 @@
 import { connectDatabase, getSpecificFields } from "@/app/services/mongo";
-import { MongoClient, ObjectId } from "mongodb";
+import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
-export const dynamic = 'force-dynamic';
 
+export const dynamic = "force-dynamic";
 
-export async function GET(req:Request) {
+export async function GET(req: NextRequest) {
   try {
+    // Parse URL parameters
     const urlParams = new URL(req.url).searchParams;
+    const userType = urlParams.get("userType");
     const conversationId = urlParams.get("conversationId");
-    if(!conversationId){
-        throw new Error("no convesation choose");
-    }
-    console.log(conversationId);
-    const objectConversation=new ObjectId(conversationId);
-    const client = await connectDatabase();
 
-
+    // Validate conversationId
     if (!conversationId) {
       return new Response("Conversation ID is required", { status: 400 });
     }
 
+    // Connect to the database
+    const client = await connectDatabase();
 
-    // Query messages by conversationId
-    const messages = await getSpecificFields(client,"massages",{conversationId:conversationId},{},);
+    // Define a flexible filter type
+    const filter: Record<string, any> = { conversationId: conversationId };
+
+    if (userType != "user") {
+      filter.time = { $gt: new Date() }; // Admin gets recent messages only
+    }
+    // Query the database for messages
+    const messages = await getSpecificFields(client, "massages", filter, {});
+
+    // Return the response
     return new Response(JSON.stringify(messages), { status: 200 });
   } catch (error) {
     console.error("Failed to retrieve messages:", error);
-    return new Response(JSON.stringify({ success: false, error: error }), { status: 500 });
+
+    // Return error response
+    return new Response(JSON.stringify({ success: false, error }), {
+      status: 500,
+    });
   }
 }
-

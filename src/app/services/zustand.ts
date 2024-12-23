@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-interface User {
+export interface UserZustand {
     _id: string;
     email: string;
     google_auth: boolean;
@@ -18,10 +18,11 @@ interface Conversation {
     _id: string;
 }
 
-type UserStore = {
-    userDetails: User;
-    setUserDetails: (details: User) => void;
+ type UserStore = {
+    userDetails: UserZustand;
+    setUserDetails: (details: UserZustand) => void;
     getMissingDetails: () => string[];  
+    
 };
 
 type Conversations = {
@@ -41,7 +42,7 @@ export const userDetailsStore = create<UserStore>((set) => ({
         status: "",
         profile_picture: "",
     },
-    setUserDetails: (details: User) => set({ userDetails: details }),
+    setUserDetails: (details: UserZustand) => set({ userDetails: details }),
 
     getMissingDetails: () => {
         const missing: string[] = [];
