@@ -4,13 +4,11 @@ import styles from './Header.module.css';
 import ProfilePopup from './ProfilePopup/ProfilePopup';
 import { userDetailsStore } from '../../../services/zustand';
 
+const DEFAULT_PROFILE_PIC = "https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png";
+
 
 const Header = () => {
     const userDetails = userDetailsStore((state) => state.userDetails); 
-
-    const [userName, setUserName] = useState("ללא שם");
-    const [userEmail, setUserEmail] = useState('abc@gmail.com');
-    const [profilePicture, setProfilePicture] = useState('https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png');
     const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     const showPersonalProfile = () => {
@@ -20,12 +18,8 @@ const Header = () => {
     const closePopup = () => {
         setIsPopupOpen(false);
     };
-
-    const saveProfile = (newUserName: string, newEmail: string, newProfilePic: string) => {
-        setUserName(newUserName);
-        setUserEmail(newEmail);
-        setProfilePicture(newProfilePic);
-    };
+    console.log(userDetails.profile_picture);
+    console.log(userDetails.name);
 
     return (
         <div className={styles.header}>
@@ -33,7 +27,7 @@ const Header = () => {
                 title={userDetails.name + "\n" + userDetails.email}>
                 <img
                     className={styles.profilePicture}
-                    src={profilePicture}
+                    src={userDetails.profile_picture || DEFAULT_PROFILE_PIC}
                     alt="profile"
                     onClick={showPersonalProfile}>
                 </img>
@@ -44,11 +38,7 @@ const Header = () => {
 
             {isPopupOpen && (
                 <ProfilePopup
-                    // userName={userDetails.name}
-                    // userEmail={userDetails.email}
-                    // profilePicture={profilePicture}
                     onClose={closePopup}
-                    // onSave={saveProfile}
                 />
             )}
         </div>

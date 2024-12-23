@@ -4,11 +4,7 @@ import Pusher from "pusher-js";
 // import PermissionPanel from "../PermissionPanel/PermissionPanel";
 import { FaTimes, FaBars, FaArrowLeft, FaWindowMinimize, FaInfoCircle } from "react-icons/fa";
 import DetailsBar from "./DetailsBar/DetailsBar";
-
-import {
-    conversationsStore,
-    userDetailsStore,
-} from "../../../services/zustand";
+import { conversationsStore, userDetailsStore, } from "../../../services/zustand";
 import { getMessages } from "@/app/services/message";
 
 interface MessageObj {
@@ -19,7 +15,7 @@ interface MessageObj {
 }
 
 const MainChat = ({ type }: any) => {
-    const [isChatOpen, setIsChatOpen] = useState(true);
+    const [isChatOpen, setIsChatOpen] = useState(false);
     const [isMinimized, setIsMinimized] = useState(false);
     const [isPermissionPanelOpen, setIsPermissionPanelOpen] = useState(false);
     const [messages, setMessages] = useState<MessageObj[]>([]); // Default as empty array
@@ -28,15 +24,15 @@ const MainChat = ({ type }: any) => {
     const [isUser, setIsUser] = useState(true);
     const [isShowDetails, setIsShowDetails] = useState(false);
     const userDetails = userDetailsStore((state) => state.userDetails);
-    const conversation = conversationsStore((state) => state.conversation);
-
-
+    const { conversation, setConversation } = conversationsStore();
+      
 
     useEffect(() => {
         if (!conversation?._id) return;
         const loadConversationMessages = async () => {
             if (conversation?._id) {
                 try {
+                    setIsChatOpen(true);
                     const previousMessages = await getMessages(conversation._id);
                     if (previousMessages.length > 0) {
                         setMessages(previousMessages);
@@ -123,6 +119,7 @@ const MainChat = ({ type }: any) => {
 
     const closeChat = () => {
         setIsChatOpen(false);
+        setConversation({ _id: "" });
     };
 
     const managePermissions = () => {
@@ -131,6 +128,11 @@ const MainChat = ({ type }: any) => {
 
     const minimize = () => {
         setIsMinimized(!isMinimized);
+    };
+
+    const endConversation = () => {
+        alert("בלחיצה על אישור השיחה תיסגר ולא תופיע יותר אצל הנציג. מאשר?");
+        closeChat();
     };
 
     const handleKeyPress = (e: any) => {
@@ -149,7 +151,10 @@ const MainChat = ({ type }: any) => {
     };
 
     if (!isChatOpen) {
-        return null;
+        return <div className={styles.mainChatNone}>
+            <p>לא נבחרה שיחה...🫣</p><br/>
+            <h3>בחר חברה כדי להתחיל 🤗        </h3>
+        </div>;
     }
 
     return (
@@ -179,25 +184,29 @@ const MainChat = ({ type }: any) => {
                 {messages
                     ?.filter((msg) => msg.conversationId === conversation._id)
                     .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
-                    .map((msg, index) => (
-                        <div
-                            key={index}
-                            className={`${styles.message} ${msg.sender === userDetails._id || !msg.sender
+                    .map((msg, index) => {
+                        const messageDate = new Date(msg.time);
+                        const isToday = messageDate.toDateString() === new Date().toDateString();
+
+                        return (
+                            <div
+                                key={index}
+                                className={`${styles.message} ${msg.sender === userDetails._id || !msg.sender
                                     ? styles.userMessage
                                     : styles.otherMessage
-                                }`}
-                        >
-                            <p className={styles.messageText}>{msg.text}</p>
-                            <span className={styles.messageTime}>
-                                {new Date(msg.time).toLocaleTimeString([], {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                })}
-                            </span>
-                        </div>
-                    ))}
+                                    }`}
+                            >
+                                <p className={styles.messageText}>{msg.text}</p>
+                                <span className={styles.messageTime}>
+                                    {!isToday && `${messageDate.toLocaleDateString()}, `}
+                                    {messageDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                </span>
+                            </div>
+                        );
+                    })}
                 <div ref={chatEndRef}></div>
             </div>
+
             <div className={styles.sendingBar}>
                 {!isUser && (
                     <button className={styles.detailsButton} onClick={showDetails}>
@@ -220,6 +229,12 @@ const MainChat = ({ type }: any) => {
                     onClick={sendMessage}
                 >
                     <FaArrowLeft />
+                </button>
+                <button
+                    className={styles.endButton}
+                    onClick={endConversation}
+                >
+                    <FaTimes/>
                 </button>
             </div>
 

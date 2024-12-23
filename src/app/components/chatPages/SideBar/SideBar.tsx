@@ -46,7 +46,7 @@ const SideBar: React.FC<SideBarProps> = ({
     // Filter companies whenever `searchTerm` or `companiesData` changes
     setFilteredCompanies(
       companiesData?.filter((company: any) => {
-        return company.name.toLowerCase().includes(searchTerm.toLowerCase());
+        return company.name?.toLowerCase().includes(searchTerm.toLowerCase());
       }) || []
     );
     // console.log("term" + searchTerm);

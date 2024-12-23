@@ -9,6 +9,7 @@ export const signUpUser = async (userData: {
   password: string;
   isWithGoogle: boolean;
   userType: string;
+  profilePicture: string;
 }): Promise<AxiosResponse<any>> => {
   console.log("services");
   console.log(userData);
@@ -31,6 +32,7 @@ export const registerWithGoogle = async (userData: {
   name: string;
   isWithGoogle: boolean;
   userType: string;
+  profilePicture: string;
 }): Promise<AxiosResponse<any>> => {
   console.log("google");
   console.log(userData);

@@ -15,6 +15,7 @@ export const Representatives = () => {
     const [selectedRepresentative, setSelectedRepresentative] = useState<Representative | null>(null);
     const [representatives, setRepresentatives] = useState<Representative[]>([]);
     const [inviteEmail, setInviteEmail] = useState<string>("");
+    const [inviteName, setInviteName] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -52,9 +53,10 @@ export const Representatives = () => {
         setLoading(true);
         setError(null);
         try {
-            const newRepresentative = await inviteRepresentative(inviteEmail, "6756bc39d4cf4f15a0da3ff6");
+            const newRepresentative = await inviteRepresentative(inviteEmail, "6756bc39d4cf4f15a0da3ff6"); // Set to manager's company ID
             setRepresentatives((prev) => [...prev, newRepresentative]);
             setInviteEmail("");
+            setInviteName("");
             setIsInviteRepresentative(false);
         } catch (error: any) {
             setError(error);
@@ -103,6 +105,13 @@ export const Representatives = () => {
                     </div>
                 ) : isInviteRepresentative ? (
                     <div className={style.inviteBox}>
+                        <input
+                            type="name"
+                            value={inviteName}
+                            onChange={(e) => setInviteName(e.target.value)}
+                            placeholder="שם נציג"
+                            className={style.input}
+                        />
                         <input
                             type="email"
                             value={inviteEmail}

@@ -7,7 +7,7 @@
     z-index: 1000;
     width: 300px;
     max-width: 80vw;
-    height: 450px;
+    height: auto;
     box-shadow: 2px 2px 2px 2px #a3a4a7;
 }
 
@@ -24,6 +24,7 @@
 }
 
 .popupContent {
+    display: flex;
     flex-direction: column;
     gap: 10px;
     display: flex;
@@ -38,7 +39,7 @@
     border: 1px solid #e0dddd;
     background-color: #e0dddd;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 14px;
     text-align: right;
 }
 
@@ -52,7 +53,7 @@
     color: white;
     padding: 5px;
     border-radius: 50%;
-    font-size: 18px;
+    font-size: 17px;
     cursor: pointer;
     border: none;
 }
