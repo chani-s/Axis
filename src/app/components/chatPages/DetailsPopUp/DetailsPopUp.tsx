@@ -92,6 +92,10 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
         }
     };
 
+    const handleCancelClick = () => {
+        onClose();
+    };
+
     if (missingDetails.length === 0) return null;
 
     return (
@@ -145,7 +149,7 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
             <button type="submit" className={style.submitButton}>
                 סיימתי
             </button>
-            <button type="submit" className={style.cancelButton}>
+            <button onClick={handleCancelClick} className={style.cancelButton}>
                 לא עכשיו
             </button>
         </form>
