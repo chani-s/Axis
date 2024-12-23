@@ -23,6 +23,22 @@
     width: 100%;
 }
 
+.settings {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 15px;
+    background-color: #ddba0e;
+    font-size: 12.5px;
+    color: black;
+    cursor: pointer;
+    direction: rtl;
+    width: 17vw;
+    height: 2rem;
+}
+
 .input {
     padding: 10px 15px;
     border: none;
@@ -96,6 +112,7 @@
     direction: rtl;
     font-size: 3vh;
     margin-right: 3vw;
+    align-self: first baseline;
 }
 
 .bottom {
