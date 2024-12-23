@@ -108,7 +108,7 @@
 }
 
 .yourChatsP {
-    margin-top: 20px;
+    margin-top: 10px;
     direction: rtl;
     font-size: 3vh;
     margin-right: 3vw;
@@ -126,7 +126,6 @@
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #ddba0e #fff;
-    margin-top: 30px;
 }
 
 .conversationItem {

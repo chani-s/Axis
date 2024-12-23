@@ -156,7 +156,7 @@ const MainChat = ({ type }: any) => {
     if (!isChatOpen) {
         return <div className={styles.mainChatNone}>
             <p className={styles.noneP}>לא נבחרה שיחה...🫣</p><br/>
-            <h3 className={styles.noneP}>בחר חברה כדי להתחיל 🤗        </h3>
+            <h3 className={styles.noneP}>בחר שיחה כדי להתחיל 🤗        </h3>
         </div>;
     }
 

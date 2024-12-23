@@ -83,7 +83,7 @@ const MainPage: React.FC<MainPageProps> = ({
                 <MainChat type={type} />
             </div>
             <Footer />
-            {isDetailsPopUpVisible && (
+            {isDetailsPopUpVisible && type==="user" &&(
                 <div className={styles.overlay}>
                     <DetailsPopUp onClose={() => setIsDetailsPopUpVisible(false)} />
                 </div>
