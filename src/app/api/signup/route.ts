@@ -37,25 +37,54 @@ export async function POST(req: NextRequest) {
       );
     }
     if (userExist && userData.userType == "representative") {
-      const updateStatus = await updateByEmail(
-        client,
-        "users",
-        userData.email,
-        { status: "active" }
-      )
-
-      userDetails = await getSpecificFields(
+      const userId = await getSpecificFields(
         client,
         "users",
         { email: userData.email },
-        {}
+        {_id:1}
       );
-      userDetails = userDetails[0];
+      console.log(userId);
+      console.log(userId[0]._id.toString());
+      
+      
+      const passwordIsExist = await isExist(
+        client,
+        "hashed_passwords",
+        { user_id: userId[0]._id.toString() }
+      )
+
+      console.log(passwordIsExist);
+      
+
+      if (!passwordIsExist) {
+
+        const updateStatus = await updateByEmail(
+          client,
+          "users",
+          userData.email,
+          { status: "active" }
+        )
+
+        if (updateStatus) {
+          userDetails = await getSpecificFields(
+            client,
+            "users",
+            { email: userData.email },
+            {}
+          );
+          userDetails = userDetails[0];
+
+        }
+      }
+
+
     }
 
-    console.log(userDetails);
+    console.log("uuu");
     
-    if (userDetails) {
+    console.log(userDetails);
+
+    if (userDetails?._id) {
       const hashedPassword = await hashPassword(userData.password);
       const insertUserPassword = await insertDocument(
         client,

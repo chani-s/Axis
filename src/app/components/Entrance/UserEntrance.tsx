@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, Suspense,useEffect } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
 import style from "./UserEntrance.module.css";
 import { googleSignup } from "../../services/auth";
@@ -18,22 +18,23 @@ export const Entrance = ({ type }: any) => {
   const [typeUser, setTypeUser] = useState("user");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
   const [isWithGoogle, setIsWithGoogle] = useState(false);
   const [isRepresentative, setIsRepresentative] = useState(false);
   const [isLoadding, setIsLoadding] = useState(false);
   const [forgetPassword, setForgetPassword] = useState(false);
   const setUserDetails = userDetailsStore((state) => state.setUserDetails);
   const router = useRouter();
-  let typeFromUrl="";
+  let typeFromUrl = "";
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    typeFromUrl = params?.get("type") ||"";
+    typeFromUrl = params?.get("type") || "";
     const emailFromUrl = params.get("email");
     if (emailFromUrl) {
       setEmail(emailFromUrl);
     }
-    if(typeFromUrl=="representative"){
+    if (typeFromUrl == "representative") {
       setIsRepresentative(true);
       setTypeUser("representative");
     }
@@ -99,7 +100,37 @@ export const Entrance = ({ type }: any) => {
       localStorage.setItem("userDetails", JSON.stringify(userDetails));
       setUserDetails(userDetails);
     };
-    if (data.userDetails.user_type == "user") {
+    // if (data.userDetails.user_type == "user") {
+    //   const userDetails = {
+    //     _id: data.userDetails._id,
+    //     email: data.userDetails.email,
+    //     google_auth: data.userDetails.google_auth || false,
+    //     user_type: data.userDetails.user_type,
+    //     name: data.userDetails.name,
+    //     id_number: data.userDetails.id_number,
+    //     address: data.userDetails.address,
+    //     status: data.userDetails.status,
+    //     profile_picture: data.userDetails.profile_picture,
+    //   };
+    //   setUserDetails(userDetails);
+    //   router.push(`/chat/${data.userDetails.user_type}`);
+    // }
+    // if (data.userDetails.user_type == "representative") {
+    //   const userDetails = {
+    //     _id: data.userDetails._id,
+    //     email: data.userDetails.email,
+    //     google_auth: data.userDetails.google_auth || false,
+    //     user_type: data.userDetails.user_type,
+    //     name: data.userDetails.name,
+    //     id_number: data.userDetails.id_number,
+    //     address: data.userDetails.address,
+    //     status: data.userDetails.status,
+    //     profile_picture: data.userDetails.profile_picture,
+    //   };
+    //   setUserDetails(userDetails);
+    //   router.push(`/chat/${data.userDetails.user_type}`);
+    // }
+    // if (data.userDetails.user_type == "manager") {
       const userDetails = {
         _id: data.userDetails._id,
         email: data.userDetails.email,
@@ -109,44 +140,13 @@ export const Entrance = ({ type }: any) => {
         id_number: data.userDetails.id_number,
         address: data.userDetails.address,
         status: data.userDetails.status,
-        profile_picture: data.userDetails.profile_picture
+        profile_picture: data.userDetails.profile_picture,
       };
       setUserDetails(userDetails);
       saveToLocalStorage(userDetails);
-      router.push("/chat/user");
-    }
-    if (data.userDetails.user_type == "representative") {
-      const userDetails = {
-        _id: data.userDetails._id,
-        email: data.userDetails.email,
-        google_auth: data.userDetails.google_auth || false,
-        user_type: data.userDetails.user_type,
-        name: data.userDetails.name,
-        id_number: data.userDetails.id_number,
-        address: data.userDetails.address,
-        status: data.userDetails.status,
-        profile_picture: data.userDetails.profile_picture
-      };
-      setUserDetails(userDetails);
-      saveToLocalStorage(userDetails);
-      router.push("/chat/representative");
-    }
-    if (data.userDetails.user_type == "manager") {
-      const userDetails = {
-        _id: data.userDetails._id,
-        email: data.userDetails.email,
-        google_auth: data.userDetails.google_auth || false,
-        user_type: data.userDetails.user_type,
-        name: data.userDetails.name,
-        id_number: data.userDetails.id_number,
-        address: data.userDetails.address,
-        status: data.userDetails.status,
-        profile_picture: data.userDetails.profile_picture
-      };
-      setUserDetails(userDetails);
-      saveToLocalStorage(userDetails);
-      router.push("/chat/manager");
-    }
+
+      router.push(`/chat/${data.userDetails.user_type}`);
+    // }
   };
 
   const entranceExempleUser = (e: any) => {
@@ -163,12 +163,14 @@ export const Entrance = ({ type }: any) => {
     e.preventDefault();
     if (type == "signup") {
       console.log(typeFromUrl);
-      
+
       const userData = {
         email: email,
         password: password,
         isWithGoogle: false,
         userType: typeUser,
+        name: name,
+        profilePicture: profilePicture,
       };
       mutationSignUp.mutate(userData);
     }
@@ -177,6 +179,7 @@ export const Entrance = ({ type }: any) => {
         email: email,
         password: password,
         isWithGoogle: false,
+        profilePicture: profilePicture,
       };
       mutationLogin.mutate(userData);
     }
@@ -190,13 +193,19 @@ export const Entrance = ({ type }: any) => {
     setEmail(emailFromGoogle);
     const nameFromGoogle = res.user.displayName;
     setName(nameFromGoogle);
+    const profilePictureFromGoogle = res.user.photoURL;
+    // setProfilePicture(profilePictureFromGoogle);
+    console.log(profilePicture);
     console.log(emailFromGoogle, nameFromGoogle);
+
     const userData = {
       email: emailFromGoogle,
       name: nameFromGoogle,
       isWithGoogle: true,
       userType: "user",
+      profilePicture: profilePictureFromGoogle,
     };
+    console.log(userData.profilePicture);
     mutationRegisterWithGoogle.mutate(userData);
   };
 
