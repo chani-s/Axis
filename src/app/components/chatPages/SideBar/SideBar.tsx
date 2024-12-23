@@ -4,6 +4,8 @@ import styles from "./SideBar.module.css";
 import { conversationsStore, userDetailsStore } from "../../../services/zustand";
 import { getConversations } from "@/app/services/conversation";
 import { Conversation } from "@/app/models/Conversation";
+import Link from "next/link";
+import { FaCog } from "react-icons/fa";
 
 interface SideBarProps {
   userType: string;
@@ -75,7 +77,6 @@ const SideBar: React.FC<SideBarProps> = ({
 
   const handleCreateConversation = (company: any) => {
     const newConversation = {
-      
       company_id: company._id,
       representative_id: null,
       status_code: 2,
@@ -87,7 +88,6 @@ const SideBar: React.FC<SideBarProps> = ({
         "",
     };
     createConversation(newConversation);
-
     setConversation({ _id: chosenConversationId });
   };
 
@@ -98,9 +98,8 @@ const SideBar: React.FC<SideBarProps> = ({
   };
 
   const handleConversationClick = (con: Conversation) => {
-    
     if (con._id) {
-      console.log("in handleConversationClick"+con._id)
+      console.log("in handleConversationClick" + con._id)
       setConversation({ _id: con._id.toString() });
     }
   };
@@ -114,7 +113,6 @@ const SideBar: React.FC<SideBarProps> = ({
     if (!filteredCompanies.length) {
       return <div className={styles.noResults}>אין תוצאות</div>;
     }
-
     return filteredCompanies.map((company: any) => (
       <div
         key={company._id}
@@ -147,10 +145,6 @@ const SideBar: React.FC<SideBarProps> = ({
                 setIsDropdownOpen(false);
               }
             }}
-            // onFocus={() => {
-            //   // handleInputFocus();
-            //   setIsDropdownOpen(true);
-            // }}
             onKeyDown={handleKeyPress}
           />
           {isDropdownOpen && (
@@ -172,8 +166,16 @@ const SideBar: React.FC<SideBarProps> = ({
           />
         </div>
       )}
-      <p className={styles.yourChatsP}>הצאטים שלך:</p>
+
       <div className={styles.bottom}>
+        {userType === "manager" &&
+          <div className={styles.settings}>
+            <Link href="/manager/representatives">נהול נציגים</Link>
+            <FaCog size={18} />
+          </div>
+        }
+        <p className={styles.yourChatsP}>הצאטים שלך:</p>
+
         {filteredConversations ? (
           filteredConversations.map((mapConversation: Conversation) => {
             const isSelected =
@@ -182,27 +184,26 @@ const SideBar: React.FC<SideBarProps> = ({
             return (
               <div
                 onClick={() => handleConversationClick(mapConversation)}
-                className={`${styles.conversationItem} ${
-                  isSelected ? styles.selected : ""
-                }`}
+                className={`${styles.conversationItem} ${isSelected ? styles.selected : ""
+                  }`}
                 style={{ backgroundColor: isSelected ? "#ddba0e" : "" }}
                 key={mapConversation._id?.toString()}
               >
-               <img
-  className={styles.profileCircle}
-  src={
-    userType === "user"
-      ? mapConversation.company_profilePicture
-      : mapConversation.user_profilePicture || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s"
-  }
-  alt="Profile"
-/>
+                <img
+                  className={styles.profileCircle}
+                  src={
+                    userType === "user"
+                      ? mapConversation.company_profilePicture
+                      : mapConversation.user_profilePicture || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s"
+                  }
+                  alt="Profile"
+                />
                 <p className={styles.name}>
                   {userType === "user"
                     ? mapConversation.company_name
                     : mapConversation.user_name
-                    ? mapConversation.user_name
-                    : "פניה חדשה"}
+                      ? mapConversation.user_name
+                      : "פניה חדשה"}
                 </p>{" "}
               </div>
             );

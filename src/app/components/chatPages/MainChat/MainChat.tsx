@@ -21,7 +21,7 @@ const MainChat = ({ type }: any) => {
     const [messages, setMessages] = useState<MessageObj[]>([]); // Default as empty array
     const [message, setMessage] = useState("");
     const chatEndRef = useRef<HTMLDivElement>(null);
-    const [isUser, setIsUser] = useState(true);
+    const [userType, setUserType] = useState("user");
     const [isShowDetails, setIsShowDetails] = useState(false);
     const userDetails = userDetailsStore((state) => state.userDetails);
     const { conversation, setConversation } = conversationsStore();
@@ -33,7 +33,7 @@ const MainChat = ({ type }: any) => {
             if (conversation?._id) {
                 try {
                     setIsChatOpen(true);
-                    const previousMessages = await getMessages(conversation._id);
+                    const previousMessages = await getMessages(conversation._id,type);
                     if (previousMessages.length > 0) {
                         setMessages(previousMessages);
                     }
@@ -105,7 +105,10 @@ const MainChat = ({ type }: any) => {
 
     useEffect(() => {
         if (type === "representative") {
-            setIsUser(false);
+            setUserType("representative");
+        }
+        if (type === "manager") {
+            setUserType("manager");
         }
     }, [type]);
 
@@ -170,7 +173,7 @@ const MainChat = ({ type }: any) => {
                         <FaWindowMinimize />
                     </button>
                 </div>
-                {isUser && <button
+                {userType==="user" && <button
                     className={styles.detailsIcon}
                     onClick={managePermissions}
                     data-tooltip={"ניהול ההרשאות לנתונים שלך"}
@@ -208,7 +211,7 @@ const MainChat = ({ type }: any) => {
             </div>
 
             <div className={styles.sendingBar}>
-                {!isUser && (
+                {userType==="representative" && (
                     <button className={styles.detailsButton} onClick={showDetails}>
                         פרטי לקוח
                     </button>

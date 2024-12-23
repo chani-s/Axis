@@ -1,19 +1,30 @@
-// Header.tsx
-import React, { useEffect, useState } from 'react';
-import styles from './Header.module.css';
-import ProfilePopup from './ProfilePopup/ProfilePopup';
-import { userDetailsStore } from '../../../services/zustand';
-
+import React, { useState } from "react";
+import styles from "./Header.module.css";
+import ProfilePopup from "./ProfilePopup/ProfilePopup";
+import { userDetailsStore } from "../../../services/zustand";
+import { useRouter } from "next/navigation"; // Use next/navigation for Next.js 13 and later
+import { logout } from "@/app/services/logout";
+import { MdOutlineLogout } from "react-icons/md";
 const DEFAULT_PROFILE_PIC = "https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png";
 
 
 const Header = () => {
     const userDetails = userDetailsStore((state) => state.userDetails); 
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const router = useRouter();
 
-    const showPersonalProfile = () => {
-        setIsPopupOpen(true);
-    };
+    const handleLogout = async () => {
+        try {
+          // Perform logout
+          await logout();
+          router.push("/login");
+        } catch (error) {
+          console.error("Error during logout process:", error);
+        }
+      };
+  const showPersonalProfile = () => {
+    setIsPopupOpen(true);
+  };
 
     const closePopup = () => {
         setIsPopupOpen(false);
@@ -34,6 +45,8 @@ const Header = () => {
                 <p>{userDetails.name}</p>
 
             </div>
+            <MdOutlineLogout className={styles.logoutIcon} onClick={handleLogout} />
+
             <img className={styles.logo} src="/imgs/nonebg1.png" alt="logo"></img>
 
             {isPopupOpen && (
@@ -43,6 +56,5 @@ const Header = () => {
             )}
         </div>
     )
-
 }
 export default Header;
