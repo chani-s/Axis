@@ -43,3 +43,26 @@ export async function createConversation(conversationData: any): Promise<any> {
     throw error;
   }
 }
+
+
+export const deleteConversation = async (conversationId: string) => {
+  try {
+    // Use URLSearchParams to prepare the query parameter
+    const queryParams = new URLSearchParams({ conversationId }).toString();
+
+    // Perform the DELETE request
+    const response = await http.delete(`/conversation?${queryParams}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status === 200) {
+      console.log(response.data.message); // Handle success
+    } else {
+      console.error(response.data.error); // Handle error
+    }
+  } catch (error) {
+    console.error('Error deleting conversation:', error);
+  }
+};

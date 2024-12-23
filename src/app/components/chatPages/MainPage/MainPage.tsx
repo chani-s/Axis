@@ -32,7 +32,7 @@ const MainPage: React.FC<MainPageProps> = ({
 
   useEffect(() => {
     const user = localStorage.getItem("userDetails");
-          setIsLogin(true);
+    setIsLogin(true);
 
     if (user) {
       const parsedUser = JSON.parse(user);
@@ -41,17 +41,15 @@ const MainPage: React.FC<MainPageProps> = ({
 
       const updatedMissingDetails = getMissingDetails();
       setMissingDetails(updatedMissingDetails);
-      if (updatedMissingDetails.length > 0) {
+      if (updatedMissingDetails.length > 0 && type === "user") {
         setIsDetailsPopUpVisible(true);
-      }
-      else{
-        const updatedMissingDetails2=getMissingDetails();
-        setMissingDetails(updatedMissingDetails2)
-        if(updatedMissingDetails2.length>0){
-setIsLogin(false);
+      }} else {
+        const updatedMissingDetails2 = getMissingDetails();
+        setMissingDetails(updatedMissingDetails2);
+        if (updatedMissingDetails2.length > 0) {
+          setIsLogin(false);
         }
-      }
-    
+      
     }
   }, [setUserDetails, getMissingDetails]);
 

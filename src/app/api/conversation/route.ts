@@ -134,3 +134,32 @@ if(!result||!result._id){
     );
   }
 }
+
+
+export async function DELETE(request: Request) {
+  try {
+    const { conversationId } = await request.json(); // Get conversationId from request body
+    
+    // Connect to the database
+    const client = await connectDatabase();
+
+    // Remove the conversationId from the representative's conversations array
+    const result = await client
+      .db('Axis') // Replace with your database name
+      .collection('users')
+      .updateOne(
+        {  user_type: 'representative', conversations: { $in: [conversationId] } },
+        { $pull: { conversations: conversationId } }
+      );
+
+    if (result.modifiedCount === 0) {
+      return NextResponse.json({ error: 'Failed to remove conversation' }, { status: 500 });
+    }
+
+    return NextResponse.json({ message: 'Conversation removed successfully' });
+
+  } catch (error) {
+    console.error(error);
+    return NextResponse.error();
+  }
+}

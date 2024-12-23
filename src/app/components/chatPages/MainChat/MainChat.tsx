@@ -6,6 +6,7 @@ import { FaTimes, FaBars, FaArrowLeft, FaWindowMinimize, FaInfoCircle } from "re
 import DetailsBar from "./DetailsBar/DetailsBar";
 import { conversationsStore, userDetailsStore, } from "../../../services/zustand";
 import { getMessages } from "@/app/services/message";
+import { deleteConversation } from "@/app/services/conversation";
 
 interface MessageObj {
     time: Date;
@@ -130,8 +131,9 @@ const MainChat = ({ type }: any) => {
         setIsMinimized(!isMinimized);
     };
 
-    const endConversation = () => {
-        alert("בלחיצה על אישור השיחה תיסגר ולא תופיע יותר אצל הנציג. מאשר?");
+    const endConversation = async () => {
+        alert("האם את בטוח שאתה רוצה לסגור את הפניה?");
+        await deleteConversation(conversation._id)
         closeChat();
     };
 
@@ -153,7 +155,7 @@ const MainChat = ({ type }: any) => {
     if (!isChatOpen) {
         return <div className={styles.mainChatNone}>
             <p>לא נבחרה שיחה...🫣</p><br/>
-            <h3>בחר חברה כדי להתחיל 🤗        </h3>
+            <h3>בחר שיחה כדי להתחיל 🤗        </h3>
         </div>;
     }
 
