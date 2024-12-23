@@ -75,7 +75,6 @@ const SideBar: React.FC<SideBarProps> = ({
 
   const handleCreateConversation = (company: any) => {
     const newConversation = {
-      
       company_id: company._id,
       representative_id: null,
       status_code: 2,
@@ -87,7 +86,6 @@ const SideBar: React.FC<SideBarProps> = ({
         "",
     };
     createConversation(newConversation);
-
     setConversation({ _id: chosenConversationId });
   };
 
@@ -98,7 +96,6 @@ const SideBar: React.FC<SideBarProps> = ({
   };
 
   const handleConversationClick = (con: Conversation) => {
-    
     if (con._id) {
       console.log("in handleConversationClick"+con._id)
       setConversation({ _id: con._id.toString() });
@@ -114,7 +111,6 @@ const SideBar: React.FC<SideBarProps> = ({
     if (!filteredCompanies.length) {
       return <div className={styles.noResults}>אין תוצאות</div>;
     }
-
     return filteredCompanies.map((company: any) => (
       <div
         key={company._id}
