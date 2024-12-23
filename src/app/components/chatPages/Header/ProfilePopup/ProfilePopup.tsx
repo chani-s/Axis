@@ -43,7 +43,7 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const handleSave = async () => {
         try {
             const updatedDetails = {
-                name: fullName,
+                name: fullName || userDetails.name,
                 address: address,
                 id_number: idNumber,
                 profile_picture: newProfilePic,
