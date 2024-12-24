@@ -9,7 +9,7 @@ export const signUpUser = async (userData: {
   password: string;
   isWithGoogle: boolean;
   userType: string;
-  profilePicture: string;
+  profilePicture: string | null;
 }): Promise<AxiosResponse<any>> => {
   console.log("services");
   console.log(userData);
@@ -23,7 +23,7 @@ export const loginUser = async (userData: {
   password: string;
   isWithGoogle: boolean;
 }): Promise<any> => {
-  const response: AxiosResponse<any> = await http.post('/login',userData);
+  const response: AxiosResponse<any> = await http.post('/login', userData);
   return response.data;
 };
 
@@ -32,12 +32,13 @@ export const registerWithGoogle = async (userData: {
   name: string;
   isWithGoogle: boolean;
   userType: string;
-  profilePicture: string;
+  profilePicture: string | null;
 }): Promise<AxiosResponse<any>> => {
   console.log("google");
   console.log(userData);
 
-  const response: AxiosResponse<any> = await http.post('/google_register',userData);
+  const response: AxiosResponse<any> = await http.post('/google_register', userData);
+  console.log(response.data);
   return response.data;
 };
 
@@ -53,7 +54,7 @@ export const sendVerificationCode = async (email: string) => {
 
 export const resetPassword = async (code: string, newPassword: string, email: string) => {
   try {
-    const response: AxiosResponse<any> =await http.post('/reset_password', { code, newPassword, email });
+    const response: AxiosResponse<any> = await http.post('/reset_password', { code, newPassword, email });
     return response.data;
   } catch (error) {
     throw new Error('הקוד לא תואם או הייתה שגיאה');

@@ -21,11 +21,11 @@ const MainChat = ({ type }: any) => {
     const [messages, setMessages] = useState<MessageObj[]>([]); // Default as empty array
     const [message, setMessage] = useState("");
     const chatEndRef = useRef<HTMLDivElement>(null);
-    const [isUser, setIsUser] = useState(true);
+    const [userType, setUserType] = useState("user");
     const [isShowDetails, setIsShowDetails] = useState(false);
     const userDetails = userDetailsStore((state) => state.userDetails);
     const { conversation, setConversation } = conversationsStore();
-      
+
 
     useEffect(() => {
         if (!conversation?._id) return;
@@ -33,7 +33,7 @@ const MainChat = ({ type }: any) => {
             if (conversation?._id) {
                 try {
                     setIsChatOpen(true);
-                    const previousMessages = await getMessages(conversation._id,type);
+                    const previousMessages = await getMessages(conversation._id, type);
                     if (previousMessages.length > 0) {
                         setMessages(previousMessages);
                     }
@@ -71,7 +71,7 @@ const MainChat = ({ type }: any) => {
             console.log(`Unsubscribing from channel: ${conversationChannel}`);
             channel.unbind('new-message');
             pusher.unsubscribe(conversationChannel);
-            setMessages([]); // Clear messages when switching conversations
+            setMessages([]);
         };
 
     }, [conversation?._id]);
@@ -105,7 +105,10 @@ const MainChat = ({ type }: any) => {
 
     useEffect(() => {
         if (type === "representative") {
-            setIsUser(false);
+            setUserType("representative");
+        }
+        if (type === "manager") {
+            setUserType("manager");
         }
     }, [type]);
 
@@ -150,10 +153,17 @@ const MainChat = ({ type }: any) => {
         setIsShowDetails((prev) => !prev);
     };
 
+
+
     if (!isChatOpen) {
-        return <div className={styles.mainChatNone}>
-            <p>לא נבחרה שיחה...🫣</p><br/>
-            <h3>בחר חברה כדי להתחיל 🤗        </h3>
+        return <div className={styles.mainChatNone} >
+            <div className={styles.noneP}>
+                <a>מממ קצת ריק כאן...</a><br />
+                {userType === "user" ?
+                    <p >בחר חברה כדי שנוכל להתחיל :) </p> :
+                    <h3 >בחר שיחה כדי שנוכל להתחיל :) </h3>}
+            </div>
+            <img src="/imgs/no_messages.png" className={styles.pic}></img>
         </div>;
     }
 
@@ -170,7 +180,7 @@ const MainChat = ({ type }: any) => {
                         <FaWindowMinimize />
                     </button>
                 </div>
-                {isUser && <button
+                {userType === "user" && <button
                     className={styles.detailsIcon}
                     onClick={managePermissions}
                     data-tooltip={"ניהול ההרשאות לנתונים שלך"}
@@ -208,7 +218,7 @@ const MainChat = ({ type }: any) => {
             </div>
 
             <div className={styles.sendingBar}>
-                {!isUser && (
+                {userType === "representative" && (
                     <button className={styles.detailsButton} onClick={showDetails}>
                         פרטי לקוח
                     </button>
@@ -234,7 +244,7 @@ const MainChat = ({ type }: any) => {
                     className={styles.endButton}
                     onClick={endConversation}
                 >
-                    <FaTimes/>
+                    <FaTimes />
                 </button>
             </div>
 

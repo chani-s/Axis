@@ -1,10 +1,12 @@
 import React from "react";
 import { z } from "zod";
+import { detailsSchema } from "../../../services/detailsValidation";
 import { userDetailsStore } from "../../../services/zustand";
-import style from "./DetailsPopUp.module.css";
 import { updateUserByEmail } from "@/app/services/details";
+import style from "./DetailsPopUp.module.css";
 
-const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {    
+
+const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
     const { userDetails, setUserDetails, getMissingDetails } = userDetailsStore();
     const [fullName, setFullName] = React.useState(userDetails.name || "");
     const [address, setAddress] = React.useState(userDetails.address || "");
@@ -13,63 +15,39 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
     const [errorMessages, setErrorMessages] = React.useState({
         name: "",
         id_number: "",
-        address: "",
-    });
-    
-    const isValidIsraeliId = (id: string): boolean => {
-        if (id.length > 9) return false;
-        id = id.padStart(9, '0'); 
-        return (
-            id
-                .split('')
-                .map(Number)
-                .reduce((sum, digit, i) => {
-                    const step = digit * ((i % 2) + 1);
-                    return sum + (step > 9 ? step - 9 : step);
-                }, 0) % 10 === 0
-        );
-    };
-
-    const detailsSchema = z.object({
-        name: z.string().min(1, "שם מלא הוא שדה חובה."),
-        address: z.string().optional(),
-        id_number: z
-            .string()
-            .optional()
-            .refine((id) => id === "" || (id && isValidIsraeliId(id)), "תעודת זהות לא תקינה."),
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        const updatedDetails = {
-            name: fullName,
-            address: address,
-            id_number: idNumber,
-        };
-
         try {
-            detailsSchema.parse(updatedDetails);
+            const updatedDetails = {
+                name: fullName,
+                address: address,
+                id_number: idNumber,
+                profile_picture: userDetails.profile_picture,
+            };
 
-            const response = await updateUserByEmail(userDetails.email, updatedDetails);
+            const parsedDetails = detailsSchema.parse(updatedDetails);
+
+            const response = await updateUserByEmail(userDetails.email, parsedDetails);
 
             if (response.data.success) {
-                setUserDetails({
+                const mergedDetails = {
                     ...userDetails,
-                    name: updatedDetails.name,
-                    address: updatedDetails.address,
-                    id_number: updatedDetails.id_number,
-                });
+                    ...parsedDetails,
+                };
+
+                setUserDetails(mergedDetails);
                 onClose();
+                localStorage.setItem("userDetails", JSON.stringify(mergedDetails));
             } else {
                 throw new Error("Failed to update user data");
             }
         } catch (error) {
             if (error instanceof z.ZodError) {
-                const newErrorMessages: { name: string, id_number: string, address: string } = {
+                const newErrorMessages: { name: string, id_number: string } = {
                     name: "",
                     id_number: "",
-                    address: "",
                 };
 
                 error.errors.forEach((err) => {
@@ -79,9 +57,6 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
                     if (err.path.includes("id_number")) {
                         newErrorMessages.id_number = err.message;
                     }
-                    if (err.path.includes("address")) {
-                        newErrorMessages.address = err.message;
-                    }
                 });
 
                 setErrorMessages(newErrorMessages);
@@ -90,6 +65,58 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
                 alert("שגיאה בשמירת הנתונים");
             }
         }
+        // const updatedDetails = {
+        //     name: fullName,
+        //     address: address,
+        //     id_number: idNumber,
+        // };
+
+        // try {
+        //     detailsSchema.parse(updatedDetails);
+
+        //     const response = await updateUserByEmail(userDetails.email, updatedDetails);
+
+        //     if (response.data.success) {
+        //         setUserDetails({
+        //             ...userDetails,
+        //             name: updatedDetails.name,
+        //             address: updatedDetails.address,
+        //             id_number: updatedDetails.id_number,
+        //         });
+        //         onClose();
+        //     } else {
+        //         throw new Error("Failed to update user data");
+        //     }
+        // } catch (error) {
+        //     if (error instanceof z.ZodError) {
+        //         const newErrorMessages: { name: string, id_number: string, address: string } = {
+        //             name: "",
+        //             id_number: "",
+        //             address: "",
+        //         };
+
+        //         error.errors.forEach((err) => {
+        //             if (err.path.includes("name")) {
+        //                 newErrorMessages.name = err.message;
+        //             }
+        //             if (err.path.includes("id_number")) {
+        //                 newErrorMessages.id_number = err.message;
+        //             }
+        //             if (err.path.includes("address")) {
+        //                 newErrorMessages.address = err.message;
+        //             }
+        //         });
+
+        //         setErrorMessages(newErrorMessages);
+        //     } else {
+        //         console.error("שגיאה:", error);
+        //         alert("שגיאה בשמירת הנתונים");
+        //     }
+        // }
+    };
+
+    const handleCancelClick = () => {
+        onClose();
     };
 
     if (missingDetails.length === 0) return null;
@@ -101,12 +128,13 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
                 <div className={style.inputContainer}>
                     <input
                         type="text"
-                        placeholder="שם מלא"
+                        placeholder="שם מלא*"
+                        title="שדה זה הוא חובה"
                         className={style.input}
                         value={fullName}
                         onChange={(e) => {
                             setFullName(e.target.value);
-                            setErrorMessages((prev) => ({ ...prev, name: "" })); 
+                            setErrorMessages((prev) => ({ ...prev, name: "" }));
                         }}
                     />
                     {errorMessages.name && <p className={style.error}>{errorMessages.name}</p>}
@@ -134,18 +162,14 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
                         placeholder="כתובת"
                         className={style.input}
                         value={address}
-                        onChange={(e) => {
-                            setAddress(e.target.value);
-                            setErrorMessages((prev) => ({ ...prev, address: "" })); 
-                        }}
+                        onChange={(e) => setAddress(e.target.value)}
                     />
-                    {errorMessages.address && <p className={style.error}>{errorMessages.address}</p>}
                 </div>
             )}
             <button type="submit" className={style.submitButton}>
                 סיימתי
             </button>
-            <button type="submit" className={style.cancelButton}>
+            <button onClick={handleCancelClick} className={missingDetails.includes("name") ? style.cancelButtonInvisible : style.cancelButton}>
                 לא עכשיו
             </button>
         </form>

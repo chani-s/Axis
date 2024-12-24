@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
     }
     try {
         const userData = await req.json();
+        console.log("Register goofle details: "+userData)
 
         if (!userData.email) {
             return NextResponse.json({ message: "Missing email" }, { status: 400 });
@@ -56,10 +57,11 @@ export async function POST(req: NextRequest) {
               return response;
         }
         else {
+            console.log(userData.profilePicture)
             const insertUserDetails = await insertDocument(
                 client,
                 "users",
-                { email: userData.email, name: userData.name, google_auth: userData.isWithGoogle, user_type: userData.userType }
+                { email: userData.email, name: userData.name, google_auth: userData.isWithGoogle, user_type: userData.userType, profile_picture: userData.profilePicture }
             );
             
             if (insertUserDetails) {
