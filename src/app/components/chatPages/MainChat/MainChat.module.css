@@ -120,8 +120,23 @@
 .otherMessage {
     align-self: flex-start;
     color: white;
-    background-color: #45474b;
+    background-color: #46474B;
+    /* background-color: #979797; */
+
 }
+
+/* .userMessage {
+    align-self: flex-end;
+    color: white;
+    background-color: #45474b;
+    opacity: 0.8;
+}
+
+.otherMessage {
+    align-self: flex-start;
+    color: #45474b;
+    background-color: #e0dddd;
+} */
 
 .messageTime {
     font-size: 0.8rem;

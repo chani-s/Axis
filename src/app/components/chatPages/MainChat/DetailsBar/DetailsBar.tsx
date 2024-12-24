@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaUser, FaPhone, FaHome, FaIdCard, FaCreditCard } from "react-icons/fa";
+import { FaPhone, FaHome, FaIdCard, FaCreditCard } from "react-icons/fa";
 import styles from "./DetailsBar.module.css";
 
 const iconsMapping = {
@@ -34,12 +34,12 @@ const DetailsBar = ({ type }: { type: string }) => {
         localStorage.setItem("permissions", JSON.stringify(details));
     }, [details]);
 
-    const toggleDetail = (key: keyof typeof details) => {
-        setDetails((prev) => ({
-            ...prev,
-            [key]: !prev[key],
-        }));
-    };
+    // const toggleDetail = (key: keyof typeof details) => {
+    //     setDetails((prev) => ({
+    //         ...prev,
+    //         [key]: !prev[key],
+    //     }));
+    // };
 
     const descriptions: Record<keyof typeof details, string> = {
         phone: "הרשאת גישה למספר הטלפון",

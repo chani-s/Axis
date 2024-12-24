@@ -14,8 +14,8 @@
   perspective: 1000px;
 
   position: relative;
-  background-image: url('/imgs/services1.png');
-  background-size: 30rem;
+  background-image: url('/imgs/empty.png');
+  background-size: 20rem;
 
   background-position: bottom left;
   background-attachment: fixed;

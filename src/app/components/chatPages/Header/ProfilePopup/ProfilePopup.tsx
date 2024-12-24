@@ -7,14 +7,12 @@ import { userDetailsStore } from "../../../../services/zustand";
 import { updateUserByEmail } from "@/app/services/details";
 import { uploadPicture } from "@/app/services/uploadPicture";
 
-const DEFAULT_PROFILE_PIC = "https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png";
-
 const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const { userDetails, setUserDetails } = userDetailsStore();
     const [fullName, setFullName] = useState(userDetails.name || "");
     const [address, setAddress] = useState(userDetails.address || "");
     const [idNumber, setIdNumber] = useState(userDetails.id_number || "");
-    const [newProfilePic, setNewProfilePic] = useState(userDetails.profile_picture || DEFAULT_PROFILE_PIC);
+    const [newProfilePic, setNewProfilePic] = useState(userDetails.profile_picture);
     const [errorMessages, setErrorMessages] = useState({
         name: "",
         id_number: "",
@@ -73,7 +71,7 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             }
         } catch (error) {
             if (error instanceof z.ZodError) {
-                const newErrorMessages: { name: string, id_number: string} = {
+                const newErrorMessages: { name: string, id_number: string } = {
                     name: "",
                     id_number: "",
                 };
@@ -104,11 +102,21 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     return (
         <div className={styles.popup}>
             <form className={styles.popupContent} onSubmit={handleSubmit}>
-                <button className={styles.closeButton} type="button" onClick={onClose}><FaTimes /></button>
-                <h2>שלום {userDetails.name}</h2>
+                <button
+                    className={styles.closeButton}
+                    type="button"
+                    onClick={onClose}>
+                    <FaTimes
+                        className={styles.x} />
+                </button>
+                <h2>שלום, {userDetails.name}</h2>
                 <div>
-                    <img className={styles.profilePicture} src={newProfilePic} alt="profilePic" />
-                    <FaCamera className={styles.cameraIcon} onClick={handleButtonClick} />
+                    <img className={styles.profilePicture}
+                        src={newProfilePic}
+                        alt="profilePic" />
+                    <FaCamera
+                        className={styles.cameraIcon}
+                        onClick={handleButtonClick} />
                 </div>
                 <input
                     type="file"

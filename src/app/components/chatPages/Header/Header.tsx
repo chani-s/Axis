@@ -5,8 +5,6 @@ import { userDetailsStore } from "../../../services/zustand";
 import { useRouter } from "next/navigation"; 
 import { logout } from "@/app/services/logout";
 import { MdOutlineLogout } from "react-icons/md";
-const DEFAULT_PROFILE_PIC = "https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png";
-
 
 const Header = () => {
     const userDetails = userDetailsStore((state) => state.userDetails); 
@@ -37,7 +35,7 @@ const Header = () => {
                 title={userDetails.name + "\n" + userDetails.email}>
                 <img
                     className={styles.profilePicture}
-                    src={userDetails.profile_picture || DEFAULT_PROFILE_PIC}
+                    src={userDetails.profile_picture}
                     alt="profile"
                     onClick={showPersonalProfile}>
                 </img>
