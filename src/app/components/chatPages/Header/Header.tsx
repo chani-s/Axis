@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./Header.module.css";
 import ProfilePopup from "./ProfilePopup/ProfilePopup";
 import { userDetailsStore } from "../../../services/zustand";
-import { useRouter } from "next/navigation"; // Use next/navigation for Next.js 13 and later
+import { useRouter } from "next/navigation"; 
 import { logout } from "@/app/services/logout";
 import { MdOutlineLogout } from "react-icons/md";
 const DEFAULT_PROFILE_PIC = "https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png";
@@ -30,7 +30,6 @@ const Header = () => {
         setIsPopupOpen(false);
     };
     console.log(userDetails.profile_picture);
-    console.log(userDetails.name);
 
     return (
         <div className={styles.header}>

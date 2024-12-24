@@ -25,16 +25,17 @@ interface MessageObj {
 }
 
 const MainChat = ({ type }: any) => {
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
-  const [isPermissionPanelOpen, setIsPermissionPanelOpen] = useState(false);
-  const [messages, setMessages] = useState<MessageObj[]>([]); // Default as empty array
-  const [message, setMessage] = useState("");
-  const chatEndRef = useRef<HTMLDivElement>(null);
-  const [isUser, setIsUser] = useState(true);
-  const [isShowDetails, setIsShowDetails] = useState(false);
-  const userDetails = userDetailsStore((state) => state.userDetails);
-  const { conversation, setConversation } = conversationsStore();
+    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [isMinimized, setIsMinimized] = useState(false);
+    const [isPermissionPanelOpen, setIsPermissionPanelOpen] = useState(false);
+    const [messages, setMessages] = useState<MessageObj[]>([]); // Default as empty array
+    const [message, setMessage] = useState("");
+    const chatEndRef = useRef<HTMLDivElement>(null);
+    const [userType, setUserType] = useState("user");
+    const [isShowDetails, setIsShowDetails] = useState(false);
+    const userDetails = userDetailsStore((state) => state.userDetails);
+    const { conversation, setConversation } = conversationsStore();
+
 
   useEffect(() => {
     if (!conversation?._id) return;
@@ -108,11 +109,14 @@ const MainChat = ({ type }: any) => {
     }
   };
 
-  useEffect(() => {
-    if (type === "representative") {
-      setIsUser(false);
-    }
-  }, [type]);
+    useEffect(() => {
+        if (type === "representative") {
+            setUserType("representative");
+        }
+        if (type === "manager") {
+            setUserType("manager");
+        }
+    }, [type]);
 
   useEffect(() => {
     const chatMessagesElement = chatEndRef.current?.parentElement;
@@ -152,46 +156,46 @@ const MainChat = ({ type }: any) => {
     setMessage(e.target.value);
   };
 
-  const showDetails = () => {
-    setIsShowDetails((prev) => !prev);
-  };
+    const showDetails = () => {
+        setIsShowDetails((prev) => !prev);
+    };
 
-  if (!isChatOpen) {
+
+
+    if (!isChatOpen) {
+        return <div className={styles.mainChatNone} >
+            <div className={styles.noneP}>
+                <a>מממ קצת ריק כאן...</a><br />
+                {userType === "user" ?
+                    <p >בחר חברה כדי שנוכל להתחיל :) </p> :
+                    <h3 >בחר שיחה כדי שנוכל להתחיל :) </h3>}
+            </div>
+            <img src="/imgs/no_messages.png" className={styles.pic}></img>
+        </div>;
+    }
+
     return (
-      <div className={styles.mainChatNone}>
-        <p>לא נבחרה שיחה...🫣</p>
-        <br />
-        <h3>בחר שיחה כדי להתחיל 🤗 </h3>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className={`${styles.mainChat} ${isMinimized ? styles.minimized : ""}`}
-    >
-      <div className={styles.header}>
-        <div className={styles.rightButtons}>
-          {type == "user" && (
-            <button className={styles.closeButton} onClick={closeChat}>
-              <FaTimes />
-            </button>
-          )}
-          <button className={styles.minimizeButton} onClick={minimize}>
-            <FaWindowMinimize />
-          </button>
-        </div>
-        {isUser && (
-          <button
-            className={styles.detailsIcon}
-            onClick={managePermissions}
-            data-tooltip={"ניהול ההרשאות לנתונים שלך"}
-          >
-            <FaInfoCircle />
-          </button>
-        )}
-      </div>
-      {isPermissionPanelOpen && <DetailsBar type="user" />}
+        <div
+            className={`${styles.mainChat} ${isMinimized ? styles.minimized : ""}`}
+        >
+            <div className={styles.header}>
+                <div className={styles.rightButtons}>
+                    <button className={styles.closeButton} onClick={closeChat}>
+                        <FaTimes />
+                    </button>
+                    <button className={styles.minimizeButton} onClick={minimize}>
+                        <FaWindowMinimize />
+                    </button>
+                </div>
+                {userType === "user" && <button
+                    className={styles.detailsIcon}
+                    onClick={managePermissions}
+                    data-tooltip={"ניהול ההרשאות לנתונים שלך"}
+                >
+                    <FaInfoCircle />
+                </button>}
+            </div>
+            {isPermissionPanelOpen && <DetailsBar type="user" />}
 
       <div className={styles.chatMessages}>
         {messages
@@ -227,35 +231,39 @@ const MainChat = ({ type }: any) => {
         <div ref={chatEndRef}></div>
       </div>
 
-      <div className={styles.sendingBar}>
-        {!isUser && (
-          <button className={styles.detailsButton} onClick={showDetails}>
-            פרטי לקוח
-          </button>
-        )}
-        {isShowDetails && <DetailsBar type="representative" />}
+            <div className={styles.sendingBar}>
+                {userType === "representative" && (
+                    <button className={styles.detailsButton} onClick={showDetails}>
+                        פרטי לקוח
+                    </button>
+                )}
+                {isShowDetails && <DetailsBar type="representative" />}
 
-        <input
-          className={styles.inputField}
-          type="text"
-          placeholder="הקלד כאן..."
-          value={message}
-          onKeyDown={handleKeyPress}
-          onChange={handleChange}
-        />
-        <button
-          type="submit"
-          className={styles.sendButton}
-          onClick={sendMessage}
-        >
-          <FaArrowLeft />
-        </button>
-        <button className={styles.endButton} onClick={endConversation}>
-          <FaTimes />
-        </button>
-      </div>
-    </div>
-  );
+                <input
+                    className={styles.inputField}
+                    type="text"
+                    placeholder="הקלד כאן..."
+                    value={message}
+                    onKeyDown={handleKeyPress}
+                    onChange={handleChange}
+                />
+                <button
+                    type="submit"
+                    className={styles.sendButton}
+                    onClick={sendMessage}
+                >
+                    <FaArrowLeft />
+                </button>
+                <button
+                    className={styles.endButton}
+                    onClick={endConversation}
+                >
+                    <FaTimes />
+                </button>
+            </div>
+
+        </div>
+    );
 };
 
 export default MainChat;

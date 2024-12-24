@@ -259,10 +259,11 @@ export const Entrance = ({ type }: any) => {
           {forgetPassword && (
             <ForgetPassword setForgetPassword={setForgetPassword} />
           )}
+          {!isRepresentative &&
           <button onClick={entranceExempleUser} className={style.exempleUser}>
             {" "}
             <FaSignInAlt className={style.entranceIcon} /> התחבר כמשתמש לדוגמא
-          </button>
+          </button>}
           <button className={style.googleButton} onClick={signupHandler}>
             <FcGoogle className={style.googleIcon} /> register with Google{" "}
           </button>

@@ -4,7 +4,7 @@ import { userDetailsStore } from "../../../services/zustand";
 import style from "./DetailsPopUp.module.css";
 import { updateUserByEmail } from "@/app/services/details";
 
-const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {    
+const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
     const { userDetails, setUserDetails, getMissingDetails } = userDetailsStore();
     const [fullName, setFullName] = React.useState(userDetails.name || "");
     const [address, setAddress] = React.useState(userDetails.address || "");
@@ -15,10 +15,10 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
         id_number: "",
         address: "",
     });
-    
+
     const isValidIsraeliId = (id: string): boolean => {
         if (id.length > 9) return false;
-        id = id.padStart(9, '0'); 
+        id = id.padStart(9, '0');
         return (
             id
                 .split('')
@@ -92,6 +92,10 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
         }
     };
 
+    const handleCancelClick = () => {
+        onClose();
+    };
+
     if (missingDetails.length === 0) return null;
 
     return (
@@ -101,12 +105,13 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
                 <div className={style.inputContainer}>
                     <input
                         type="text"
-                        placeholder="שם מלא"
+                        placeholder="שם מלא*"
+                        title="שדה זה הוא חובה"
                         className={style.input}
                         value={fullName}
                         onChange={(e) => {
                             setFullName(e.target.value);
-                            setErrorMessages((prev) => ({ ...prev, name: "" })); 
+                            setErrorMessages((prev) => ({ ...prev, name: "" }));
                         }}
                     />
                     {errorMessages.name && <p className={style.error}>{errorMessages.name}</p>}
@@ -136,7 +141,7 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
                         value={address}
                         onChange={(e) => {
                             setAddress(e.target.value);
-                            setErrorMessages((prev) => ({ ...prev, address: "" })); 
+                            setErrorMessages((prev) => ({ ...prev, address: "" }));
                         }}
                     />
                     {errorMessages.address && <p className={style.error}>{errorMessages.address}</p>}
@@ -145,7 +150,7 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
             <button type="submit" className={style.submitButton}>
                 סיימתי
             </button>
-            <button type="submit" className={style.cancelButton}>
+            <button onClick={handleCancelClick} className={missingDetails.includes("name") ? style.cancelButtonInvisible : style.cancelButton}>
                 לא עכשיו
             </button>
         </form>

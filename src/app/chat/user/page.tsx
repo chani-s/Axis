@@ -4,7 +4,7 @@ import MainPage from "../../components/chatPages/MainPage/MainPage";
 import { Conversation } from "@/app/models/Conversation";
 import { createConversation, getConversations } from "@/app/services/conversation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import CompanyService from "@/app/services/company";
+import {CompanyService} from "@/app/services/company";
 
 const Page = () => {
 

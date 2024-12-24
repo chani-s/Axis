@@ -7,6 +7,8 @@ import {
 } from "../../../services/zustand";
 import { getConversations, statusConversation } from "@/app/services/conversation";
 import { Conversation } from "@/app/models/Conversation";
+import Link from "next/link";
+import { FaCog } from "react-icons/fa";
 
 interface SideBarProps {
   userType: string;
@@ -151,10 +153,6 @@ const SideBar: React.FC<SideBarProps> = ({
                 setIsDropdownOpen(false);
               }
             }}
-            // onFocus={() => {
-            //   // handleInputFocus();
-            //   setIsDropdownOpen(true);
-            // }}
             onKeyDown={handleKeyPress}
           />
           {isDropdownOpen && (
@@ -176,12 +174,20 @@ const SideBar: React.FC<SideBarProps> = ({
           />
         </div>
       )}
-      <p className={styles.yourChatsP}>הצאטים שלך:</p>
+
       <div className={styles.bottom}>
-  {filteredConversations && filteredConversations.length > 0 ? (
-    filteredConversations.map((mapConversation: Conversation) => {
-      const isSelected =
-        conversation._id === mapConversation._id?.toString();
+        {userType === "manager" &&
+          <div className={styles.settings}>
+            <Link href="/manager/representatives">נהול נציגים</Link>
+            <FaCog size={18} />
+          </div>
+        }
+        <p className={styles.yourChatsP}>הצאטים שלך:</p>
+
+        {filteredConversations ? (
+          filteredConversations.map((mapConversation: Conversation) => {
+            const isSelected =
+              conversation._id === mapConversation._id?.toString();
 
       return (
         <div

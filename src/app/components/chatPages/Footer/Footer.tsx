@@ -11,8 +11,8 @@ const Footer: React.FC = () => {
         </div>
         <div className={styles.developers}>
           <a className={styles.policyLink}>אפיון ופיתוח</a>:
-          <a href="https://github.com/AyalaSprei" className={styles.policyLink}>אילה</a>
-          <a href="https://github.com/rut-te" className={styles.policyLink}>רותי</a>
+          <a href="https://github.com/AyalaSprei" className={styles.policyLink}>אילה</a> |
+          <a href="https://github.com/rut-te" className={styles.policyLink}>רותי</a> |
           <a href="https://github.com/chani-s" className={styles.policyLink}>חני</a>
         </div>
         <div className={styles.policy}>
