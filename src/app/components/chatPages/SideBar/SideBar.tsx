@@ -142,16 +142,43 @@ const SideBar: React.FC<SideBarProps> = ({
               setIsDropdownOpen(true);
 
               if (e.target.value === "") {
-                setIsDropdownOpen(false);
+                // אם אין חיפוש, להציג את כל החברות
+                setFilteredCompanies(companiesData);
+              } else {
+                // סינון על בסיס חיפוש
+                setFilteredCompanies(
+                  companiesData?.filter((company: any) =>
+                    company.name?.toLowerCase().includes(e.target.value.toLowerCase())
+                  )
+                );
               }
             }}
+            onFocus={() => {
+              setIsDropdownOpen(true); // פתיחת התפריט בעת פוקוס
+              setFilteredCompanies(companiesData); // הצגת כל החברות כברירת מחדל
+            }}
             onKeyDown={handleKeyPress}
+          //   if (e.target.value === "") {
+          //     setIsDropdownOpen(false);
+          //   }
+          // }}
+          // onKeyDown={handleKeyPress}
           />
-          {isDropdownOpen && (
+
+          {/* {isDropdownOpen && (
             <div className={styles.selectOptions}>
               <RenderFilteredCompanies />
             </div>
+          )} */}
+
+          {isDropdownOpen && (
+            <div className={styles.selectOptions}>
+              <button className={styles.closeButton} onClick={() => setIsDropdownOpen(false)}>✖</button>
+              <RenderFilteredCompanies />
+            </div>
           )}
+
+
           <input
             className={styles.input}
             type="text"
