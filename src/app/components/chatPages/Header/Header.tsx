@@ -2,27 +2,26 @@ import React, { useState } from "react";
 import styles from "./Header.module.css";
 import ProfilePopup from "./ProfilePopup/ProfilePopup";
 import { userDetailsStore } from "../../../services/zustand";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { logout } from "@/app/services/logout";
 import { MdOutlineLogout } from "react-icons/md";
 
 const Header = () => {
-    const userDetails = userDetailsStore((state) => state.userDetails); 
+    const userDetails = userDetailsStore((state) => state.userDetails);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const router = useRouter();
 
     const handleLogout = async () => {
         try {
-          // Perform logout
-          await logout();
-          router.push("/login");
+            await logout();
+            router.push("/login");
         } catch (error) {
-          console.error("Error during logout process:", error);
+            console.error("Error during logout process:", error);
         }
-      };
-  const showPersonalProfile = () => {
-    setIsPopupOpen(true);
-  };
+    };
+    const showPersonalProfile = () => {
+        setIsPopupOpen(true);
+    };
 
     const closePopup = () => {
         setIsPopupOpen(false);
@@ -42,9 +41,15 @@ const Header = () => {
                 <p>{userDetails.name}</p>
 
             </div>
-            <MdOutlineLogout className={styles.logoutIcon} onClick={handleLogout} />
+            <MdOutlineLogout
+                className={styles.logoutIcon}
+                onClick={handleLogout} />
 
-            <img className={styles.logo} src="/imgs/nonebg1.png" alt="logo"></img>
+            <img
+                className={styles.logo}
+                src="/imgs/nonebg1.png"
+                alt="logo">
+            </img>
 
             {isPopupOpen && (
                 <ProfilePopup
