@@ -71,7 +71,7 @@ const MainChat = ({ type }: any) => {
             console.log(`Unsubscribing from channel: ${conversationChannel}`);
             channel.unbind('new-message');
             pusher.unsubscribe(conversationChannel);
-            setMessages([]); // Clear messages when switching conversations
+            setMessages([]);
         };
 
     }, [conversation?._id]);

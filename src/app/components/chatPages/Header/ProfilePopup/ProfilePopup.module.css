@@ -75,3 +75,9 @@
 .saveButton:hover {
     background-color: #ddba0e;
 }
+
+.error {
+    color: #d93025; 
+    font-size: 14px;
+    font-weight: bold;
+  }
