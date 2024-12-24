@@ -70,7 +70,7 @@ const Page = () => {
         conversations={conversations || []}
         companiesData={companiesData || []}
         createConversation={createConv}
-        chosenConversationId={chosenConversationId}
+        chosenConversation={chosenConversationId}
       />
     </div>
   );

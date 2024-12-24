@@ -1,10 +1,10 @@
 import { AxiosResponse } from "axios";
 import { http } from "./http";
 
-export async function getMessages(conversationId: string, userType:string) {
+export async function getMessages(conversationId: string) {
     try {
         const response: AxiosResponse<any> = await http.get(
-          `/massages/?conversationId=${conversationId}&userType=${userType}`
+          `/massages/?conversationId=${conversationId}`
         )
   
         return response.data;

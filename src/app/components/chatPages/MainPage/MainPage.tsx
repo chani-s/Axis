@@ -14,7 +14,7 @@ interface MainPageProps {
   conversations: Conversation[];
   companiesData: any[];
   createConversation: any;
-  chosenConversationId: string;
+  chosenConversation: string;
 }
 
 const MainPage: React.FC<MainPageProps> = ({
@@ -22,7 +22,7 @@ const MainPage: React.FC<MainPageProps> = ({
   conversations,
   companiesData,
   createConversation,
-  chosenConversationId,
+  chosenConversation
 }) => {
   const [isDetailsPopUpVisible, setIsDetailsPopUpVisible] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
@@ -76,7 +76,7 @@ const MainPage: React.FC<MainPageProps> = ({
           conversations={conversations}
           companiesData={companiesData}
           createConversation={createConversation}
-          chosenConversationId={chosenConversationId}
+          chosenConversationId={chosenConversation}
         />
         <MainChat type={type} />
       </div>
