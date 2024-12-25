@@ -127,7 +127,7 @@ export const Entrance = ({ type }: any) => {
   const entranceExempleUser = (e: any) => {
     e.preventDefault();
     const userData = {
-      email: "rutite261@gmail.com",
+      email: "ruti.te.261@gmail.com",
       password: "rrRR2024",
       isWithGoogle: false,
     };
