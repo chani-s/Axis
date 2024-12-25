@@ -5,7 +5,10 @@ import {
   conversationsStore,
   userDetailsStore,
 } from "../../../services/zustand";
-import { getConversations, statusConversation } from "@/app/services/conversation";
+import {
+  getConversations,
+  statusConversation,
+} from "@/app/services/conversation";
 import { Conversation } from "@/app/models/Conversation";
 import Link from "next/link";
 import { FaCog } from "react-icons/fa";
@@ -50,7 +53,9 @@ const SideBar: React.FC<SideBarProps> = ({
     // Filter companies whenever `searchTerm` or `companiesData` changes
     setFilteredCompanies(
       companiesData?.filter((company: any) => {
-        return company.businessDisplayName?.toLowerCase().includes(searchTerm.toLowerCase());
+        return company.businessDisplayName
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase());
       }) || []
     );
     // console.log("term" + searchTerm);
@@ -65,7 +70,7 @@ const SideBar: React.FC<SideBarProps> = ({
         );
       }) || []
     );
-  }, [chatSearchTerm, conversations,chosenConversationId]);
+  }, [chatSearchTerm, conversations, chosenConversationId]);
 
   useEffect(() => {
     // Handle dropdown visibility
@@ -82,7 +87,7 @@ const SideBar: React.FC<SideBarProps> = ({
       company_id: company._id,
       representative_id: null,
       status: "active",
-      company_profilePicture: company.profilePicture,
+      company_profilePicture: company.profile_picture,
       company_name: company.businessDisplayName,
       last_use: new Date(),
       user_name: userDetails.name,
@@ -102,12 +107,10 @@ const SideBar: React.FC<SideBarProps> = ({
     if (con._id) {
       console.log("in handleConversationClick" + con._id);
       setConversation({ _id: con._id.toString() });
-      if(con.status!="active"){
+      if (con.status != "active") {
         await statusConversation(con);
+      }
     }
- 
-
-  }
   };
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && filteredCompanies.length === 1) {
@@ -128,9 +131,11 @@ const SideBar: React.FC<SideBarProps> = ({
       >
         <div
           className={styles.profileCircle}
-          style={{ backgroundImage: `url(${company.profilePicture})` }}
+          style={{ backgroundImage: `url(${company.profile_picture})` }}
         ></div>
-        <span className={styles.selectOptionText}>{company.businessDisplayName}</span>
+        <span className={styles.selectOptionText}>
+          {company.businessDisplayName}
+        </span>
       </div>
     ));
   };
@@ -175,12 +180,12 @@ const SideBar: React.FC<SideBarProps> = ({
       )}
 
       <div className={styles.bottom}>
-        {userType === "manager" &&
+        {userType === "manager" && (
           <div className={styles.settings}>
             <Link href="/manager/representatives">נהול נציגים</Link>
             <FaCog size={18} />
           </div>
-        }
+        )}
         <p className={styles.yourChatsP}>הצאטים שלך:</p>
 
         {filteredConversations ? (
@@ -188,42 +193,43 @@ const SideBar: React.FC<SideBarProps> = ({
             const isSelected =
               conversation._id === mapConversation._id?.toString();
 
-      return (
-        <div
-          onClick={() => handleConversationClick(mapConversation)}
-          className={`${styles.conversationItem} ${isSelected ? styles.selected : ""}`}
-          style={{ backgroundColor: isSelected ? "#ddba0e" : "" }}
-          key={mapConversation._id?.toString()}
-        >
-          <img
-            className={styles.profileCircle}
-            src={
-              userType === "user"
-                ? mapConversation.company_profilePicture
-                : mapConversation.user_profilePicture ||
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s"
-            }
-            alt="Profile"
-          />
-          <p className={styles.name}>
+            return (
+              <div
+                onClick={() => handleConversationClick(mapConversation)}
+                className={`${styles.conversationItem} ${
+                  isSelected ? styles.selected : ""
+                }`}
+                style={{ backgroundColor: isSelected ? "#ddba0e" : "" }}
+                key={mapConversation._id?.toString()}
+              >
+                <img
+                  className={styles.profileCircle}
+                  src={
+                    userType === "user"
+                      ? mapConversation.company_profilePicture
+                      : mapConversation.user_profilePicture ||
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s"
+                  }
+                  alt="Profile"
+                />
+                <p className={styles.name}>
+                  {userType === "user"
+                    ? mapConversation.company_name
+                    : mapConversation.user_name
+                    ? mapConversation.user_name
+                    : "פניה חדשה"}
+                </p>
+              </div>
+            );
+          })
+        ) : (
+          <div className={styles.noResults}>
             {userType === "user"
-              ? mapConversation.company_name
-              : mapConversation.user_name
-              ? mapConversation.user_name
-              : "פניה חדשה"}
-          </p>
-        </div>
-      );
-    })
-  ) : (
-    <div className={styles.noResults}>
-      {userType === "user"
-        ? "אין לך שום פניות :) חפש חברה כדי להתחיל"
-        : "אין לך פניות היום :)"}
-    </div>
-  )}
-</div>
-
+              ? "אין לך שום פניות :) חפש חברה כדי להתחיל"
+              : "אין לך פניות היום :)"}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

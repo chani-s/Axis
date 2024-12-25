@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
                 const userDetails = await insertDocument(
                     client,
                     "users",
-                    { company_id: companyDetails._id.toString(), email: userData.email, user_type: "manager", status: "waiting" }
+                    { company_id: companyDetails._id.toString(), email: userData.email, user_type: "manager", status: "waiting",profile_picture:"https://lowcostflight.co.il/wp-content/uploads/2017/12/wizz.jpg" }
                 );
                 if (userDetails) {
                     const hashedPassword = await hashPassword(userData.password);
