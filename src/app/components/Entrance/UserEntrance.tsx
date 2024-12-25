@@ -116,6 +116,7 @@ export const Entrance = ({ type }: any) => {
       address: data.userDetails.address,
       status: data.userDetails.status,
       profile_picture: data.userDetails.profile_picture || DEFAULT_PROFILE_PIC,
+      company_id: data.userDetails?.company_id ,
 
     };
     setUserDetails(userDetails);

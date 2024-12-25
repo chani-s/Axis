@@ -9,7 +9,7 @@ export interface UserZustand {
     id_number: string | null;
     address: string | null;
     status: string | null;
-    profile_picture: string | null;
+    profile_picture: string;
     company_id: string | null;
 }
 
