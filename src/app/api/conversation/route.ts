@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
       );
 
       representativeId = representativeWithMinConversations._id.toString();
-      if(activate=="false"){
+      if( activate=="false" ){
         result = await insertDocument(client, "conversations", {
           ...body,
           company_id: new ObjectId(companyId),
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
         .collection("conversations")
         .updateOne(
           { _id: new ObjectId(conversationId)},
-          { $set: { status: "active", representative_id:representativeId} }
+          { $set: { status: "active", representative_id:new ObjectId(representativeId)} }
         );
       }
   

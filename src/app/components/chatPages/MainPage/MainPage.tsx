@@ -79,7 +79,7 @@ const MainPage: React.FC<MainPageProps> = ({
                     conversations={conversations}
                     companiesData={companiesData}
                     createConversation={createConversation}
-                    chosenConversationId={chosenConversationId}
+                    chosenConversationId={chosenConversation}
                 />
                 <MainChat type={type} />
             </div>
