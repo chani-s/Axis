@@ -11,7 +11,7 @@ export interface Conversation {
     user_name: string;
     user_profilePicture?: string;
     representative_id: ObjectId | null;
-    status_code: number;
+    status: string;
     last_use?: Date | null;
     start_time?: Date | null;
   }

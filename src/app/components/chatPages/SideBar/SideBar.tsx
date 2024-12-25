@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import styles from "./SideBar.module.css";
-import { conversationsStore, userDetailsStore } from "../../../services/zustand";
-import { getConversations } from "@/app/services/conversation";
+import {
+  conversationsStore,
+  userDetailsStore,
+} from "../../../services/zustand";
+import { getConversations, statusConversation } from "@/app/services/conversation";
 import { Conversation } from "@/app/models/Conversation";
 import Link from "next/link";
 import { FaCog } from "react-icons/fa";
@@ -22,7 +25,6 @@ const SideBar: React.FC<SideBarProps> = ({
   createConversation,
   chosenConversationId,
 }) => {
-
   const [searchTerm, setSearchTerm] = useState(""); // Search term for company search
   const [chatSearchTerm, setChatSearchTerm] = useState(""); // Search term for chat search
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Dropdown visibility
@@ -48,7 +50,7 @@ const SideBar: React.FC<SideBarProps> = ({
     // Filter companies whenever `searchTerm` or `companiesData` changes
     setFilteredCompanies(
       companiesData?.filter((company: any) => {
-        return company.name?.toLowerCase().includes(searchTerm.toLowerCase());
+        return company.businessDisplayName?.toLowerCase().includes(searchTerm.toLowerCase());
       }) || []
     );
     // console.log("term" + searchTerm);
@@ -63,7 +65,7 @@ const SideBar: React.FC<SideBarProps> = ({
         );
       }) || []
     );
-  }, [chatSearchTerm, conversations]);
+  }, [chatSearchTerm, conversations,chosenConversationId]);
 
   useEffect(() => {
     // Handle dropdown visibility
@@ -79,13 +81,12 @@ const SideBar: React.FC<SideBarProps> = ({
     const newConversation = {
       company_id: company._id,
       representative_id: null,
-      status_code: 2,
+      status: "active",
       company_profilePicture: company.profilePicture,
-      company_name: company.name,
+      company_name: company.businessDisplayName,
       last_use: new Date(),
       user_name: userDetails.name,
-      user_profilePicture:
-        "",
+      user_profilePicture: "",
     };
     createConversation(newConversation);
     setConversation({ _id: chosenConversationId });
@@ -97,11 +98,16 @@ const SideBar: React.FC<SideBarProps> = ({
     handleCreateConversation(company);
   };
 
-  const handleConversationClick = (con: Conversation) => {
+  const handleConversationClick = async (con: Conversation) => {
     if (con._id) {
-      console.log("in handleConversationClick" + con._id)
+      console.log("in handleConversationClick" + con._id);
       setConversation({ _id: con._id.toString() });
+      if(con.status!="active"){
+        await statusConversation(con);
     }
+ 
+
+  }
   };
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && filteredCompanies.length === 1) {
@@ -113,6 +119,7 @@ const SideBar: React.FC<SideBarProps> = ({
     if (!filteredCompanies.length) {
       return <div className={styles.noResults}>אין תוצאות</div>;
     }
+
     return filteredCompanies.map((company: any) => (
       <div
         key={company._id}
@@ -123,7 +130,7 @@ const SideBar: React.FC<SideBarProps> = ({
           className={styles.profileCircle}
           style={{ backgroundImage: `url(${company.profilePicture})` }}
         ></div>
-        <span className={styles.selectOptionText}>{company.name}</span>
+        <span className={styles.selectOptionText}>{company.businessDisplayName}</span>
       </div>
     ));
   };
@@ -181,37 +188,42 @@ const SideBar: React.FC<SideBarProps> = ({
             const isSelected =
               conversation._id === mapConversation._id?.toString();
 
-            return (
-              <div
-                onClick={() => handleConversationClick(mapConversation)}
-                className={`${styles.conversationItem} ${isSelected ? styles.selected : ""
-                  }`}
-                style={{ backgroundColor: isSelected ? "#ddba0e" : "" }}
-                key={mapConversation._id?.toString()}
-              >
-                <img
-                  className={styles.profileCircle}
-                  src={
-                    userType === "user"
-                      ? mapConversation.company_profilePicture
-                      : mapConversation.user_profilePicture || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s"
-                  }
-                  alt="Profile"
-                />
-                <p className={styles.name}>
-                  {userType === "user"
-                    ? mapConversation.company_name
-                    : mapConversation.user_name
-                      ? mapConversation.user_name
-                      : "פניה חדשה"}
-                </p>{" "}
-              </div>
-            );
-          })
-        ) : (
-          <div className={styles.noResults}>לא נמצאו תוצאות</div>
-        )}
-      </div>
+      return (
+        <div
+          onClick={() => handleConversationClick(mapConversation)}
+          className={`${styles.conversationItem} ${isSelected ? styles.selected : ""}`}
+          style={{ backgroundColor: isSelected ? "#ddba0e" : "" }}
+          key={mapConversation._id?.toString()}
+        >
+          <img
+            className={styles.profileCircle}
+            src={
+              userType === "user"
+                ? mapConversation.company_profilePicture
+                : mapConversation.user_profilePicture ||
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s"
+            }
+            alt="Profile"
+          />
+          <p className={styles.name}>
+            {userType === "user"
+              ? mapConversation.company_name
+              : mapConversation.user_name
+              ? mapConversation.user_name
+              : "פניה חדשה"}
+          </p>
+        </div>
+      );
+    })
+  ) : (
+    <div className={styles.noResults}>
+      {userType === "user"
+        ? "אין לך שום פניות :) חפש חברה כדי להתחיל"
+        : "אין לך פניות היום :)"}
+    </div>
+  )}
+</div>
+
     </div>
   );
 };

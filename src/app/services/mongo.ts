@@ -1,10 +1,8 @@
 "use server";
-
 import { MongoClient, ObjectId } from "mongodb";
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
-
 
 export async function connectDatabase() {
   try {
@@ -53,7 +51,7 @@ export async function insertDocument(
   const result = await db.collection(collection).insertOne(document);
   const insertedDocument = await db
     .collection(collection)
-    .findOne({ _id: result.insertedId });
+    .findOne({ _id: result.insertedId});
   return insertedDocument;
 }
 

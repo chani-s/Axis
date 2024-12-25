@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./Header.module.css";
 import ProfilePopup from "./ProfilePopup/ProfilePopup";
-import { userDetailsStore } from "../../../services/zustand";
+import { conversationsStore, userDetailsStore } from "../../../services/zustand";
 import { useRouter } from "next/navigation";
 import { logout } from "@/app/services/logout";
 import { MdOutlineLogout } from "react-icons/md";
@@ -10,10 +10,13 @@ const Header = () => {
     const userDetails = userDetailsStore((state) => state.userDetails);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const router = useRouter();
+    const { conversation, setConversation } = conversationsStore();
+
 
     const handleLogout = async () => {
         try {
             await logout();
+          setConversation({_id:""})
             router.push("/login");
         } catch (error) {
             console.error("Error during logout process:", error);
