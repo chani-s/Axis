@@ -24,13 +24,21 @@ export async function POST(req: NextRequest) {
       client,
       "users",
       { email: userData.email },
-      { _id: 1 }
+      {  }
     );
 
     if (userExist[0]) {
+      console.log("details");
+      
+      console.log(userExist[0]);
+      
       if (userExist[0].user_type == "manager" && userExist[0].status == "waiting") {
+        console.log("check");
+        
         responseDetails.message = "Manager account is waiting for approval.";
-        return NextResponse.json(responseDetails, { status: 401 });
+        responseDetails.userDetails={};
+        await client.close();
+        return NextResponse.json(responseDetails, { status: 403 });
       }
       const userId = userExist[0]._id.toString();
       const userPassword = await getSpecificFields(

@@ -57,6 +57,7 @@ export const Entrance = ({ type }: any) => {
       else {
         setIsLoadding(false);
         showError("נסה שוב או התחבר");
+        
       }
     },
     onError: (error: any) => {
@@ -91,6 +92,8 @@ export const Entrance = ({ type }: any) => {
       setIsLoadding(true);
     },
     onSuccess: (data) => {
+      console.log(data);
+      
       setDetails(data);
     },
     onError: (error: any) => {
