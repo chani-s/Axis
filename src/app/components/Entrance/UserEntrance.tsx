@@ -105,6 +105,7 @@ export const Entrance = ({ type }: any) => {
       localStorage.setItem("userDetails", JSON.stringify(userDetails));
       setUserDetails(userDetails);
     };
+
     const userDetails = {
       _id: data.userDetails._id,
       email: data.userDetails.email,
@@ -115,6 +116,7 @@ export const Entrance = ({ type }: any) => {
       address: data.userDetails.address,
       status: data.userDetails.status,
       profile_picture: data.userDetails.profile_picture || DEFAULT_PROFILE_PIC,
+      company_id: data.userDetails?.company_id ,
 
     };
     setUserDetails(userDetails);
