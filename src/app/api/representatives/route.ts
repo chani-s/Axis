@@ -19,7 +19,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
     try {
-        const { email, companyId, } = await req.json();
+        const { email, name, companyId, } = await req.json();
 
         if (!email) {
             return NextResponse.json({ message: "Missing email" }, { status: 400 });
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
             const insertUserDetails = await insertDocument(
                 client,
                 "users",
-                { email: email, companyId: companyId, status: "invited", user_type: "representative" }
+                { email: email, name: name, companyId: companyId, status: "invited", user_type: "representative" }
             );
 
             const companyName = await getSpecificFields(

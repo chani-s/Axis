@@ -52,10 +52,14 @@ export const Representatives = () => {
             setError("Email is required");
             return;
         }
+        if (!inviteName) {
+            setError("Name is required");
+            return;
+        }
         setLoading(true);
         setError(null);
         try {
-            const newRepresentative = await inviteRepresentative(inviteEmail, userDetails.company_id||""); // Set to manager's company ID
+            const newRepresentative = await inviteRepresentative(inviteEmail, inviteName, userDetails.company_id||""); // Set to manager's company ID
             setRepresentatives((prev) => [...prev, newRepresentative]);
             setInviteEmail("");
             setInviteName("");
