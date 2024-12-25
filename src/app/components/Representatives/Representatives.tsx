@@ -105,9 +105,9 @@ export const Representatives = () => {
                 {selectedRepresentative ? (
                     <div className={style.detailsPanel}>
                         <h3>פרטי נציג</h3>
-                        <p><strong>שם:</strong> {selectedRepresentative.name}</p>
-                        <p><strong>מייל:</strong> {selectedRepresentative.email}</p>
-                        <p><strong>טלפון:</strong> {selectedRepresentative.phone}</p>
+                        <p>{selectedRepresentative.name}</p>
+                        <p>{selectedRepresentative.email}</p>
+                        <p>{selectedRepresentative.phone}</p>
                     </div>
                 ) : isInviteRepresentative ? (
                     <div className={style.inviteBox}>
