@@ -46,9 +46,7 @@ export const userDetailsStore = create<UserStore>((set) => ({
 
     getMissingDetails: () => {
         const missing: string[] = [];
-        const userDetails = userDetailsStore.getState().userDetails;
-        console.log(userDetails.profile_picture);
-        
+        const userDetails = userDetailsStore.getState().userDetails;      
         if (!userDetails.name) missing.push("name");
         if (!userDetails.id_number) missing.push("id_number");
         if (!userDetails.address) missing.push("address");

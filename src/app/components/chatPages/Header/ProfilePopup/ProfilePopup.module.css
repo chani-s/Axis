@@ -33,7 +33,7 @@
 }
 
 .input {
-    width: 100%;
+    min-width: 250px;
     padding: 10px;
     margin-bottom: 3vh;
     border: 1px solid #e0dddd;
@@ -49,7 +49,7 @@
 
 .closeButton {
     align-self: flex-start;
-    background-color: #45474b;
+    background-color: white;
     color: white;
     padding: 5px;
     border-radius: 50%;
@@ -58,13 +58,18 @@
     border: none;
 }
 
+.x{
+    color: #ddba0e;
+    font-size: large;
+}
+
 .closeButton:hover {
-    background-color: #ddba0e;
+    background-color: #45474b;
 }
 
 .saveButton {
     padding: 10px;
-    background-color: #45474b;
+    background-color: #ddba0e;
     color: white;
     border: none;
     border-radius: 5px;
@@ -73,5 +78,11 @@
 }
 
 .saveButton:hover {
-    background-color: #ddba0e;
+    background-color: #45474b;
 }
+
+.error {
+    color: #d93025; 
+    font-size: 14px;
+    font-weight: bold;
+  }
