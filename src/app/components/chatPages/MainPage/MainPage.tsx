@@ -26,9 +26,11 @@ const MainPage: React.FC<MainPageProps> = ({
 }) => {
     const [isDetailsPopUpVisible, setIsDetailsPopUpVisible] = useState(false);
     const [isLogin, setIsLogin] = useState(true);
-
+    const [isNewLogin, setIsNewLogin] = useState(false);
     const { userDetails, setUserDetails, getMissingDetails } = userDetailsStore();
     const [missingDetails, setMissingDetails] = useState<string[]>([]);
+
+
 
     useEffect(() => {
         const user = localStorage.getItem("userDetails");
@@ -38,10 +40,18 @@ const MainPage: React.FC<MainPageProps> = ({
         if (user) {
             const parsedUser = JSON.parse(user);
             setUserDetails(parsedUser);
+
+            const isFirstLogin = sessionStorage.getItem("isFirstLogin");
+            if (!isFirstLogin) {
+                setIsNewLogin(true); // התחברות חדשה
+                sessionStorage.setItem("isFirstLogin", "true");
+            }
+
             setIsLogin(true);
 
             const updatedMissingDetails = getMissingDetails();
             setMissingDetails(updatedMissingDetails);
+
             if (updatedMissingDetails.length > 0) {
                 setIsDetailsPopUpVisible(true);
             }
@@ -55,6 +65,7 @@ const MainPage: React.FC<MainPageProps> = ({
 
         }
     }, [setUserDetails, getMissingDetails]);
+
 
     if (!isLogin) {
         return (
@@ -84,7 +95,7 @@ const MainPage: React.FC<MainPageProps> = ({
                 <MainChat type={type} />
             </div>
             <Footer />
-            {isDetailsPopUpVisible && type==="user" &&(
+            {isDetailsPopUpVisible && (isNewLogin || !userDetails.name) && type === "user" && (
                 <div className={styles.overlay}>
                     <DetailsPopUp onClose={() => setIsDetailsPopUpVisible(false)} />
                 </div>

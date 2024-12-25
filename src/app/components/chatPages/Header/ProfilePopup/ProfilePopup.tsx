@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from "react";
 import styles from './ProfilePopup.module.css';
 import { FaCamera, FaTimes } from 'react-icons/fa';
+import { z } from "zod";
+import { detailsSchema } from "@/app/services/detailsValidation";
 import { userDetailsStore } from "../../../../services/zustand";
 import { updateUserByEmail } from "@/app/services/details";
 import { uploadPicture } from "@/app/services/uploadPicture";
-
-const DEFAULT_PROFILE_PIC = "https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png";
 
 const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const { userDetails, setUserDetails } = userDetailsStore();
     const [fullName, setFullName] = useState(userDetails.name || "");
     const [address, setAddress] = useState(userDetails.address || "");
     const [idNumber, setIdNumber] = useState(userDetails.id_number || "");
-    const [newProfilePic, setNewProfilePic] = useState(userDetails.profile_picture || DEFAULT_PROFILE_PIC);
+    const [newProfilePic, setNewProfilePic] = useState(userDetails.profile_picture);
+    const [errorMessages, setErrorMessages] = useState({
+        name: "",
+        id_number: "",
+    });
 
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -43,32 +47,52 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const handleSave = async () => {
         try {
             const updatedDetails = {
-                name: fullName || userDetails.name,
+                name: fullName,
                 address: address,
                 id_number: idNumber,
                 profile_picture: newProfilePic,
             };
 
-            const response = await updateUserByEmail(userDetails.email, updatedDetails);
+            const parsedDetails = detailsSchema.parse(updatedDetails);
+
+            const response = await updateUserByEmail(userDetails.email, parsedDetails);
 
             if (response.data.success) {
                 const mergedDetails = {
                     ...userDetails,
-                    ...updatedDetails, 
+                    ...parsedDetails,
                 };
 
                 setUserDetails(mergedDetails);
                 onClose();
                 localStorage.setItem("userDetails", JSON.stringify(mergedDetails));
-
             } else {
                 throw new Error("Failed to update user data");
             }
         } catch (error) {
-            console.error("Error updating user details:", error);
-            alert("שגיאה בשמירת הנתונים");
+            if (error instanceof z.ZodError) {
+                const newErrorMessages: { name: string, id_number: string } = {
+                    name: "",
+                    id_number: "",
+                };
+
+                error.errors.forEach((err) => {
+                    if (err.path.includes("name")) {
+                        newErrorMessages.name = err.message;
+                    }
+                    if (err.path.includes("id_number")) {
+                        newErrorMessages.id_number = err.message;
+                    }
+                });
+
+                setErrorMessages(newErrorMessages);
+            } else {
+                console.error("שגיאה:", error);
+                alert("שגיאה בשמירת הנתונים");
+            }
         }
     };
+
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -78,11 +102,21 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     return (
         <div className={styles.popup}>
             <form className={styles.popupContent} onSubmit={handleSubmit}>
-                <button className={styles.closeButton} type="button" onClick={onClose}><FaTimes /></button>
-                <h2>שלום {userDetails.name}</h2>
+                <button
+                    className={styles.closeButton}
+                    type="button"
+                    onClick={onClose}>
+                    <FaTimes
+                        className={styles.x} />
+                </button>
+                <h2>שלום, {userDetails.name}</h2>
                 <div>
-                    <img className={styles.profilePicture} src={newProfilePic} alt="profilePic" />
-                    <FaCamera className={styles.cameraIcon} onClick={handleButtonClick} />
+                    <img className={styles.profilePicture}
+                        src={newProfilePic}
+                        alt="profilePic" />
+                    <FaCamera
+                        className={styles.cameraIcon}
+                        onClick={handleButtonClick} />
                 </div>
                 <input
                     type="file"
@@ -97,8 +131,14 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                         className={styles.input}
                         type="text"
                         value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
+                        onChange={(e) => {
+                            setFullName(e.target.value)
+                            setErrorMessages((prev) => ({ ...prev, fullName: "" }));
+
+                        }}
                     />
+                    {errorMessages.name && <p className={styles.error}>{errorMessages.name}</p>}
+
                 </div>
                 <div>
                     <label>כתובת:</label>
@@ -115,8 +155,13 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                         className={styles.input}
                         type="text"
                         value={idNumber}
-                        onChange={(e) => setIdNumber(e.target.value)}
+                        onChange={(e) => {
+                            setIdNumber(e.target.value)
+                            setErrorMessages((prev) => ({ ...prev, id_number: "" }));
+                        }}
                     />
+                    {errorMessages.id_number && <p className={styles.error}>{errorMessages.id_number}</p>}
+
                 </div>
                 <button type="submit" className={styles.saveButton}>שמור</button>
             </form>

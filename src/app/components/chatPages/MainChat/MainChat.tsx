@@ -73,15 +73,16 @@ const MainChat = ({ type }: any) => {
       }
     });
 
-    return () => {
-      console.log(`Unsubscribing from channel: ${conversationChannel}`);
-      channel.unbind("new-message");
-      pusher.unsubscribe(conversationChannel);
-      setMessages([]); // Clear messages when switching conversations
-    };
-  }, [conversation?._id]);
-  const sendMessage = async () => {
-    if (!message || !conversation._id) return;
+        return () => {
+            console.log(`Unsubscribing from channel: ${conversationChannel}`);
+            channel.unbind('new-message');
+            pusher.unsubscribe(conversationChannel);
+            setMessages([]);
+        };
+
+    }, [conversation?._id]);
+    const sendMessage = async () => {
+        if (!message || !conversation._id) return;
 
     const newMessage: MessageObj = {
       time: new Date(),

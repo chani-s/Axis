@@ -2,14 +2,12 @@ import React, { useState } from "react";
 import styles from "./Header.module.css";
 import ProfilePopup from "./ProfilePopup/ProfilePopup";
 import { conversationsStore, userDetailsStore } from "../../../services/zustand";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { logout } from "@/app/services/logout";
 import { MdOutlineLogout } from "react-icons/md";
-const DEFAULT_PROFILE_PIC = "https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png";
-
 
 const Header = () => {
-    const userDetails = userDetailsStore((state) => state.userDetails); 
+    const userDetails = userDetailsStore((state) => state.userDetails);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const router = useRouter();
     const { conversation, setConversation } = conversationsStore();
@@ -17,17 +15,16 @@ const Header = () => {
 
     const handleLogout = async () => {
         try {
-          // Perform logout
-          await logout();
+            await logout();
           setConversation({_id:""})
-          router.push("/login");
+            router.push("/login");
         } catch (error) {
-          console.error("Error during logout process:", error);
+            console.error("Error during logout process:", error);
         }
-      };
-  const showPersonalProfile = () => {
-    setIsPopupOpen(true);
-  };
+    };
+    const showPersonalProfile = () => {
+        setIsPopupOpen(true);
+    };
 
     const closePopup = () => {
         setIsPopupOpen(false);
@@ -40,16 +37,22 @@ const Header = () => {
                 title={userDetails.name + "\n" + userDetails.email}>
                 <img
                     className={styles.profilePicture}
-                    src={userDetails.profile_picture || DEFAULT_PROFILE_PIC}
+                    src={userDetails.profile_picture}
                     alt="profile"
                     onClick={showPersonalProfile}>
                 </img>
                 <p>{userDetails.name}</p>
 
             </div>
-            <MdOutlineLogout className={styles.logoutIcon} onClick={handleLogout} />
+            <MdOutlineLogout
+                className={styles.logoutIcon}
+                onClick={handleLogout} />
 
-            <img className={styles.logo} src="/imgs/nonebg1.png" alt="logo"></img>
+            <img
+                className={styles.logo}
+                src="/imgs/nonebg1.png"
+                alt="logo">
+            </img>
 
             {isPopupOpen && (
                 <ProfilePopup
