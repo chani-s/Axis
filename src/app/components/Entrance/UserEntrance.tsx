@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
 import style from "./UserEntrance.module.css";
@@ -11,10 +11,10 @@ import { useRouter } from "next/navigation";
 import { userDetailsStore } from "../../services/zustand";
 import ForgetPassword from "../Entrance/ForgotPassword";
 import { showError } from "../../services/messeges";
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-const DEFAULT_PROFILE_PIC = "https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png";
-
+const DEFAULT_PROFILE_PIC =
+  "https://www.mamanet.org.il/MamanetPlayersPictures/Screen-Shot-2022-06-15-at-13.38.00-274x300.png";
 
 export const Entrance = ({ type }: any) => {
   const [email, setEmail] = useState("");
@@ -51,9 +51,7 @@ export const Entrance = ({ type }: any) => {
     onSuccess: (data: any) => {
       console.log(isLoadding);
       console.log(data);
-      if (data.userDetails.email)
-        setDetails(data);
-
+      if (data.userDetails.email) setDetails(data);
       else {
         setIsLoadding(false);
         showError("נסה שוב או התחבר");
@@ -91,6 +89,8 @@ export const Entrance = ({ type }: any) => {
       setIsLoadding(true);
     },
     onSuccess: (data) => {
+      console.log(data);
+
       setDetails(data);
     },
     onError: (error: any) => {
@@ -105,17 +105,18 @@ export const Entrance = ({ type }: any) => {
       localStorage.setItem("userDetails", JSON.stringify(userDetails));
       setUserDetails(userDetails);
     };
+
     const userDetails = {
       _id: data.userDetails._id,
       email: data.userDetails.email,
       google_auth: data.userDetails.google_auth || false,
       user_type: data.userDetails.user_type,
-      name: data.userDetails.name,
+      name: data.userDetails.name || data.userDetails.businessDisplayName,
       id_number: data.userDetails.id_number,
       address: data.userDetails.address,
       status: data.userDetails.status,
       profile_picture: data.userDetails.profile_picture || DEFAULT_PROFILE_PIC,
-
+      company_id: data.userDetails?.company_id,
     };
     setUserDetails(userDetails);
     saveToLocalStorage(userDetails);
@@ -125,7 +126,7 @@ export const Entrance = ({ type }: any) => {
   const entranceExempleUser = (e: any) => {
     e.preventDefault();
     const userData = {
-      email: "rutite261@gmail.com",
+      email: "ruti.te.261@gmail.com",
       password: "rrRR2024",
       isWithGoogle: false,
     };
@@ -231,11 +232,12 @@ export const Entrance = ({ type }: any) => {
           {forgetPassword && (
             <ForgetPassword setForgetPassword={setForgetPassword} />
           )}
-          {!isRepresentative &&
+          {!isRepresentative && (
             <button onClick={entranceExempleUser} className={style.exempleUser}>
               {" "}
               <FaSignInAlt className={style.entranceIcon} /> התחבר כמשתמש לדוגמא
-            </button>}
+            </button>
+          )}
           <button className={style.googleButton} onClick={signupHandler}>
             <FcGoogle className={style.googleIcon} /> register with Google{" "}
           </button>

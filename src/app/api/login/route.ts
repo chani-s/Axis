@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
-  
+
   const SECRET_KEY = process.env.SECRET_KEY;
   const responseDetails = {
     message: "",
@@ -24,10 +24,22 @@ export async function POST(req: NextRequest) {
       client,
       "users",
       { email: userData.email },
-      { _id: 1 }
+      {  }
     );
 
     if (userExist[0]) {
+      console.log("details");
+      
+      console.log(userExist[0]);
+      
+      if (userExist[0].user_type == "manager" && userExist[0].status == "waiting") {
+        console.log("check");
+        
+        responseDetails.message = "Manager account is waiting for approval.";
+        responseDetails.userDetails={};
+        await client.close();
+        return NextResponse.json(responseDetails, { status: 403 });
+      }
       const userId = userExist[0]._id.toString();
       const userPassword = await getSpecificFields(
         client,
@@ -44,24 +56,23 @@ export async function POST(req: NextRequest) {
             "users",
             userId
           );
-          if(userDetails.user_type =="representative")
-          {
+          if (userDetails.user_type == "representative") {
             const updateStatus = await updateByEmail(
               client,
               "users",
               userDetails.email,
               { status: "active" }
-            ) 
-            userDetails.status ="active";
+            )
+            userDetails.status = "active";
           }
 
           console.log(userDetails);
-          
-          
+
+
           const token = jwt.sign(
             { userId: userDetails._id },
-            SECRET_KEY?SECRET_KEY:"", 
-            { expiresIn: "1h" } 
+            SECRET_KEY ? SECRET_KEY : "",
+            { expiresIn: "1h" }
           );
           responseDetails.message = "User login successfully";
           const { _id, ...userWithoutId } = userDetails;
@@ -74,7 +85,7 @@ export async function POST(req: NextRequest) {
             secure: true,
             sameSite: "strict",
             maxAge: 3600
-          });          
+          });
 
           await client.close();
           return response;

@@ -41,7 +41,8 @@ export async function POST(req: NextRequest) {
                 "companies",
                 {
                     officialBusinessName: userData.officialBusinessName, businessDisplayName: userData.businessDisplayName,
-                    businessCode: userData.businessCode, profilePicture: userData.profilePicture, status: "waiting"
+                    businessCode: userData.businessCode, profilePicture: userData.profilePicture, status: "waiting",
+                    profile_picture: "https://lowcostflight.co.il/wp-content/uploads/2017/12/wizz.jpg"
                 }
             );
 
@@ -49,7 +50,11 @@ export async function POST(req: NextRequest) {
                 const userDetails = await insertDocument(
                     client,
                     "users",
-                    { company_id: companyDetails._id.toString(), email: userData.email, user_type: "manager", status: "waiting" }
+                    {
+                        company_id: companyDetails._id.toString(), email: userData.email, user_type: "manager", status: "waiting",
+                        profile_picture: "https://lowcostflight.co.il/wp-content/uploads/2017/12/wizz.jpg",
+                        name: companyDetails.businessDisplayName
+                    }
                 );
                 if (userDetails) {
                     const hashedPassword = await hashPassword(userData.password);
@@ -136,13 +141,13 @@ export async function GET(req: NextRequest) {
             await sendEmail(managerAxisEmail,
                 `בקשתך לאישור חברה הסתימה בהצלחה`,
                 `בקשתך לאישור חברה הסתימה בהצלחה, החברה הוזמנה להתחיל להשתמש באתר 🎉🎉`, false, false, {});
-                return successPage();
-        
+            return successPage();
+
         } else {
             await sendEmail(managerAxisEmail,
                 `בקשתך לאישור חברה נכשלה`,
                 `בקשתך לאישור חברה נכשלה, רענן ונסה שוב או פנה למפתחי האתר לתמיכה תכנית`, false, false, {});
-                return errorPage();
+            return errorPage();
         }
     } catch (error) {
         await sendEmail(managerAxisEmail,
@@ -153,7 +158,7 @@ export async function GET(req: NextRequest) {
     }
 }
 
- function successPage (){
+function successPage() {
     const successMessage = "הפעולה בוצעה בהצלחה!🎉🎉🎉";
 
     return new NextResponse(
@@ -207,13 +212,13 @@ export async function GET(req: NextRequest) {
             status: 200,
         }
     );
- }
+}
 
- function errorPage(){
+function errorPage() {
     const errorMessage = "שגיאה התרחשה, אנא נסי שוב.";
 
-        return new NextResponse(
-            `
+    return new NextResponse(
+        `
             <!DOCTYPE html>
             <html lang="he">
             <head>
@@ -258,18 +263,18 @@ export async function GET(req: NextRequest) {
             </body>
             </html>
             `,
-            {
-                headers: { "Content-Type": "text/html" },
-                status: 500,
-            }
-        );
- }
+        {
+            headers: { "Content-Type": "text/html" },
+            status: 500,
+        }
+    );
+}
 
- function forgotDetailsPage(){
+function forgotDetailsPage() {
     const errorMessage = "חסרים פרטים נצרכים";
 
-        return new NextResponse(
-            `
+    return new NextResponse(
+        `
             <!DOCTYPE html>
             <html lang="he">
             <head>
@@ -314,9 +319,9 @@ export async function GET(req: NextRequest) {
             </body>
             </html>
             `,
-            {
-                headers: { "Content-Type": "text/html" },
-                status: 400,
-            }
-        );
- }
+        {
+            headers: { "Content-Type": "text/html" },
+            status: 400,
+        }
+    );
+}

@@ -19,7 +19,7 @@ const Page = () => {
         conversations={repConversation || []}
         companiesData={[]}
         createConversation={null}
-        chosenConversationId={""}
+        chosenConversation={""}
       />
     );
 };

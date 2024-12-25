@@ -24,11 +24,13 @@ async function sendEmail(to: string, subject: string, text: string, isRepresenta
     });
 
     const baseURL = isRepresentative?"https://axis-brown.vercel.app/signup"
-    :isManager?"https://axis-brown.vercel.app/api/company/entrance"
+    :isManager?"https://axis-brown.vercel.app/api/company_entrance"
     :"";
+
     // const baseURL = isRepresentative?"http://localhost:3000/signup"
     // :isManager?"http://localhost:3000/api/company_entrance"
     // :"";
+
     const queryParams = isRepresentative?querystring.stringify({ email: to, type: "representative" })
     :isManager?querystring.stringify({ manager: additionalParameters?.managerId })
     :'';
