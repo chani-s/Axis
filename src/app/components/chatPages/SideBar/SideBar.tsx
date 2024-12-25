@@ -50,7 +50,7 @@ const SideBar: React.FC<SideBarProps> = ({
     // Filter companies whenever `searchTerm` or `companiesData` changes
     setFilteredCompanies(
       companiesData?.filter((company: any) => {
-        return company.name?.toLowerCase().includes(searchTerm.toLowerCase());
+        return company.businessDisplayName?.toLowerCase().includes(searchTerm.toLowerCase());
       }) || []
     );
     // console.log("term" + searchTerm);
@@ -65,7 +65,7 @@ const SideBar: React.FC<SideBarProps> = ({
         );
       }) || []
     );
-  }, [chatSearchTerm, conversations]);
+  }, [chatSearchTerm, conversations,chosenConversationId]);
 
   useEffect(() => {
     // Handle dropdown visibility
@@ -83,13 +83,12 @@ const SideBar: React.FC<SideBarProps> = ({
       representative_id: null,
       status: "active",
       company_profilePicture: company.profilePicture,
-      company_name: company.name,
+      company_name: company.businessDisplayName,
       last_use: new Date(),
       user_name: userDetails.name,
       user_profilePicture: "",
     };
     createConversation(newConversation);
-
     setConversation({ _id: chosenConversationId });
   };
 
@@ -131,7 +130,7 @@ const SideBar: React.FC<SideBarProps> = ({
           className={styles.profileCircle}
           style={{ backgroundImage: `url(${company.profilePicture})` }}
         ></div>
-        <span className={styles.selectOptionText}>{company.name}</span>
+        <span className={styles.selectOptionText}>{company.businessDisplayName}</span>
       </div>
     ));
   };

@@ -23,7 +23,7 @@ export async function GET(request: Request) {
 
     result = await getDocumentsByIds(client, "companies", ids, false, {
       _id: 1,
-      name: 1,
+      businessDisplayName: 1,
       profilePicture: 1,
     });
     await client.close();
