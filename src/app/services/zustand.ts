@@ -9,9 +9,8 @@ export interface UserZustand {
     id_number: string | null;
     address: string | null;
     status: string | null;
-    profile_picture: string ;
-
-
+    profile_picture: string;
+    company_id: string | null;
 }
 
 interface Conversation {
@@ -41,6 +40,7 @@ export const userDetailsStore = create<UserStore>((set) => ({
         address: "",
         status: "",
         profile_picture: "",
+        company_id:""
     },
     setUserDetails: (details: UserZustand) => set({ userDetails: details }),
 

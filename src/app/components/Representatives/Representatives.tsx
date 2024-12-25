@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import style from "./Representatives.module.css";
 import { fetchRepresentatives, inviteRepresentative } from "../../services/representatives";
+import { userDetailsStore } from "@/app/services/zustand";
 
 interface Representative {
     id: number;
@@ -18,6 +19,7 @@ export const Representatives = () => {
     const [inviteName, setInviteName] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const userDetails = userDetailsStore((state) => state.userDetails); 
 
     useEffect(() => {
         const fetchData = async () => {
@@ -53,7 +55,7 @@ export const Representatives = () => {
         setLoading(true);
         setError(null);
         try {
-            const newRepresentative = await inviteRepresentative(inviteEmail, "6756bc39d4cf4f15a0da3ff6"); // Set to manager's company ID
+            const newRepresentative = await inviteRepresentative(inviteEmail, userDetails.company_id||""); // Set to manager's company ID
             setRepresentatives((prev) => [...prev, newRepresentative]);
             setInviteEmail("");
             setInviteName("");
