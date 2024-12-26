@@ -9,18 +9,37 @@
     max-width: 80vw;
     height: auto;
     box-shadow: 2px 2px 2px 2px #a3a4a7;
+    overflow: hidden;
+
+}
+
+.popup::before {
+    z-index: 1;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 20%;
+    background-color: #45474b;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 .profilePicture {
+    position: relative;
     width: 60px;
     height: 60px;
     border-radius: 50%;
     align-self: center;
+    z-index: 2; 
 }
 
 .cameraIcon {
-    cursor: pointer;
-
+    position: relative;
+    cursor: pointer; 
+    z-index: 2; 
+    color: #a3a4a7;
 }
 
 .popupContent {
@@ -30,6 +49,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 2;
 }
 
 .input {
@@ -45,6 +65,8 @@
 
 .popup h2 {
     text-align: center;
+    z-index: 2;
+
 }
 
 .closeButton {
@@ -56,6 +78,8 @@
     font-size: 17px;
     cursor: pointer;
     border: none;
+    z-index: 2;
+
 }
 
 .x{

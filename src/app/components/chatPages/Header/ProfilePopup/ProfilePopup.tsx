@@ -109,7 +109,6 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                     <FaTimes
                         className={styles.x} />
                 </button>
-                <h2>שלום, {userDetails.name}</h2>
                 <div>
                     <img className={styles.profilePicture}
                         src={newProfilePic}
@@ -118,6 +117,8 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                         className={styles.cameraIcon}
                         onClick={handleButtonClick} />
                 </div>
+                <h2>שלום, {userDetails.name}</h2>
+
                 <input
                     type="file"
                     ref={fileInputRef}
