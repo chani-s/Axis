@@ -154,16 +154,36 @@ const SideBar: React.FC<SideBarProps> = ({
               setIsDropdownOpen(true);
 
               if (e.target.value === "") {
-                setIsDropdownOpen(false);
+                // setIsDropdownOpen(false);
+                setFilteredCompanies(companiesData);
+              } else {
+                // סינון על בסיס חיפוש
+                setFilteredCompanies(
+                  companiesData?.filter((company: any) =>
+                    company.name?.toLowerCase().includes(e.target.value.toLowerCase())
+                  )
+                );
               }
             }}
+            onFocus={() => {
+              setIsDropdownOpen(true); // פתיחת התפריט בעת פוקוס
+              setFilteredCompanies(companiesData); // הצגת כל החברות כברירת מחדל
+            }}
+
             onKeyDown={handleKeyPress}
           />
           {isDropdownOpen && (
             <div className={styles.selectOptions}>
+              <button className={styles.closeButton} onClick={() => setIsDropdownOpen(false)}>✖</button>
               <RenderFilteredCompanies />
             </div>
           )}
+          {/* {isDropdownOpen && (
+            <div className={styles.selectOptions}>
+              <RenderFilteredCompanies />
+            </div>
+          )} */}
+
           <input
             className={styles.input}
             type="text"
@@ -196,9 +216,8 @@ const SideBar: React.FC<SideBarProps> = ({
             return (
               <div
                 onClick={() => handleConversationClick(mapConversation)}
-                className={`${styles.conversationItem} ${
-                  isSelected ? styles.selected : ""
-                }`}
+                className={`${styles.conversationItem} ${isSelected ? styles.selected : ""
+                  }`}
                 style={{ backgroundColor: isSelected ? "#ddba0e" : "" }}
                 key={mapConversation._id?.toString()}
               >
@@ -208,7 +227,7 @@ const SideBar: React.FC<SideBarProps> = ({
                     userType === "user"
                       ? mapConversation.company_profilePicture
                       : mapConversation.user_profilePicture ||
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s"
+                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s"
                   }
                   alt="Profile"
                 />
@@ -216,8 +235,8 @@ const SideBar: React.FC<SideBarProps> = ({
                   {userType === "user"
                     ? mapConversation.company_name
                     : mapConversation.user_name
-                    ? mapConversation.user_name
-                    : "פניה חדשה"}
+                      ? mapConversation.user_name
+                      : "פניה חדשה"}
                 </p>
               </div>
             );
