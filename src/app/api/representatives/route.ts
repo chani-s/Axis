@@ -43,15 +43,15 @@ export async function POST(req: NextRequest) {
                 client,
                 "companies",
                 { _id: new ObjectId(companyId) },
-                { name: 1 }
+                { businessDisplayName: 1 }
             );
 
             console.log(companyName);
             
             if (insertUserDetails && companyName) {
                 await sendEmail(email,
-                    ` הזמנת הצטרפות כנציג לחברת ${companyName[0].name}`,
-                    `${companyName[0].name} ,מזמינה אותך להצטרף לשירותי נציג של החברה
+                    ` הזמנת הצטרפות כנציג לחברת ${companyName[0].businessDisplayName}`,
+                    `${companyName[0].businessDisplayName} ,מזמינה אותך להצטרף לשירותי נציג של החברה
                     לסיום התחברות לחץ על כפתור הירשם עכשיו  🎉🎉`, true, false,{});
 
                 await client.close();

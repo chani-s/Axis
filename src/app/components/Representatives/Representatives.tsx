@@ -19,7 +19,7 @@ export const Representatives = () => {
     const [inviteName, setInviteName] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const userDetails = userDetailsStore((state) => state.userDetails); 
+    const userDetails = userDetailsStore((state) => state.userDetails);
 
     useEffect(() => {
         const fetchData = async () => {
