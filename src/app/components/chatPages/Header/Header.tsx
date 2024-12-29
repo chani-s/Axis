@@ -16,8 +16,8 @@ const Header = () => {
         try {
             await logout(userDetails.email);
             setConversation({ _id: "" })
-            if(userDetails.user_type === "representative")
-                
+            if (userDetails.user_type === "representative")
+                userDetails.status = "inactive";
             router.push("/login");
         } catch (error) {
             console.error("Error during logout process:", error);

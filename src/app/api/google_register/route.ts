@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
                 userId
             );
 
-            if (userDetails.user_type == "representative" && userDetails.status == "invited") {
+            if (userDetails.user_type == "representative") {
                 const updateStatus = await updateByEmail(
                     client,
                     "users",
