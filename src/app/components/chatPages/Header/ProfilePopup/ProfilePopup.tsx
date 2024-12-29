@@ -109,7 +109,6 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                     <FaTimes
                         className={styles.x} />
                 </button>
-                <h2>שלום, {userDetails.name}</h2>
                 <div>
                     <img className={styles.profilePicture}
                         src={newProfilePic}
@@ -118,6 +117,8 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                         className={styles.cameraIcon}
                         onClick={handleButtonClick} />
                 </div>
+                <h2>שלום, {userDetails.name}</h2>
+
                 <input
                     type="file"
                     ref={fileInputRef}
@@ -140,29 +141,33 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                     {errorMessages.name && <p className={styles.error}>{errorMessages.name}</p>}
 
                 </div>
-                <div>
-                    <label>כתובת:</label>
-                    <input
-                        className={styles.input}
-                        type="text"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label>תעודת זהות:</label>
-                    <input
-                        className={styles.input}
-                        type="text"
-                        value={idNumber}
-                        onChange={(e) => {
-                            setIdNumber(e.target.value)
-                            setErrorMessages((prev) => ({ ...prev, id_number: "" }));
-                        }}
-                    />
-                    {errorMessages.id_number && <p className={styles.error}>{errorMessages.id_number}</p>}
+                {userDetails.user_type === "user" &&
+                    <div>
+                        <div>
+                            <label>כתובת:</label>
+                            <input
+                                className={styles.input}
+                                type="text"
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                            />
+                        </div>
+                        <div>
+                            <label>תעודת זהות:</label>
+                            <input
+                                className={styles.input}
+                                type="text"
+                                value={idNumber}
+                                onChange={(e) => {
+                                    setIdNumber(e.target.value)
+                                    setErrorMessages((prev) => ({ ...prev, id_number: "" }));
+                                }}
+                            />
+                            {errorMessages.id_number && <p className={styles.error}>{errorMessages.id_number}</p>}
 
-                </div>
+                        </div>
+                    </div>
+                }
                 <button type="submit" className={styles.saveButton}>שמור</button>
             </form>
         </div>

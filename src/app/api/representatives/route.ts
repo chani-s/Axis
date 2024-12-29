@@ -1,3 +1,4 @@
+//api/representatives/route.ts
 import { connectDatabase, getSpecificFields, insertDocument, isExist } from "@/app/services/mongo";
 import { NextResponse, NextRequest } from "next/server";
 import sendEmail from "../../services/sendEmails";
@@ -31,6 +32,7 @@ export async function POST(req: NextRequest) {
             "users",
             { email: email },
         );
+      
 
         if (!userExist) {
             const insertUserDetails = await insertDocument(
@@ -62,9 +64,14 @@ export async function POST(req: NextRequest) {
                 return NextResponse.json({ message: "שגיאה בתהליך ההזמנה, רענן או נסה שוב מאוחר יותר" });
             }
         }
+        else {
+            return NextResponse.json(
+                { message: "כתובת המייל כבר קיימת במערכת." },
+                { status: 409 } 
+            );
+        }
 
         await client.close();
-        return NextResponse.json({ message: "אימייל קיים, נסה  אימייל שונה" });
 
     } catch (error) {
         console.error("שגיאה בהזמנת נציג", error);
