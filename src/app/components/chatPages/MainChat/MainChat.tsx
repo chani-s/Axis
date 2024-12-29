@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./MainChat.module.css";
 import Pusher from "pusher-js";
-// import PermissionPanel from "../PermissionPanel/PermissionPanel";
 import {
   FaTimes,
   FaBars,
