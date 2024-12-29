@@ -36,27 +36,27 @@ export async function POST(req: NextRequest) {
         { email: userData.email, google_auth: userData.isWithGoogle, user_type: userData.userType }
       );
     }
-    if (userExist && userData.userType == "representative") {
-      const userId = await getSpecificFields(
+    if (userExist && userData.userType == "representative" ) {
+      const user = await getSpecificFields(
         client,
         "users",
         { email: userData.email },
-        {_id:1}
+        {_id:1, status: 1}
       );
-      console.log(userId);
-      console.log(userId[0]._id.toString());
+      console.log(user);
+      console.log(user[0]._id.toString());
       
       
       const passwordIsExist = await isExist(
         client,
         "hashed_passwords",
-        { user_id: userId[0]._id.toString() }
+        { user_id: user[0]._id.toString() }
       )
 
       console.log(passwordIsExist);
       
 
-      if (!passwordIsExist) {
+      if (!passwordIsExist && user[0].status=="invited") {
 
         const updateStatus = await updateByEmail(
           client,
@@ -79,9 +79,6 @@ export async function POST(req: NextRequest) {
 
 
     }
-
-    console.log("uuu");
-    
     console.log(userDetails);
 
     if (userDetails?._id) {
