@@ -31,7 +31,6 @@ const MainChat = ({ type }: any) => {
   const [messages, setMessages] = useState<MessageObj[]>([]); // Default as empty array
   const [message, setMessage] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const [userType, setUserType] = useState("user");
   const [isShowDetails, setIsShowDetails] = useState(false);
   const userDetails = userDetailsStore((state) => state.userDetails);
   const { conversation, setConversation } = conversationsStore();
@@ -110,15 +109,6 @@ const MainChat = ({ type }: any) => {
   };
 
   useEffect(() => {
-    if (type === "representative") {
-      setUserType("representative");
-    }
-    if (type === "manager") {
-      setUserType("manager");
-    }
-  }, [type]);
-
-  useEffect(() => {
     const chatMessagesElement = chatEndRef.current?.parentElement;
     chatMessagesElement?.scrollTo({
       top: chatMessagesElement.scrollHeight,
@@ -166,7 +156,7 @@ const MainChat = ({ type }: any) => {
         <div className={styles.noneP}>
           <a>מממ קצת ריק כאן...</a>
           <br />
-          {userType === "user" ? (
+          {type === "user" ? (
             <p>בחר חברה כדי שנוכל להתחיל :) </p>
           ) : (
             <h3>בחר שיחה כדי שנוכל להתחיל :) </h3>
@@ -190,7 +180,7 @@ const MainChat = ({ type }: any) => {
             <FaWindowMinimize />
           </button>
         </div>
-        {userType === "user" && (
+        {type === "user" && (
           <button
             className={styles.detailsIcon}
             onClick={managePermissions}
@@ -237,7 +227,7 @@ const MainChat = ({ type }: any) => {
       </div>
 
       <div className={styles.sendingBar}>
-        {userType === "representative" && (
+        {type === "representative" && (
           <button className={styles.detailsButton} onClick={showDetails}>
             פרטי לקוח
           </button>
@@ -259,7 +249,7 @@ const MainChat = ({ type }: any) => {
         >
           <FaArrowLeft />
         </button>
-        {userType === "user" && (
+        {type === "user" && (
           <button className={styles.endButton} onClick={endConversation}>
             <FaTimes />
           </button>

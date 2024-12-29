@@ -48,6 +48,7 @@ export async function POST(request: NextRequest) {
   try {
     const url = new URL(request.url);
     const companyId = url.searchParams.get("company_id") || "";
+    console.log("********8"+companyId);
     const activate = url.searchParams.get("activate") || "";
     const conversationId = url.searchParams.get("conversationId") || "";
 
