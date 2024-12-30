@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import style from "./Representatives.module.css";
 import { fetchRepresentatives, inviteRepresentative } from "../../services/representatives";
 import { userDetailsStore } from "@/app/services/zustand";
-import { showError, showSuccess } from "@/app/services/messeges"; // ייבוא הפונקציות
+import { showError, showSuccess } from "@/app/services/messeges";
+import { useRouter } from "next/navigation";
+
 
 interface Representative {
     id: number;
@@ -21,14 +23,24 @@ export const Representatives = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [fetchError, setFetchError] = useState<string | null>(null);
     const [inviteError, setInviteError] = useState<string | null>(null);
-    const userDetails = userDetailsStore((state) => state.userDetails);
+    const { userDetails, setUserDetails, getMissingDetails } = userDetailsStore();
+
+    const router = useRouter();
 
     useEffect(() => {
+        const companyId = localStorage.getItem("companyId");
+        console.log(companyId);
+        if (!companyId) {
+            showError("שגיאה בשליפת הנציגים מהמערכת. אנא התחבר שוב כמנהל.");
+            router.push("/login");
+        }
+        console.log(companyId);
+
         const fetchData = async () => {
             setLoading(true);
             setFetchError(null);
             try {
-                const data = await fetchRepresentatives();
+                const data = await fetchRepresentatives(companyId);
                 setRepresentatives(data);
             } catch (error: any) {
                 setFetchError("שגיאה בשליפת הנציגים מהמערכת. אנא נסה שוב מאוחר יותר.");
@@ -38,7 +50,7 @@ export const Representatives = () => {
             }
         };
         fetchData();
-    }, []);
+    }, [userDetails.company_id]);
 
     const handleInvite = () => {
         setIsInviteRepresentative(true);
@@ -93,8 +105,6 @@ export const Representatives = () => {
                 <div className={style.representativesList}>
                     {loading ? (
                         <p>Loading...</p>
-                    ) : fetchError ? (
-                        <p style={{ color: "red" }}>{fetchError}</p>
                     ) : (
                         representatives.map((rep) => (
                             <div

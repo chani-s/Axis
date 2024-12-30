@@ -5,10 +5,16 @@ import sendEmail from "../../services/sendEmails";
 import { ObjectId } from 'mongodb';
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     try {
         const client = await connectDatabase();
-        const filter = { user_type: "representative" };
+        const { searchParams } = new URL(req.url);
+        const companyId = searchParams.get("companyId");
+
+        const filter: any = {
+            user_type: "representative",
+            companyId: companyId
+        };
         const fields = { name: 1, email: 1, phone: 1, status: 1 };
         const representatives = await getSpecificFields(client, "users", filter, fields);
 
@@ -32,7 +38,7 @@ export async function POST(req: NextRequest) {
             "users",
             { email: email },
         );
-      
+
 
         if (!userExist) {
             const insertUserDetails = await insertDocument(
@@ -49,12 +55,12 @@ export async function POST(req: NextRequest) {
             );
 
             console.log(companyName);
-            
+
             if (insertUserDetails && companyName) {
                 await sendEmail(email,
                     ` הזמנת הצטרפות כנציג לחברת ${companyName[0].businessDisplayName}`,
                     `${companyName[0].businessDisplayName} ,מזמינה אותך להצטרף לשירותי נציג של החברה
-                    לסיום התחברות לחץ על כפתור הירשם עכשיו  🎉🎉`, true, false,{});
+                    לסיום התחברות לחץ על כפתור הירשם עכשיו  🎉🎉`, true, false, {});
 
                 await client.close();
                 return NextResponse.json({ message: "בקשת הצטרפות נשלחה לנציג" });
@@ -67,7 +73,7 @@ export async function POST(req: NextRequest) {
         else {
             return NextResponse.json(
                 { message: "כתובת המייל כבר קיימת במערכת." },
-                { status: 409 } 
+                { status: 409 }
             );
         }
 
