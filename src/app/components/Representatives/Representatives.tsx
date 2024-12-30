@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import style from "./Representatives.module.css";
 import { fetchRepresentatives, inviteRepresentative } from "../../services/representatives";
 import { userDetailsStore } from "@/app/services/zustand";
-import { showError, showSuccess } from "@/app/services/messeges"; // ייבוא הפונקציות
+import { showError, showSuccess } from "@/app/services/messeges";
+import { useRouter } from "next/navigation";
+import { isValidEmail } from "@/app/services/validations";
+
 
 interface Representative {
     id: number;
@@ -19,26 +22,33 @@ export const Representatives = () => {
     const [inviteEmail, setInviteEmail] = useState<string>("");
     const [inviteName, setInviteName] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const [fetchError, setFetchError] = useState<string | null>(null);
-    const [inviteError, setInviteError] = useState<string | null>(null);
-    const userDetails = userDetailsStore((state) => state.userDetails);
+    const { userDetails} = userDetailsStore();
+
+    const companyId = localStorage.getItem("companyId");
+
+    const router = useRouter();
 
     useEffect(() => {
+        console.log(companyId);
+        if (!companyId) {
+            showError("שגיאה בשליפת הנציגים מהמערכת. אנא התחבר שוב כמנהל.");
+            router.push("/login");
+        }
+        console.log(companyId);
+
         const fetchData = async () => {
             setLoading(true);
-            setFetchError(null);
             try {
-                const data = await fetchRepresentatives();
+                const data = await fetchRepresentatives(companyId);
                 setRepresentatives(data);
             } catch (error: any) {
-                setFetchError("שגיאה בשליפת הנציגים מהמערכת. אנא נסה שוב מאוחר יותר.");
                 showError("שגיאה בשליפת הנציגים מהמערכת. אנא נסה שוב מאוחר יותר.");
             } finally {
                 setLoading(false);
             }
         };
         fetchData();
-    }, []);
+    }, [userDetails.company_id]);
 
     const handleInvite = () => {
         setIsInviteRepresentative(true);
@@ -52,38 +62,40 @@ export const Representatives = () => {
 
     const handleInviteSubmit = async () => {
         if (!inviteEmail) {
-            setInviteError("יש להזין כתובת מייל");
             showError("יש להזין כתובת מייל");
             return;
         }
         if (!inviteName) {
-            setInviteError("יש להזין שם נציג");
             showError("יש להזין שם נציג");
             return;
         }
-
+        if (!isValidEmail(inviteEmail)) {
+            showError("כתובת מייל לא תקינה");
+            return;
+        }
+    
         setLoading(true);
-        setInviteError(null);
         try {
-            const newRepresentative = await inviteRepresentative(inviteEmail, inviteName, userDetails.company_id || "");
+            const newRepresentative = await inviteRepresentative(inviteEmail, inviteName, companyId || "");
             setInviteEmail("");
             setInviteName("");
             setIsInviteRepresentative(false);
             showSuccess("הנציג הוזמן בהצלחה!");
             setRepresentatives((prev) => [...prev, newRepresentative]);
-
+    
         } catch (error: any) {
             if (error.response?.status === 409 && error.response?.data?.message.includes("כבר קיימת")) {
-                setInviteError("כתובת המייל כבר קיימת במערכת.");
                 showError("כתובת המייל כבר קיימת במערכת.");
+                return;
             } else {
-                setInviteError("התרחשה שגיאה בלתי צפויה.");
                 showError("התרחשה שגיאה בלתי צפויה.");
+                return;
             }
         } finally {
             setLoading(false);
         }
     };
+    
 
     return (
         <div className={style.container}>
@@ -93,8 +105,6 @@ export const Representatives = () => {
                 <div className={style.representativesList}>
                     {loading ? (
                         <p>Loading...</p>
-                    ) : fetchError ? (
-                        <p style={{ color: "red" }}>{fetchError}</p>
                     ) : (
                         representatives.map((rep) => (
                             <div

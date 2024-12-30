@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from './ProfilePopup.module.css';
 import { FaCamera, FaTimes } from 'react-icons/fa';
 import { z } from "zod";
-import { detailsSchema } from "@/app/services/detailsValidation";
+import { detailsSchema } from "@/app/services/validations";
 import { userDetailsStore } from "../../../../services/zustand";
 import { updateUserByEmail } from "@/app/services/details";
 import { uploadPicture } from "@/app/services/uploadPicture";
