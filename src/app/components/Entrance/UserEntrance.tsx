@@ -164,22 +164,27 @@ export const Entrance = ({ type }: any) => {
     const res = await googleSignup();
     setIsWithGoogle(true);
     const emailFromGoogle = res.user.email;
-    setEmail(emailFromGoogle);
-    const nameFromGoogle = res.user.displayName;
-    setName(nameFromGoogle);
-    const profilePictureFromGoogle = res.user.photoURL;
-    console.log(emailFromGoogle, nameFromGoogle);
-    setProfilePicture(profilePictureFromGoogle);
+    if (isRepresentative && emailFromGoogle != email) {
+      showError("מייל לא תואם")
+    }
+    else {
+      setEmail(emailFromGoogle);
+      const nameFromGoogle = res.user.displayName;
+      setName(nameFromGoogle);
+      const profilePictureFromGoogle = res.user.photoURL;
+      console.log(emailFromGoogle, nameFromGoogle);
+      setProfilePicture(profilePictureFromGoogle);
 
-    const userData = {
-      email: emailFromGoogle,
-      name: nameFromGoogle,
-      isWithGoogle: true,
-      userType: "user",
-      profilePicture: profilePictureFromGoogle,
-    };
+      const userData = {
+        email: emailFromGoogle,
+        name: nameFromGoogle,
+        isWithGoogle: true,
+        userType: "user",
+        profilePicture: profilePictureFromGoogle,
+      };
 
-    mutationRegisterWithGoogle.mutate(userData);
+      mutationRegisterWithGoogle.mutate(userData);
+    }
   };
 
   return (
