@@ -27,12 +27,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
     try {
         const { email, name, companyId, } = await req.json();
-
-        if (!email) {
-            return NextResponse.json({ message: "Missing email" }, { status: 400 });
-        }
         const client = await connectDatabase();
-
         const userExist = await isExist(
             client,
             "users",
@@ -67,7 +62,8 @@ export async function POST(req: NextRequest) {
             }
             else {
                 await client.close();
-                return NextResponse.json({ message: "שגיאה בתהליך ההזמנה, רענן או נסה שוב מאוחר יותר" });
+                return NextResponse.json({ message: "שגיאה בתהליך ההזמנה, רענן או נסה שוב מאוחר יותר" }
+                );
             }
         }
         else {
