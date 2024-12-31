@@ -21,14 +21,15 @@ export const Representatives = () => {
     const [representatives, setRepresentatives] = useState<Representative[]>([]);
     const [inviteEmail, setInviteEmail] = useState<string>("");
     const [inviteName, setInviteName] = useState<string>("");
+    const [companyId, setCompanyId] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const { userDetails} = userDetailsStore();
-
-    const companyId = localStorage.getItem("companyId");
-
+    const { userDetails } = userDetailsStore();
+    // const companyId = localStorage.getItem("companyId");
     const router = useRouter();
 
     useEffect(() => {
+        const storedCompanyId = localStorage.getItem("companyId");
+        setCompanyId(storedCompanyId);
         console.log(companyId);
         if (!companyId) {
             showError("שגיאה בשליפת הנציגים מהמערכת. אנא התחבר שוב כמנהל.");
@@ -73,7 +74,7 @@ export const Representatives = () => {
             showError("כתובת מייל לא תקינה");
             return;
         }
-    
+
         setLoading(true);
         try {
             const newRepresentative = await inviteRepresentative(inviteEmail, inviteName, companyId || "");
@@ -82,7 +83,7 @@ export const Representatives = () => {
             setIsInviteRepresentative(false);
             showSuccess("הנציג הוזמן בהצלחה!");
             setRepresentatives((prev) => [...prev, newRepresentative]);
-    
+
         } catch (error: any) {
             if (error.response?.status === 409 && error.response?.data?.message.includes("כבר קיימת")) {
                 showError("כתובת המייל כבר קיימת במערכת.");
@@ -95,7 +96,7 @@ export const Representatives = () => {
             setLoading(false);
         }
     };
-    
+
 
     return (
         <div className={style.container}>
