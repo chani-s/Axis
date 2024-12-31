@@ -6,7 +6,6 @@ import { showError, showSuccess } from "@/app/services/messeges";
 import { useRouter } from "next/navigation";
 import { isValidEmail } from "@/app/services/validations";
 
-
 interface Representative {
     id: number;
     name: string;
@@ -23,24 +22,22 @@ export const Representatives = () => {
     const [inviteName, setInviteName] = useState<string>("");
     const [companyId, setCompanyId] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const { userDetails } = userDetailsStore();
-    // const companyId = localStorage.getItem("companyId");
+
     const router = useRouter();
 
     useEffect(() => {
         const storedCompanyId = localStorage.getItem("companyId");
-        setCompanyId(storedCompanyId);
-        console.log(companyId);
-        if (!companyId) {
+        if (!storedCompanyId) {
             showError("שגיאה בשליפת הנציגים מהמערכת. אנא התחבר שוב כמנהל.");
             router.push("/login");
+            return;
         }
-        console.log(companyId);
+        setCompanyId(storedCompanyId);
 
         const fetchData = async () => {
             setLoading(true);
             try {
-                const data = await fetchRepresentatives(companyId);
+                const data = await fetchRepresentatives(storedCompanyId);
                 setRepresentatives(data);
             } catch (error: any) {
                 showError("שגיאה בשליפת הנציגים מהמערכת. אנא נסה שוב מאוחר יותר.");
@@ -48,8 +45,9 @@ export const Representatives = () => {
                 setLoading(false);
             }
         };
+
         fetchData();
-    }, [userDetails.company_id]);
+    }, [router]);
 
     const handleInvite = () => {
         setIsInviteRepresentative(true);
@@ -83,20 +81,16 @@ export const Representatives = () => {
             setIsInviteRepresentative(false);
             showSuccess("הנציג הוזמן בהצלחה!");
             setRepresentatives((prev) => [...prev, newRepresentative]);
-
         } catch (error: any) {
             if (error.response?.status === 409 && error.response?.data?.message.includes("כבר קיימת")) {
                 showError("כתובת המייל כבר קיימת במערכת.");
-                return;
             } else {
                 showError("התרחשה שגיאה בלתי צפויה.");
-                return;
             }
         } finally {
             setLoading(false);
         }
     };
-
 
     return (
         <div className={style.container}>
@@ -158,9 +152,7 @@ export const Representatives = () => {
                             </button>
                         </div>
                     )}
-
             </div>
-
             <button className={style.newInviteButton} onClick={handleInvite}>
                 הזמן נציג חדש
             </button>
