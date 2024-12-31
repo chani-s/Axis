@@ -18,10 +18,10 @@ export const fetchRepresentatives = async (companyId: string | null): Promise<an
 };
 
 
-export const inviteRepresentative = async (email: string, name: string, companyId: string): Promise<any> => {
+export const inviteRepresentative = async (email: string, name: string, companyId: string, profilePicture: string): Promise<any> => {
   try {
-    console.log("Inviting representative with:", { email, name, companyId });
-    const response: AxiosResponse<any> = await http.post("/representatives", { email, name, companyId });
+    console.log("Inviting representative with:", { email, name, companyId, profilePicture });
+    const response: AxiosResponse<any> = await http.post("/representatives", { email, name, companyId, profilePicture });
     return response.data;
   } catch (error: any) {
     console.error("Failed to invite representative:", error);

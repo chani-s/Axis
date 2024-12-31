@@ -6,7 +6,6 @@ import { showError, showSuccess } from "@/app/services/messeges";
 import { useRouter } from "next/navigation";
 import { isValidEmail } from "@/app/services/validations";
 
-
 interface Representative {
     id: number;
     name: string;
@@ -21,25 +20,30 @@ export const Representatives = () => {
     const [representatives, setRepresentatives] = useState<Representative[]>([]);
     const [inviteEmail, setInviteEmail] = useState<string>("");
     const [inviteName, setInviteName] = useState<string>("");
-    const [loading, setLoading] = useState<boolean>(false);
-    const { userDetails} = userDetailsStore();
+    const [companyId, setCompanyId] = useState<string | null>(null);
+    const [companyLogo, setCompanyLogo] = useState<string>("");
 
-    const companyId = localStorage.getItem("companyId");
+    const [loading, setLoading] = useState<boolean>(false);
+    const { userDetails } = userDetailsStore();
 
     const router = useRouter();
 
     useEffect(() => {
-        console.log(companyId);
-        if (!companyId) {
+        const storedCompanyId = localStorage.getItem("companyId");
+        const storedCompanyLogo = localStorage.getItem("companyLogo");
+
+        if (!storedCompanyId || !storedCompanyLogo) {
             showError("שגיאה בשליפת הנציגים מהמערכת. אנא התחבר שוב כמנהל.");
             router.push("/login");
+            return;
         }
-        console.log(companyId);
+        setCompanyId(storedCompanyId);
+        setCompanyLogo(storedCompanyLogo || "");
 
         const fetchData = async () => {
             setLoading(true);
             try {
-                const data = await fetchRepresentatives(companyId);
+                const data = await fetchRepresentatives(storedCompanyId);
                 setRepresentatives(data);
             } catch (error: any) {
                 showError("שגיאה בשליפת הנציגים מהמערכת. אנא נסה שוב מאוחר יותר.");
@@ -47,8 +51,9 @@ export const Representatives = () => {
                 setLoading(false);
             }
         };
+
         fetchData();
-    }, [userDetails.company_id]);
+    }, [router]);
 
     const handleInvite = () => {
         setIsInviteRepresentative(true);
@@ -73,29 +78,25 @@ export const Representatives = () => {
             showError("כתובת מייל לא תקינה");
             return;
         }
-    
+
         setLoading(true);
         try {
-            const newRepresentative = await inviteRepresentative(inviteEmail, inviteName, companyId || "");
+            const newRepresentative = await inviteRepresentative(inviteEmail, inviteName, companyId || "", companyLogo);
             setInviteEmail("");
             setInviteName("");
             setIsInviteRepresentative(false);
             showSuccess("הנציג הוזמן בהצלחה!");
             setRepresentatives((prev) => [...prev, newRepresentative]);
-    
         } catch (error: any) {
             if (error.response?.status === 409 && error.response?.data?.message.includes("כבר קיימת")) {
                 showError("כתובת המייל כבר קיימת במערכת.");
-                return;
             } else {
                 showError("התרחשה שגיאה בלתי צפויה.");
-                return;
             }
         } finally {
             setLoading(false);
         }
     };
-    
 
     return (
         <div className={style.container}>
@@ -157,9 +158,7 @@ export const Representatives = () => {
                             </button>
                         </div>
                     )}
-
             </div>
-
             <button className={style.newInviteButton} onClick={handleInvite}>
                 הזמן נציג חדש
             </button>
