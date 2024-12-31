@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const { email, name, companyId, } = await req.json();
+        const { email, name, companyId, profilePicture } = await req.json();
         const client = await connectDatabase();
         const userExist = await isExist(
             client,
@@ -34,12 +34,11 @@ export async function POST(req: NextRequest) {
             { email: email },
         );
 
-
         if (!userExist) {
             const insertUserDetails = await insertDocument(
                 client,
                 "users",
-                { email: email, name: name, companyId: companyId, status: "invited", user_type: "representative" }
+                { email: email, name: name, companyId: companyId, status: "invited", user_type: "representative", profile_picture: profilePicture}
             );
 
             const companyName = await getSpecificFields(

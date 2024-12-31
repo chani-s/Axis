@@ -21,18 +21,24 @@ export const Representatives = () => {
     const [inviteEmail, setInviteEmail] = useState<string>("");
     const [inviteName, setInviteName] = useState<string>("");
     const [companyId, setCompanyId] = useState<string | null>(null);
+    const [companyLogo, setCompanyLogo] = useState<string>("");
+
     const [loading, setLoading] = useState<boolean>(false);
+    const { userDetails } = userDetailsStore();
 
     const router = useRouter();
 
     useEffect(() => {
         const storedCompanyId = localStorage.getItem("companyId");
-        if (!storedCompanyId) {
+        const storedCompanyLogo = localStorage.getItem("companyLogo");
+
+        if (!storedCompanyId || !storedCompanyLogo) {
             showError("שגיאה בשליפת הנציגים מהמערכת. אנא התחבר שוב כמנהל.");
             router.push("/login");
             return;
         }
         setCompanyId(storedCompanyId);
+        setCompanyLogo(storedCompanyLogo || "");
 
         const fetchData = async () => {
             setLoading(true);
@@ -75,7 +81,7 @@ export const Representatives = () => {
 
         setLoading(true);
         try {
-            const newRepresentative = await inviteRepresentative(inviteEmail, inviteName, companyId || "");
+            const newRepresentative = await inviteRepresentative(inviteEmail, inviteName, companyId || "", companyLogo);
             setInviteEmail("");
             setInviteName("");
             setIsInviteRepresentative(false);
