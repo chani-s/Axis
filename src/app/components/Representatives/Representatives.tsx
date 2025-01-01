@@ -47,7 +47,7 @@ export const Representatives = () => {
             try {
                 const data = await fetchRepresentatives(storedCompanyId);
                 console.log("Fetched representatives:", data);
-                setRepresentatives(data.filter((rep: Representative) => rep.name)); 
+                setRepresentatives(data.filter((rep: Representative) => rep.name));
             } catch (error: any) {
                 showError("שגיאה בשליפת הנציגים מהמערכת. אנא נסה שוב מאוחר יותר.");
             } finally {
@@ -141,7 +141,7 @@ export const Representatives = () => {
                 <div className={style.representativesList}>
                     {loading ? (
                         <p>Loading...</p>
-                    ) : (
+                    ) : representatives.length > 0 ? (
                         representatives.map((rep) => (
                             <div
                                 key={rep.id}
@@ -158,7 +158,10 @@ export const Representatives = () => {
                                         }`}
                                 ></div>
                             </div>
-                        ))
+                        ))) : (
+                        <p className={style.noRepresentativesMessage}>
+                            אין לך נציגים להצגה כרגע :)
+                        </p>
                     )}
                 </div>
                 {selectedRepresentative ? (
