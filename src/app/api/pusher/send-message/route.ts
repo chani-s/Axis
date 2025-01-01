@@ -1,7 +1,6 @@
 import { verifyAuthToken } from "@/app/services/decodeToken";
 import { connectDatabase, insertDocument } from "@/app/services/mongo";
-import { ObjectId } from "mongodb";
-import Pusher from "pusher";
+import pusher from "@/app/services/pusher";
 
 declare global {
   namespace NodeJS {
@@ -14,13 +13,13 @@ declare global {
   }
 }
 
-const pusher = new Pusher({
-  appId: process.env.PUSHER_APP_ID,
-  key: process.env.PUSHER_KEY,
-  secret: process.env.PUSHER_SECRET,
-  cluster: process.env.PUSHER_CLUSTER,
-  useTLS: true,
-});
+// const pusher = new Pusher({
+//   appId: process.env.PUSHER_APP_ID,
+//   key: process.env.PUSHER_KEY,
+//   secret: process.env.PUSHER_SECRET,
+//   cluster: process.env.PUSHER_CLUSTER,
+//   useTLS: true,
+// });
 
 export async function POST(req: any) {
   try {
