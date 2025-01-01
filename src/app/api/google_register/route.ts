@@ -1,6 +1,8 @@
 
+//api/google_register/route.ts
 import { connectDatabase, getSpecificFields, getById, insertDocument, updateByEmail } from "@/app/services/mongo";
 import { NextResponse, NextRequest } from "next/server";
+import pusher from "@/app/services/pusher"
 import jwt from "jsonwebtoken";
 export const dynamic = 'force-dynamic';
 
@@ -43,6 +45,13 @@ export async function POST(req: NextRequest) {
                     { status: "active", google_auth: true }
                 )
                 userDetails.status = "active";
+
+                await pusher.trigger(`company-${userDetails.companyId}`, "status-updated", {
+                    name: userDetails.name,
+                    email: userDetails.email,
+                    status: "active",
+                });
+
             }
 
             if (userDetails.user_type == "manager" && userDetails.status == "approved") {

@@ -1,9 +1,10 @@
 
+//api/login/route.ts
 import { connectDatabase, getSpecificFields, getById, updateByEmail, insertDocument } from "@/app/services/mongo";
 import { NextResponse, NextRequest } from "next/server";
 import { verifyPassword } from "../../services/hash";
 import jwt from "jsonwebtoken";
-import { useFormStatus } from "react-dom";
+import pusher from "@/app/services/pusher"
 export const dynamic = 'force-dynamic';
 import { hashPassword } from "../../services/hash";
 
@@ -53,6 +54,7 @@ export async function POST(req: NextRequest) {
         { password: 1 }
       );
 
+
       if (userPassword[0]) {
         const isCorrect = await verifyPassword(userData.password, userPassword[0].password);
         if (isCorrect) {
@@ -69,10 +71,13 @@ export async function POST(req: NextRequest) {
               { status: "active" }
             )
             userDetails.status = "active";
-          }
 
-          console.log(userDetails);
-
+            await pusher.trigger(`company-${userDetails.companyId}`, "status-updated", {
+              name: userDetails.name,
+              email: userDetails.email,
+              status: "active",
+          });
+          }    
 
           const token = jwt.sign(
             { userId: userDetails._id },

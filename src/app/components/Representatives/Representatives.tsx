@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Pusher from "pusher-js";
 import style from "./Representatives.module.css";
 import { fetchRepresentatives, inviteRepresentative } from "../../services/representatives";
 import { userDetailsStore } from "@/app/services/zustand";
@@ -38,13 +39,15 @@ export const Representatives = () => {
             return;
         }
         setCompanyId(storedCompanyId);
-        setCompanyLogo(storedCompanyLogo || "");
+        setCompanyLogo(storedCompanyLogo);
+
 
         const fetchData = async () => {
             setLoading(true);
             try {
                 const data = await fetchRepresentatives(storedCompanyId);
-                setRepresentatives(data);
+                console.log("Fetched representatives:", data);
+                setRepresentatives(data.filter((rep: Representative) => rep.name)); 
             } catch (error: any) {
                 showError("שגיאה בשליפת הנציגים מהמערכת. אנא נסה שוב מאוחר יותר.");
             } finally {
@@ -52,8 +55,37 @@ export const Representatives = () => {
             }
         };
 
+
         fetchData();
+
+        const pusher = new Pusher(process.env.PUSHER_KEY, {
+            cluster: process.env.PUSHER_CLUSTER,
+        });
+
+        const channel = pusher.subscribe(`company-${storedCompanyId}`);
+
+        channel.bind("status-updated", (updatedRep: Representative) => {
+            console.log("Updated representative from Pusher:", updatedRep);
+            setRepresentatives((prev) =>
+                prev.map((rep) =>
+                    rep.id === updatedRep.id
+                        ? { ...rep, status: updatedRep.status }
+                        : rep
+                )
+            );
+        });
+
+        channel.bind("new-representative", (newRep: Representative) => {
+            setRepresentatives((prev) => [...prev, newRep]);
+        });
+
+        return () => {
+            channel.unbind("status-updated");
+            channel.unbind("new-representative");
+            pusher.unsubscribe(`company-${storedCompanyId}`);
+        };
     }, [router]);
+
 
     const handleInvite = () => {
         setIsInviteRepresentative(true);
@@ -81,12 +113,12 @@ export const Representatives = () => {
 
         setLoading(true);
         try {
-            const newRepresentative = await inviteRepresentative(inviteEmail, inviteName, companyId || "", companyLogo);
-            setInviteEmail("");
-            setInviteName("");
-            setIsInviteRepresentative(false);
-            showSuccess("הנציג הוזמן בהצלחה!");
-            setRepresentatives((prev) => [...prev, newRepresentative]);
+            const newRepresentative = await inviteRepresentative(inviteEmail, inviteName, companyId || "", companyLogo || "");
+            if (newRepresentative && newRepresentative.name) {
+                showSuccess("הנציג הוזמן בהצלחה!");
+                setRepresentatives((prev) => [...prev, newRepresentative]);
+                setIsInviteRepresentative(false);
+            }
         } catch (error: any) {
             if (error.response?.status === 409 && error.response?.data?.message.includes("כבר קיימת")) {
                 showError("כתובת המייל כבר קיימת במערכת.");
@@ -94,9 +126,12 @@ export const Representatives = () => {
                 showError("התרחשה שגיאה בלתי צפויה.");
             }
         } finally {
+            setInviteEmail("");
+            setInviteName("");
             setLoading(false);
         }
     };
+
 
     return (
         <div className={style.container}>

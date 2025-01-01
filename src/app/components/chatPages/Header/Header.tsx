@@ -14,7 +14,12 @@ const Header = () => {
 
     const handleLogout = async () => {
         try {
-            await logout(userDetails.email);
+            const userData ={
+                email: userDetails.email, 
+                name: userDetails.name, 
+                companyId: userDetails.company_id ||null
+            }
+            await logout(userData);
             setConversation({ _id: "" })
             if (userDetails.user_type === "representative")
                 userDetails.status = "inactive";

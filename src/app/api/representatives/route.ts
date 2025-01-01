@@ -3,6 +3,8 @@ import { connectDatabase, getSpecificFields, insertDocument, isExist } from "@/a
 import { NextResponse, NextRequest } from "next/server";
 import sendEmail from "../../services/sendEmails";
 import { ObjectId } from 'mongodb';
+import pusher from "@/app/services/pusher";
+
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
@@ -38,7 +40,7 @@ export async function POST(req: NextRequest) {
             const insertUserDetails = await insertDocument(
                 client,
                 "users",
-                { email: email, name: name, companyId: companyId, status: "invited", user_type: "representative", profile_picture: profilePicture}
+                { email: email, name: name, companyId: companyId, status: "invited", user_type: "representative", profile_picture: profilePicture }
             );
 
             const companyName = await getSpecificFields(
@@ -55,6 +57,14 @@ export async function POST(req: NextRequest) {
                     ` הזמנת הצטרפות כנציג לחברת ${companyName[0].businessDisplayName}`,
                     `${companyName[0].businessDisplayName} ,מזמינה אותך להצטרף לשירותי נציג של החברה
                     לסיום התחברות לחץ על כפתור הירשם עכשיו  🎉🎉`, true, false, {});
+
+                await pusher.trigger(`company-${companyId}`, "new-representative", {
+                    id: insertUserDetails.insertedId,
+                    name,
+                    email,
+                    status: "invited",
+                    phone: null,
+                });
 
                 await client.close();
                 return NextResponse.json({ message: "בקשת הצטרפות נשלחה לנציג" });
