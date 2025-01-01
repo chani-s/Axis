@@ -8,5 +8,5 @@ export interface Representative{
     email: string;
     name: string;
     profile_picture: string;
-    conversations: Conversation[];
+    conversations: number;
 }

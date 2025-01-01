@@ -105,8 +105,8 @@ export async function POST(req: NextRequest) {
       );
 
       responseDetails.message = "User signup successfully";
-      const { _id, ...userWithoutId } = userDetails;
-      responseDetails.userDetails = userWithoutId;
+      //const { _id, ...userWithoutId } = userDetails;
+      responseDetails.userDetails = userDetails;
       responseDetails.token = token;
 
       const response = NextResponse.json(responseDetails);
