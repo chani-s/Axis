@@ -12,6 +12,7 @@ import {
 import { Conversation } from "@/app/models/Conversation";
 import Link from "next/link";
 import { FaCog } from "react-icons/fa";
+import Pusher from "pusher-js";
 
 interface SideBarProps {
   userType: string;
@@ -32,6 +33,10 @@ const SideBar: React.FC<SideBarProps> = ({
   const [chatSearchTerm, setChatSearchTerm] = useState(""); // Search term for chat search
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Dropdown visibility
   const [filteredCompanies, setFilteredCompanies] = useState<any[]>([]);
+  const [conversationsHadChange, setConversationsHadChange] = useState<
+    string[]
+  >([]); // Updated conversations
+
   const userDetails = userDetailsStore((state) => state.userDetails);
 
   const [filteredConversations, setFilteredConversations] = useState<
@@ -82,6 +87,23 @@ const SideBar: React.FC<SideBarProps> = ({
     return () => document.removeEventListener("click", handleClickOutside);
   }, [isDropdownOpen]);
 
+  useEffect(() => {
+    const pusher = new Pusher("ff054817599b88393e16", {
+      cluster: "ap2",
+    });
+    const channel = pusher.subscribe("global-messages");
+    channel.bind("message-received", (data: { conversationId: string }) => {
+      console.log("conversationId"+data.conversationId)
+      setConversationsHadChange((prev) => [
+        ...new Set([...prev, data.conversationId]),
+      ]);
+    });
+
+    return () => {
+      channel.unbind_all();
+      pusher.unsubscribe("global-messages");
+    };
+  }, []);
   const handleCreateConversation = (company: any) => {
     const newConversation = {
       company_id: company._id,
@@ -107,6 +129,8 @@ const SideBar: React.FC<SideBarProps> = ({
     if (con._id) {
       console.log("in handleConversationClick" + con._id);
       setConversation({ _id: con._id.toString() });
+      setConversationsHadChange((prev) => prev.filter((id) => id !== con._id?.toString()));
+
       if (con.status != "active") {
         await statusConversation(con);
       }
@@ -160,7 +184,9 @@ const SideBar: React.FC<SideBarProps> = ({
                 // סינון על בסיס חיפוש
                 setFilteredCompanies(
                   companiesData?.filter((company: any) =>
-                    company.name?.toLowerCase().includes(e.target.value.toLowerCase())
+                    company.name
+                      ?.toLowerCase()
+                      .includes(e.target.value.toLowerCase())
                   )
                 );
               }
@@ -169,12 +195,16 @@ const SideBar: React.FC<SideBarProps> = ({
               setIsDropdownOpen(true); // פתיחת התפריט בעת פוקוס
               setFilteredCompanies(companiesData); // הצגת כל החברות כברירת מחדל
             }}
-
             onKeyDown={handleKeyPress}
           />
           {isDropdownOpen && (
             <div className={styles.selectOptions}>
-              <button className={styles.closeButton} onClick={() => setIsDropdownOpen(false)}>✖</button>
+              <button
+                className={styles.closeButton}
+                onClick={() => setIsDropdownOpen(false)}
+              >
+                ✖
+              </button>
               <RenderFilteredCompanies />
             </div>
           )}
@@ -212,12 +242,16 @@ const SideBar: React.FC<SideBarProps> = ({
           filteredConversations.map((mapConversation: Conversation) => {
             const isSelected =
               conversation._id === mapConversation._id?.toString();
+            const isBold = conversationsHadChange.includes(
+              mapConversation._id?.toString() || ""
+            );
 
             return (
               <div
                 onClick={() => handleConversationClick(mapConversation)}
-                className={`${styles.conversationItem} ${isSelected ? styles.selected : ""
-                  }`}
+                className={`${styles.conversationItem} ${
+                  isSelected ? styles.selected : ""
+                }`}
                 style={{ backgroundColor: isSelected ? "#ddba0e" : "" }}
                 key={mapConversation._id?.toString()}
               >
@@ -227,16 +261,19 @@ const SideBar: React.FC<SideBarProps> = ({
                     userType === "user"
                       ? mapConversation.company_profilePicture
                       : mapConversation.user_profilePicture ||
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s"
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_0xOKHJX8XtB036IK2_Ee28dILxTsB_fbWA&s"
                   }
                   alt="Profile"
                 />
-                <p className={styles.name}>
+                <p
+                  className={styles.name}
+                  style={{ fontWeight: isBold ? "bold" : "normal" }}
+                >
                   {userType === "user"
                     ? mapConversation.company_name
                     : mapConversation.user_name
-                      ? mapConversation.user_name
-                      : "פניה חדשה"}
+                    ? mapConversation.user_name
+                    : "פניה חדשה"}
                 </p>
               </div>
             );
