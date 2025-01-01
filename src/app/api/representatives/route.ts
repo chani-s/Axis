@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
             const insertUserDetails = await insertDocument(
                 client,
                 "users",
-                { email: email, name: name, companyId: companyId, status: "invited", user_type: "representative", profile_picture: profilePicture}
+                { email: email, name: name, companyId: companyId, status: "invited", user_type: "representative", profile_picture: profilePicture,conversations:0}
             );
 
             const companyName = await getSpecificFields(

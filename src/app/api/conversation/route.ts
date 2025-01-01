@@ -1,6 +1,6 @@
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-import { connectDatabase } from "@/app/services/mongo";
+import { connectDatabase, getSpecificFields } from "@/app/services/mongo";
 import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import { insertDocument } from "@/app/services/mongo";
@@ -50,7 +50,6 @@ export async function POST(request: NextRequest) {
   try {
     const url = new URL(request.url);
     const companyId = url.searchParams.get("company_id") || "";
-    console.log("********8"+companyId);
     const activate = url.searchParams.get("activate") || "";
     const conversationId = url.searchParams.get("conversationId") || "";
 
@@ -72,19 +71,24 @@ export async function POST(request: NextRequest) {
       return new Response("Invalid token", { status: 401 });
     }
     const userId = new ObjectId(decodedToken.userId);
+    console.log(userId + "userID");
+
     // Fetch representatives for the specified company
-    const representatives = await db
-      .collection("users")
-      .find({
-        user_type: "representative",
-        company_id: new ObjectId(companyId),
-      })
-      .toArray();
+    const representatives = await getSpecificFields(
+      client,
+      "users",
+      { user_type: "representative", companyId: companyId },
+      {}
+    );
+    
+    console.log(representatives + "representatives for company");
 
     let representativeId: string | null = null;
     let result;
 
     if (representatives.length > 0) {
+      console.log(representatives + "representatives for company");
+
       // Find the representative with the minimum number of conversations
       let representativeWithMinConversations = representatives.reduce(
         (minRep, currentRep) => {
@@ -94,8 +98,13 @@ export async function POST(request: NextRequest) {
         }
       );
 
+      console.log(
+        representativeWithMinConversations +
+          "representativeWithMinConversations"
+      );
+
       representativeId = representativeWithMinConversations._id.toString();
-      if( activate=="false" ){
+      if (activate == "false") {
         result = await insertDocument(client, "conversations", {
           ...body,
           company_id: new ObjectId(companyId),
@@ -107,16 +116,20 @@ export async function POST(request: NextRequest) {
         if (!result || !result._id) {
           return NextResponse.json({ message: "prob with id" });
         }
-      }
-      else {
+      } else {
         const updateConversationResult = await db
-        .collection("conversations")
-        .updateOne(
-          { _id: new ObjectId(conversationId)},
-          { $set: { status: "active", representative_id:new ObjectId(representativeId)} }
-        );
+          .collection("conversations")
+          .updateOne(
+            { _id: new ObjectId(conversationId) },
+            {
+              $set: {
+                status: "active",
+                representative_id: new ObjectId(representativeId),
+              },
+            }
+          );
       }
-  
+
       await db.collection("users").updateOne(
         { _id: representativeWithMinConversations._id },
         { $inc: { conversations: 1 } } // Increment the conversations count by 1
