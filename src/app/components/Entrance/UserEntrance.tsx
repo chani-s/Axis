@@ -104,6 +104,11 @@ export const Entrance = ({ type }: any) => {
     const saveToLocalStorage = (userDetails: any) => {
       localStorage.setItem("userDetails", JSON.stringify(userDetails));
       setUserDetails(userDetails);
+      if (userDetails.company_id) {
+        localStorage.setItem("companyId", userDetails.company_id);
+        localStorage.setItem("companyLogo", userDetails.profile_picture);
+      }
+
     };
 
     const userDetails = {
@@ -164,22 +169,27 @@ export const Entrance = ({ type }: any) => {
     const res = await googleSignup();
     setIsWithGoogle(true);
     const emailFromGoogle = res.user.email;
-    setEmail(emailFromGoogle);
-    const nameFromGoogle = res.user.displayName;
-    setName(nameFromGoogle);
-    const profilePictureFromGoogle = res.user.photoURL;
-    console.log(emailFromGoogle, nameFromGoogle);
-    setProfilePicture(profilePictureFromGoogle);
+    if (isRepresentative && emailFromGoogle != email) {
+      showError("מייל לא תואם")
+    }
+    else {
+      setEmail(emailFromGoogle);
+      const nameFromGoogle = res.user.displayName;
+      setName(nameFromGoogle);
+      const profilePictureFromGoogle = res.user.photoURL;
+      console.log(emailFromGoogle, nameFromGoogle);
+      setProfilePicture(profilePictureFromGoogle);
 
-    const userData = {
-      email: emailFromGoogle,
-      name: nameFromGoogle,
-      isWithGoogle: true,
-      userType: "user",
-      profilePicture: profilePictureFromGoogle,
-    };
+      const userData = {
+        email: emailFromGoogle,
+        name: nameFromGoogle,
+        isWithGoogle: true,
+        userType: "user",
+        profilePicture: profilePictureFromGoogle,
+      };
 
-    mutationRegisterWithGoogle.mutate(userData);
+      mutationRegisterWithGoogle.mutate(userData);
+    }
   };
 
   return (

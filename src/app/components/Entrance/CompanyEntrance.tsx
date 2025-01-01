@@ -55,7 +55,7 @@ export const CompanyEntrance = () => {
             officialBusinessName: officialBusinessName,
             businessDisplayName: businessDisplayName,
             businessCode: businessCode,
-            profilePicture: ""
+            profilePicture: profilePicture,
         };
         console.log(userData);
 
@@ -155,6 +155,13 @@ export const CompanyEntrance = () => {
                                 placeholder="שם עסק לתצוגה"
                                 className={style.input}
                                 onChange={(e) => setBusinessDisplayName(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="text"
+                                placeholder="קישור ללוגו החברה"
+                                className={style.input}
+                                onChange={(e) => setProfilePicture(e.target.value)}
                                 required
                             />
                         </div>

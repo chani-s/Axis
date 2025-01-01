@@ -1,3 +1,4 @@
+//services/messages.ts
 import Swal from 'sweetalert2';
 import style from "../components/Entrance/UserEntrance.module.css";
 export const showError = (message: string) => {

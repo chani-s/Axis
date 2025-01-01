@@ -41,8 +41,8 @@ export async function POST(req: NextRequest) {
                 "companies",
                 {
                     officialBusinessName: userData.officialBusinessName, businessDisplayName: userData.businessDisplayName,
-                    businessCode: userData.businessCode, profilePicture: userData.profilePicture, status: "waiting",
-                    profile_picture: "https://lowcostflight.co.il/wp-content/uploads/2017/12/wizz.jpg"
+                    businessCode: userData.businessCode, status: "waiting",
+                    profile_picture: userData.profilePicture
                 }
             );
 
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
                     "users",
                     {
                         company_id: companyDetails._id.toString(), email: userData.email, user_type: "manager", status: "waiting",
-                        profile_picture: "https://lowcostflight.co.il/wp-content/uploads/2017/12/wizz.jpg",
+                        profile_picture: userData.profilePicture,
                         name: companyDetails.businessDisplayName
                     }
                 );

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import style from "./Representatives.module.css";
 import { fetchRepresentatives, inviteRepresentative } from "../../services/representatives";
 import { userDetailsStore } from "@/app/services/zustand";
+import { showError, showSuccess } from "@/app/services/messeges";
+import { useRouter } from "next/navigation";
+import { isValidEmail } from "@/app/services/validations";
 
 interface Representative {
     id: number;
@@ -17,25 +20,40 @@ export const Representatives = () => {
     const [representatives, setRepresentatives] = useState<Representative[]>([]);
     const [inviteEmail, setInviteEmail] = useState<string>("");
     const [inviteName, setInviteName] = useState<string>("");
+    const [companyId, setCompanyId] = useState<string | null>(null);
+    const [companyLogo, setCompanyLogo] = useState<string>("");
+
     const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-    const userDetails = userDetailsStore((state) => state.userDetails); 
+    const { userDetails } = userDetailsStore();
+
+    const router = useRouter();
 
     useEffect(() => {
+        const storedCompanyId = localStorage.getItem("companyId");
+        const storedCompanyLogo = localStorage.getItem("companyLogo");
+
+        if (!storedCompanyId || !storedCompanyLogo) {
+            showError("שגיאה בשליפת הנציגים מהמערכת. אנא התחבר שוב כמנהל.");
+            router.push("/login");
+            return;
+        }
+        setCompanyId(storedCompanyId);
+        setCompanyLogo(storedCompanyLogo || "");
+
         const fetchData = async () => {
             setLoading(true);
-            setError(null);
             try {
-                const data = await fetchRepresentatives();
+                const data = await fetchRepresentatives(storedCompanyId);
                 setRepresentatives(data);
             } catch (error: any) {
-                setError(error);
+                showError("שגיאה בשליפת הנציגים מהמערכת. אנא נסה שוב מאוחר יותר.");
             } finally {
                 setLoading(false);
             }
         };
+
         fetchData();
-    }, []);
+    }, [router]);
 
     const handleInvite = () => {
         setIsInviteRepresentative(true);
@@ -49,19 +67,32 @@ export const Representatives = () => {
 
     const handleInviteSubmit = async () => {
         if (!inviteEmail) {
-            setError("Email is required");
+            showError("יש להזין כתובת מייל");
             return;
         }
+        if (!inviteName) {
+            showError("יש להזין שם נציג");
+            return;
+        }
+        if (!isValidEmail(inviteEmail)) {
+            showError("כתובת מייל לא תקינה");
+            return;
+        }
+
         setLoading(true);
-        setError(null);
         try {
-            const newRepresentative = await inviteRepresentative(inviteEmail, userDetails.company_id||""); // Set to manager's company ID
-            setRepresentatives((prev) => [...prev, newRepresentative]);
+            const newRepresentative = await inviteRepresentative(inviteEmail, inviteName, companyId || "", companyLogo);
             setInviteEmail("");
             setInviteName("");
             setIsInviteRepresentative(false);
+            showSuccess("הנציג הוזמן בהצלחה!");
+            setRepresentatives((prev) => [...prev, newRepresentative]);
         } catch (error: any) {
-            setError(error);
+            if (error.response?.status === 409 && error.response?.data?.message.includes("כבר קיימת")) {
+                showError("כתובת המייל כבר קיימת במערכת.");
+            } else {
+                showError("התרחשה שגיאה בלתי צפויה.");
+            }
         } finally {
             setLoading(false);
         }
@@ -75,8 +106,6 @@ export const Representatives = () => {
                 <div className={style.representativesList}>
                     {loading ? (
                         <p>Loading...</p>
-                    ) : error ? (
-                        <p style={{ color: "red" }}>{error}</p>
                     ) : (
                         representatives.map((rep) => (
                             <div
@@ -89,49 +118,47 @@ export const Representatives = () => {
                                     className={`${style.statusDot} ${rep.status === "active"
                                         ? style.active
                                         : rep.status === "inactive"
-                                        ? style.inactive
-                                        : style.invited
-                                    }`}
+                                            ? style.inactive
+                                            : style.invited
+                                        }`}
                                 ></div>
                             </div>
                         ))
                     )}
                 </div>
-
                 {selectedRepresentative ? (
                     <div className={style.detailsPanel}>
                         <h3>פרטי נציג</h3>
-                        <p><strong>שם:</strong> {selectedRepresentative.name}</p>
-                        <p><strong>מייל:</strong> {selectedRepresentative.email}</p>
-                        <p><strong>טלפון:</strong> {selectedRepresentative.phone}</p>
-                    </div>
-                ) : isInviteRepresentative ? (
-                    <div className={style.inviteBox}>
-                        <input
-                            type="name"
-                            value={inviteName}
-                            onChange={(e) => setInviteName(e.target.value)}
-                            placeholder="שם נציג"
-                            className={style.input}
-                        />
-                        <input
-                            type="email"
-                            value={inviteEmail}
-                            onChange={(e) => setInviteEmail(e.target.value)}
-                            placeholder="כתובת מייל נציג"
-                            className={style.input}
-                        />
-                        <button
-                            className={style.sendInviteButton}
-                            onClick={handleInviteSubmit}
-                            disabled={loading}
-                        >
-                            {loading ? "שליחה..." : "שלח הזמנה"}
-                        </button>
-                    </div>
-                ) : null}
+                        <p>{selectedRepresentative.name}</p>
+                        <p>{selectedRepresentative.email}</p>
+                        <p>{selectedRepresentative.phone}</p>
+                    </div>) :
+                    isInviteRepresentative && (
+                        <div className={style.inviteBox}>
+                            <input
+                                type="name"
+                                value={inviteName}
+                                onChange={(e) => setInviteName(e.target.value)}
+                                placeholder="שם נציג"
+                                className={style.input}
+                            />
+                            <input
+                                type="email"
+                                value={inviteEmail}
+                                onChange={(e) => setInviteEmail(e.target.value)}
+                                placeholder="כתובת מייל נציג"
+                                className={style.input}
+                            />
+                            <button
+                                className={style.sendInviteButton}
+                                onClick={handleInviteSubmit}
+                                disabled={loading}
+                            >
+                                {loading ? "שליחה..." : "שלח הזמנה"}
+                            </button>
+                        </div>
+                    )}
             </div>
-
             <button className={style.newInviteButton} onClick={handleInvite}>
                 הזמן נציג חדש
             </button>

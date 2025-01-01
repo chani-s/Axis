@@ -12,11 +12,12 @@ const Header = () => {
     const router = useRouter();
     const { conversation, setConversation } = conversationsStore();
 
-
     const handleLogout = async () => {
         try {
-            await logout();
-          setConversation({_id:""})
+            await logout(userDetails.email);
+            setConversation({ _id: "" })
+            if (userDetails.user_type === "representative")
+                userDetails.status = "inactive";
             router.push("/login");
         } catch (error) {
             console.error("Error during logout process:", error);
