@@ -104,8 +104,11 @@ export const Entrance = ({ type }: any) => {
     const saveToLocalStorage = (userDetails: any) => {
       localStorage.setItem("userDetails", JSON.stringify(userDetails));
       setUserDetails(userDetails);
-      if(userDetails.company_id)
+      if (userDetails.company_id) {
         localStorage.setItem("companyId", userDetails.company_id);
+        localStorage.setItem("companyLogo", userDetails.profile_picture);
+      }
+
     };
 
     const userDetails = {
@@ -120,7 +123,7 @@ export const Entrance = ({ type }: any) => {
       profile_picture: data.userDetails.profile_picture || DEFAULT_PROFILE_PIC,
       company_id: data.userDetails?.company_id,
     };
-    setUserDetails(userDetails); 
+    setUserDetails(userDetails);
     saveToLocalStorage(userDetails);
     router.push(`/chat/${data.userDetails.user_type}`);
   };

@@ -1,9 +1,7 @@
+export const dynamic = 'force-dynamic';
+
 import {
-  connectDatabase,
-  getDocumentsByIds,
-  getSpecificFields,
-} from "@/app/services/mongo";
-import { log } from "console";
+  connectDatabase, getDocumentsByIds} from "@/app/services/mongo";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
