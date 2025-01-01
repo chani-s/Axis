@@ -34,9 +34,8 @@ const SideBar: React.FC<SideBarProps> = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Dropdown visibility
   const [filteredCompanies, setFilteredCompanies] = useState<any[]>([]);
   const [conversationsHadChange, setConversationsHadChange] = useState<
-    string[]
-  >([]); // Updated conversations
-
+  { conversationId: string; userId: string }[]
+>([]);
   const userDetails = userDetailsStore((state) => state.userDetails);
 
   const [filteredConversations, setFilteredConversations] = useState<
@@ -63,7 +62,6 @@ const SideBar: React.FC<SideBarProps> = ({
           .includes(searchTerm.toLowerCase());
       }) || []
     );
-    // console.log("term" + searchTerm);
   }, [searchTerm, companiesData]);
 
   useEffect(() => {
@@ -91,19 +89,47 @@ const SideBar: React.FC<SideBarProps> = ({
     const pusher = new Pusher("ff054817599b88393e16", {
       cluster: "ap2",
     });
+  
     const channel = pusher.subscribe("global-messages");
-    channel.bind("message-received", (data: { conversationId: string }) => {
-      console.log("conversationId"+data.conversationId)
-      setConversationsHadChange((prev) => [
-        ...new Set([...prev, data.conversationId]),
-      ]);
+  
+    channel.bind("message-received", (data: { conversationId: string; userId: string }) => {
+      console.log(
+        "conversationId: " +
+          data.conversationId +
+          " user id: " +
+          data.userId +
+          " userDe: " +
+          userDetails._id
+      );
+  
+      // Update the state with unique conversationId and userId pairs
+      setConversationsHadChange((prev) => {
+        const newEntry = { conversationId: data.conversationId, userId: data.userId };
+  
+        // Check if the entry already exists
+        const exists = prev.some(
+          (item) =>
+            item.conversationId === newEntry.conversationId &&
+            item.userId === newEntry.userId
+        );
+  
+        if (!exists) {
+          const updated = [...prev, newEntry];
+          console.log("Updated conversationsHadChange:", updated);
+          return updated;
+        }
+  
+        return prev; // Return previous state if entry already exists
+      });
     });
-
+  
     return () => {
       channel.unbind_all();
       pusher.unsubscribe("global-messages");
     };
   }, []);
+  
+  
   const handleCreateConversation = (company: any) => {
     const newConversation = {
       company_id: company._id,
@@ -129,8 +155,9 @@ const SideBar: React.FC<SideBarProps> = ({
     if (con._id) {
       console.log("in handleConversationClick" + con._id);
       setConversation({ _id: con._id.toString() });
-      setConversationsHadChange((prev) => prev.filter((id) => id !== con._id?.toString()));
-
+      setConversationsHadChange((prev) =>
+        prev.filter((change) => change.conversationId !== con._id?.toString())
+      );
       if (con.status != "active") {
         await statusConversation(con);
       }
@@ -242,9 +269,11 @@ const SideBar: React.FC<SideBarProps> = ({
           filteredConversations.map((mapConversation: Conversation) => {
             const isSelected =
               conversation._id === mapConversation._id?.toString();
-            const isBold = conversationsHadChange.includes(
-              mapConversation._id?.toString() || ""
-            );
+              const isBold = conversationsHadChange.some(
+                (change) =>
+                  change.conversationId === mapConversation._id?.toString() &&
+                  change.userId !== userDetails._id
+              );
 
             return (
               <div

@@ -56,8 +56,9 @@ export async function POST(req: any) {
 
     await pusher.trigger(conversationChannel, event, messageData);
 console.log("save massage"+conversationId)
-    await pusher.trigger("global-messages", "new-message", {
+    await pusher.trigger("global-messages", "message-received", {
       conversationId: conversationId,
+      userId:userId
     });
     console.log("save new massage"+conversationId)
 
