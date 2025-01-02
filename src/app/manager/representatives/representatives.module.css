@@ -7,17 +7,8 @@
     height: auto;
     background-color: #f9f9f9;
     position: relative;
-  }
-  
-  .backgroundImg {
-    width: 60vw;
-    height: 45vh;
-    overflow: hidden;
-    position: absolute;
-    top: -15vh;
-    left: -6vw;
     z-index: 1;
-    height: auto;
   }
+ 
 
   
