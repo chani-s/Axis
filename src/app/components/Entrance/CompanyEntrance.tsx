@@ -165,7 +165,7 @@ export const CompanyEntrance = () => {
                                 required
                             />
                         </div>
-                        <div className={style.files_container}>
+                        {/*<div className={style.files_container}>
                             <h4 className={style.secondary_title}>העלה מסמכי בעלות חברה</h4>
                             <h6 className={style.secondary_title}>PDF עד 3 מסמכים בפורמט</h6>
                             <button
@@ -206,7 +206,7 @@ export const CompanyEntrance = () => {
                                     </button>
                                 </div>
                             ))}
-                        </div>
+                        </div>*/}
                     </div>
                     <button className={style.submitButton} type="submit">
                         הרשם
