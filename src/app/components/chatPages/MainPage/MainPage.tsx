@@ -10,19 +10,19 @@ import { userDetailsStore } from "../../../services/zustand";
 import Link from "next/link";
 
 interface MainPageProps {
-    type: string;
-    conversations: Conversation[];
-    companiesData: any[];
-    createConversation: any;
-    chosenConversationId: string;
+  type: string;
+  conversations: Conversation[];
+  companiesData: any[];
+  createConversation: any;
+  chosenConversation: string;
 }
 
 const MainPage: React.FC<MainPageProps> = ({
-    type,
-    conversations,
-    companiesData,
-    createConversation,
-    chosenConversationId,
+  type,
+  conversations,
+  companiesData,
+  createConversation,
+  chosenConversation
 }) => {
     const [isDetailsPopUpVisible, setIsDetailsPopUpVisible] = useState(false);
     const [isLogin, setIsLogin] = useState(true);
@@ -83,18 +83,18 @@ const MainPage: React.FC<MainPageProps> = ({
 
     return (
         <div className={styles.page}>
-            <Header />
+            {/* <Header /> */}
             <div className={styles.mainArea}>
                 <SideBar
                     userType={type}
                     conversations={conversations}
                     companiesData={companiesData}
                     createConversation={createConversation}
-                    chosenConversationId={chosenConversationId}
+                    chosenConversationId={chosenConversation}
                 />
                 <MainChat type={type} />
             </div>
-            <Footer />
+            {/* <Footer /> */}
             {isDetailsPopUpVisible && (isNewLogin || !userDetails.name) && type === "user" && (
                 <div className={styles.overlay}>
                     <DetailsPopUp onClose={() => setIsDetailsPopUpVisible(false)} />

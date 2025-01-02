@@ -8,7 +8,6 @@ export async function GET(req: NextRequest) {
   try {
     // Parse URL parameters
     const urlParams = new URL(req.url).searchParams;
-    const userType = urlParams.get("userType");
     const conversationId = urlParams.get("conversationId");
 
     // Validate conversationId
@@ -20,13 +19,9 @@ export async function GET(req: NextRequest) {
     const client = await connectDatabase();
 
     // Define a flexible filter type
-    const filter: Record<string, any> = { conversationId: conversationId };
 
-    if (userType != "user") {
-      filter.time = { $gt: new Date() }; // Admin gets recent messages only
-    }
     // Query the database for messages
-    const messages = await getSpecificFields(client, "massages", filter, {});
+    const messages = await getSpecificFields(client, "massages", {}, {});
 
     // Return the response
     return new Response(JSON.stringify(messages), { status: 200 });

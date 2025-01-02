@@ -1,10 +1,8 @@
 "use server";
-
 import { MongoClient, ObjectId } from "mongodb";
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
-
 
 export async function connectDatabase() {
   try {
@@ -16,7 +14,7 @@ export async function connectDatabase() {
       client = new MongoClient(dbConnectionString);
     }
     clientPromise = client.connect();
-    await clientPromise; // וודא שהחיבור נוצר
+    await clientPromise; 
     console.log("Connected to MongoDB successfully");
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
@@ -53,7 +51,7 @@ export async function insertDocument(
   const result = await db.collection(collection).insertOne(document);
   const insertedDocument = await db
     .collection(collection)
-    .findOne({ _id: result.insertedId });
+    .findOne({ _id: result.insertedId});
   return insertedDocument;
 }
 
@@ -175,178 +173,21 @@ export async function getDocumentsByIds(
   client: MongoClient,
   collection: string,
   ids?: ObjectId[], 
-  include: boolean = true, // If true, fetch IDs in the list; if false, exclude them
-  fields?: object // Optional projection for specific fields
+  include: boolean = true, 
+  fields?: object 
 ) {
   const db = client.db("Axis");
   if (ids!=null){
-    const query = { _id: { [include ? "$in" : "$nin"]: ids } }; // Use $in or $nin based on 'includ
+    const query = { _id: { [include ? "$in" : "$nin"]: ids } }; 
 
-    const options = fields ? { projection: fields } : {}; // Handle optional projection
+    const options = fields ? { projection: fields } : {};
     return await db.collection(collection).find(query, options).toArray();
   }
   else{
-    const options = fields ? { projection: fields } : {}; // Handle optional projection
+    const options = fields ? { projection: fields } : {}; 
     return await db.collection(collection).find(options).toArray();
 
   }
  
 
 }
-
-// "use server";
-
-// import mongoose, { Schema, Document, Model } from "mongoose";
-
-// interface DefaultDocument extends Document {
-//   name: string;
-//   email: string;
-//   user_id: string;
-//   data?: any;
-//   createdAt: Date;
-//   updatedAt: Date;
-// }
-
-// // הגדרת הסכמה
-// const DefaultSchema: Schema<DefaultDocument> = new Schema(
-//   {
-//     name: { type: String, required: true },
-//     email: { type: String, required: true },
-//     user_id: { type: String, required: true },
-//     data: { type: Schema.Types.Mixed }, // שדה אופציונלי
-//   },
-//   { timestamps: true } // מוסיף createdAt ו-updatedAt אוטומטית
-// );
-
-// // התחברות למסד הנתונים באמצעות Mongoose
-// export async function connectDatabase () {
-//   try {
-//     const dbConnectionString = process.env.PUBLIC_DB_CONNECTION;
-//     if (!dbConnectionString) {
-//       throw new Error("Database connection string is not defined");
-//     }
-
-//     await mongoose.connect(dbConnectionString); // אין צורך ב-useNewUrlParser
-//     console.log("Connected to MongoDB successfully");
-//   } catch (error) {
-//     console.error("Error connecting to MongoDB:", error);
-//     throw error;
-//   }
-// }
-
-
-// const DefaultModel: Model<DefaultDocument> = mongoose.model(
-//   "Default",
-//   DefaultSchema
-// );
-
-// // פונקציות גישה לנתונים באמצעות Mongoose
-
-// export async function getAllDocuments() {
-//   return await DefaultModel.find();
-// }
-
-// export async function getById(id: string) {
-//   try {
-//     return await DefaultModel.findById(id);
-//   } catch (error) {
-//     console.error("Error fetching document by ID:", error);
-//     throw new Error("Failed to fetch document by ID");
-//   }
-// }
-
-// export async function insertDocument(document: Partial<DefaultDocument>) {
-//   const newDocument = new DefaultModel(document);
-//   return await newDocument.save();
-// }
-
-// export async function updateByUserId(userId: string, updateData: object) {
-//   try {
-//     return await DefaultModel.findOneAndUpdate(
-//       { user_id: userId },
-//       { $set: updateData },
-//       { new: true }
-//     );
-//   } catch (error) {
-//     console.error("Error updating document by user ID:", error);
-//     throw error;
-//   }
-// }
-
-// export async function updateByEmail(email: string, updateData: object) {
-//   try {
-//     return await DefaultModel.findOneAndUpdate(
-//       { email },
-//       { $set: updateData },
-//       { new: true }
-//     );
-//   } catch (error) {
-//     console.error("Error updating document by email:", error);
-//     throw error;
-//   }
-// }
-
-// export async function deleteDocument(id: string) {
-//   try {
-//     await DefaultModel.findByIdAndDelete(id);
-//     return { message: `Document with ID ${id} has been deleted.` };
-//   } catch (error) {
-//     console.error("Error deleting document:", error);
-//     throw error;
-//   }
-// }
-
-// export async function deleteDocumentByEmail(email: string) {
-//   try {
-//     await DefaultModel.findOneAndDelete({ email });
-//     return { message: `Document with email ${email} has been deleted.` };
-//   } catch (error) {
-//     console.error("Error deleting document by email:", error);
-//     throw error;
-//   }
-// }
-
-// export async function isExist(filter: object): Promise<boolean> {
-//   const exists = await DefaultModel.exists(filter);
-//   return !!exists;
-// }
-
-// export async function upsertDocument(filter: object, updateData: object) {
-//   try {
-//     const result = await DefaultModel.findOneAndUpdate(
-//       filter,
-//       { $set: updateData },
-//       { new: true, upsert: true }
-//     );
-//     return result;
-//   } catch (error) {
-//     console.error("Error upserting document:", error);
-//     throw error;
-//   }
-// }
-
-// export async function getSpecificFields(filter: object, fields: object) {
-//   try {
-//     return await DefaultModel.find(filter, fields);
-//   } catch (error) {
-//     console.error("Error fetching specific fields:", error);
-//     throw error;
-//   }
-// }
-
-// export async function getDocumentsByIds(
-//   ids?: string[],
-//   include: boolean = true,
-//   fields?: object
-// ) {
-//   try {
-//     const query = ids
-//       ? { _id: { [include ? "$in" : "$nin"]: ids } }
-//       : {};
-//     return await DefaultModel.find(query, fields);
-//   } catch (error) {
-//     console.error("Error fetching documents by IDs:", error);
-//     throw error;
-//   }
-// }
-

@@ -1,6 +1,6 @@
 import React from "react";
 import { z } from "zod";
-import { detailsSchema } from "../../../services/detailsValidation";
+import { detailsSchema } from "../../../services/validations";
 import { userDetailsStore } from "../../../services/zustand";
 import { updateUserByEmail } from "@/app/services/details";
 import style from "./DetailsPopUp.module.css";

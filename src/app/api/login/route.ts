@@ -1,12 +1,15 @@
 
-import { connectDatabase, getSpecificFields, getById, updateByEmail } from "@/app/services/mongo";
+//api/login/route.ts
+import { connectDatabase, getSpecificFields, getById, updateByEmail, insertDocument } from "@/app/services/mongo";
 import { NextResponse, NextRequest } from "next/server";
 import { verifyPassword } from "../../services/hash";
 import jwt from "jsonwebtoken";
+import pusher from "@/app/services/pusher"
 export const dynamic = 'force-dynamic';
+import { hashPassword } from "../../services/hash";
 
 export async function POST(req: NextRequest) {
-  
+
   const SECRET_KEY = process.env.SECRET_KEY;
   const responseDetails = {
     message: "",
@@ -24,10 +27,25 @@ export async function POST(req: NextRequest) {
       client,
       "users",
       { email: userData.email },
-      { _id: 1 }
+      {}
     );
 
     if (userExist[0]) {
+      console.log("details");
+      console.log(userExist[0]);
+
+      if (userExist[0].user_type == "manager" && userExist[0].status == "waiting") {
+        responseDetails.message = "Manager account is waiting for approval.";
+        responseDetails.userDetails = {};
+        await client.close();
+        return NextResponse.json(responseDetails, { status: 403 });
+      }
+      if (userExist[0].user_type == "representative" && userExist[0].status == "invited") {
+        responseDetails.message = "please sign up";
+        responseDetails.userDetails = {};
+        await client.close();
+        return NextResponse.json(responseDetails, { status: 403 });
+      }
       const userId = userExist[0]._id.toString();
       const userPassword = await getSpecificFields(
         client,
@@ -35,6 +53,7 @@ export async function POST(req: NextRequest) {
         { user_id: userId },
         { password: 1 }
       );
+
 
       if (userPassword[0]) {
         const isCorrect = await verifyPassword(userData.password, userPassword[0].password);
@@ -44,24 +63,26 @@ export async function POST(req: NextRequest) {
             "users",
             userId
           );
-          if(userDetails.user_type =="representative")
-          {
+          if (userDetails.user_type == "representative") {
             const updateStatus = await updateByEmail(
               client,
               "users",
               userDetails.email,
               { status: "active" }
-            ) 
-            userDetails.status ="active";
-          }
+            )
+            userDetails.status = "active";
 
-          console.log(userDetails);
-          
-          
+            await pusher.trigger(`company-${userDetails.companyId}`, "status-updated", {
+              name: userDetails.name,
+              email: userDetails.email,
+              status: "active",
+          });
+          }    
+
           const token = jwt.sign(
             { userId: userDetails._id },
-            SECRET_KEY?SECRET_KEY:"", 
-            { expiresIn: "1h" } 
+            SECRET_KEY ? SECRET_KEY : "",
+            { expiresIn: "1h" }
           );
           responseDetails.message = "User login successfully";
           const { _id, ...userWithoutId } = userDetails;
@@ -74,7 +95,7 @@ export async function POST(req: NextRequest) {
             secure: true,
             sameSite: "strict",
             maxAge: 3600
-          });          
+          });
 
           await client.close();
           return response;
@@ -82,8 +103,47 @@ export async function POST(req: NextRequest) {
         else
           responseDetails.message = "Password is incorrect";
       }
-      else
-        responseDetails.message = "Password does not exist";
+      else {
+        const userDetails = await getById(
+          client,
+          "users",
+          userId
+        );
+        if (userDetails.google_auth) {
+          const hashedPassword = await hashPassword(userData.password);
+          const insertUserPassword = await insertDocument(
+            client,
+            "hashed_passwords",
+            { user_id: userDetails?._id.toString(), password: hashedPassword }
+          );
+
+          const token = jwt.sign(
+            { userId: userDetails._id },
+            SECRET_KEY ? SECRET_KEY : "",
+            { expiresIn: "1h" }
+          );
+          responseDetails.message = "User login successfully";
+          const { _id, ...userWithoutId } = userDetails;
+          responseDetails.userDetails = userDetails;
+          responseDetails.token = token;
+
+          const response = NextResponse.json(responseDetails);
+          response.cookies.set("authToken", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: 3600
+          });
+
+          await client.close();
+          return response;
+
+        }
+        else {
+          responseDetails.message = "Password does not exist";
+        }
+      }
+
     }
     else
       responseDetails.message = "User does not exist";

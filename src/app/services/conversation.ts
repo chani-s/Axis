@@ -26,7 +26,10 @@ export async function createConversation(conversationData: any): Promise<any> {
   const { company_id, ...otherData } = conversationData;
 
   const queryParams = new URLSearchParams({
-    company_id: company_id.toString(), // Ensure it's a string
+    company_id: company_id.toString(),
+    conversationId:'',
+    activate:"false"
+     // Ensure it's a string
   });
 
   console.log("Query Params:", queryParams.toString());
@@ -43,3 +46,45 @@ export async function createConversation(conversationData: any): Promise<any> {
     throw error;
   }
 }
+
+
+export const deleteConversation = async (conversationId: string) => {
+  try {
+    // Use URLSearchParams to prepare the query parameter
+    const queryParams = new URLSearchParams({
+      conversationId: conversationId.toString(),
+       // Ensure it's a string
+    });
+    // Perform the DELETE request
+    const response = await http.delete(`/conversation?${queryParams}`)
+    if (response.status === 200) {
+      console.log(response.data.message); // Handle success
+    } else {
+      console.error(response.data.error); // Handle error
+    }
+  } catch (error) {
+    console.error('Error deleting conversation:', error);
+  }
+};
+export const statusConversation = async (conversation: any) => {
+  try {
+    // Use URLSearchParams to prepare the query parameter
+    const queryParams = new URLSearchParams({
+      conversationId: conversation._id.toString(),
+      company_id:conversation.company_id,
+      activate:"true"
+       // Ensure it's a string
+    });
+    // Perform the DELETE request
+    const response = await http.post(`/conversation?${queryParams}`, conversation);
+    if (response.status === 200) {
+      console.log(response.data.message); // Handle success
+    } else {
+      console.error(response.data.error); // Handle error
+    }
+  } catch (error) {
+    console.error('Error deleting conversation:', error);
+  }
+}
+
+// Usage example

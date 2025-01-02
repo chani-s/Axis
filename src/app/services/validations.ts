@@ -1,4 +1,6 @@
 import { z } from "zod";
+import validator from 'validator';
+
 
 export const isValidIsraeliId = (id: string): boolean => {
     if (id.length > 9) return false;
@@ -14,6 +16,12 @@ export const isValidIsraeliId = (id: string): boolean => {
     );
 };
 
+
+export const isValidEmail = (email: string): boolean => {
+    return validator.isEmail(email);
+};
+
+
 export const detailsSchema = z.object({
     name: z.string().min(1, "שם מלא הוא שדה חובה."),
     address: z.string().optional(),
@@ -23,5 +31,12 @@ export const detailsSchema = z.object({
         .refine(
             (id) => id === "" || (id && isValidIsraeliId(id)),
             "תעודת זהות לא תקינה."
+        ),
+    email: z
+        .string()
+        .optional()
+        .refine(
+            (email) => email === "" || (email && isValidEmail(email)),
+            "כתובת המייל לא תקינה."
         ),
 });
