@@ -6,7 +6,8 @@ import { userDetailsStore } from "@/app/services/zustand";
 import { showError, showSuccess } from "@/app/services/messeges";
 import { useRouter } from "next/navigation";
 import { isValidEmail } from "@/app/services/validations";
-import Header from "../chatPages/Header/Header";
+import { FaArrowRight } from "react-icons/fa";
+import Link from "next/link";
 
 interface Representative {
     id: number;
@@ -141,8 +142,9 @@ export const Representatives = () => {
     };
 
     return (
-        <div>
-            {/* <Header /> */}
+        <div>            
+            <Link className={style.backLink} href="/chat/manager"><FaArrowRight /> </Link>
+
             <div className={style.container}>
                 <h2 className={style.title}>ניהול נציגים</h2>
                 <p className={style.repTitle}>הנציגים שלך:</p>
