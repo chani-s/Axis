@@ -24,7 +24,7 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
                 name: fullName,
                 address: address,
                 id_number: idNumber,
-                profile_picture: userDetails.profile_picture,
+                email: userDetails.email,
             };
 
             const parsedDetails = detailsSchema.parse(updatedDetails);
