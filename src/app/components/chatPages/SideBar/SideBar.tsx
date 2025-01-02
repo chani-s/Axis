@@ -223,7 +223,19 @@ const SideBar: React.FC<SideBarProps> = ({
               setFilteredCompanies(companiesData); // הצגת כל החברות כברירת מחדל
             }}
             onKeyDown={handleKeyPress}
+          //   if (e.target.value === "") {
+          //     setIsDropdownOpen(false);
+          //   }
+          // }}
+          // onKeyDown={handleKeyPress}
           />
+
+          {/* {isDropdownOpen && (
+            <div className={styles.selectOptions}>
+              <RenderFilteredCompanies />
+            </div>
+          )} */}
+
           {isDropdownOpen && (
             <div className={styles.selectOptions}>
               <button

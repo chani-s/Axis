@@ -58,8 +58,10 @@
     color: #888;
 }
 
+
 .selectOptions {
     position: absolute;
+    top: 60%;
     left: 0;
     top: 60%;
     width: 100%;

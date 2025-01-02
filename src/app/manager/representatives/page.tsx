@@ -5,9 +5,10 @@ import style from './representatives.module.css';
 
 const LoginPage = () => {
     return (
-        <div className={style.container}>
-            <img className={style.backgroundImg} src="/imgs/backgroundLogo.png"></img>
-            <Representatives />
+        <div>
+            <div className={style.container}>
+                <Representatives />
+            </div>
         </div>
     );
 };

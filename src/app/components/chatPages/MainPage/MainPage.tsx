@@ -83,7 +83,7 @@ const MainPage: React.FC<MainPageProps> = ({
 
     return (
         <div className={styles.page}>
-            <Header />
+            {/* <Header /> */}
             <div className={styles.mainArea}>
                 <SideBar
                     userType={type}
@@ -94,7 +94,7 @@ const MainPage: React.FC<MainPageProps> = ({
                 />
                 <MainChat type={type} />
             </div>
-            <Footer />
+            {/* <Footer /> */}
             {isDetailsPopUpVisible && (isNewLogin || !userDetails.name) && type === "user" && (
                 <div className={styles.overlay}>
                     <DetailsPopUp onClose={() => setIsDetailsPopUpVisible(false)} />
