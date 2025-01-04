@@ -3,7 +3,6 @@ import styles from "./MainChat.module.css";
 import Pusher from "pusher-js";
 import {
   FaTimes,
-  FaBars,
   FaArrowLeft,
   FaWindowMinimize,
   FaInfoCircle,
