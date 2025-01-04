@@ -5,7 +5,9 @@ import { conversationsStore } from "./zustand";
 export const logout = async (userData: {
   email: string;
   name: string;
-  companyId: string | null;}
+  companyId: string | null;
+  user_type: string;
+}
 ): Promise<void> => {
   try {
     // Send a POST request to the server to clear the cookie

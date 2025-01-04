@@ -14,16 +14,18 @@ const Header = () => {
 
     const handleLogout = async () => {
         try {
-            const userData ={
-                email: userDetails.email, 
-                name: userDetails.name, 
-                companyId: userDetails.company_id ||null
+            if (userDetails.user_type === "representative")
+                userDetails.status = "inactive";
+            const userData = {
+                email: userDetails.email,
+                name: userDetails.name,
+                companyId: userDetails.company_id || null,
+                user_type: userDetails.user_type,
             }
             await logout(userData);
             setConversation({ _id: "" })
-            if (userDetails.user_type === "representative")
-                userDetails.status = "inactive";
             router.push("/login");
+            
         } catch (error) {
             console.error("Error during logout process:", error);
         }
