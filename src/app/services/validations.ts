@@ -40,3 +40,5 @@ export const detailsSchema = z.object({
             "כתובת המייל לא תקינה."
         ),
 });
+
+

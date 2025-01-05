@@ -107,8 +107,8 @@ export async function POST(req: NextRequest) {
                 );
 
                 responseDetails.message = "User register successfully";
-                const { _id, ...userWithoutId } = insertUserDetails;
-                responseDetails.userDetails = userWithoutId;
+                //const { _id, ...userWithoutId } = insertUserDetails;
+                responseDetails.userDetails = insertUserDetails;
                 responseDetails.token = token;
 
                 const response = NextResponse.json(responseDetails);

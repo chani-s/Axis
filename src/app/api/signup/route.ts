@@ -1,6 +1,3 @@
-
-//api/sighnup/route.ts:
-
 import { connectDatabase, isExist, insertDocument, getSpecificFields, updateByEmail } from "@/app/services/mongo";
 import { NextResponse, NextRequest } from "next/server";
 import { hashPassword } from "../../services/hash";
