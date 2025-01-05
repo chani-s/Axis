@@ -8,9 +8,9 @@ import { usePathname } from 'next/navigation';
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
     const pathname = usePathname();
-    const excludedRoutes = ["/login", "/signup"];
+    const excludedRoutes = ["/login", "/signup", "/company_signup", "/"];
     const isExcludedRoute = excludedRoutes.includes(pathname);
-    
+
     return (
         <div>
             {!isExcludedRoute && <Header />}
