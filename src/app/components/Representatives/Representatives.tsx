@@ -6,6 +6,8 @@ import { userDetailsStore } from "@/app/services/zustand";
 import { showError, showSuccess } from "@/app/services/messeges";
 import { useRouter } from "next/navigation";
 import { isValidEmail } from "@/app/services/validations";
+import { FaArrowRight } from "react-icons/fa";
+import Link from "next/link";
 
 interface Representative {
     id: number;
@@ -25,27 +27,34 @@ export const Representatives = () => {
     const [companyLogo, setCompanyLogo] = useState<string>("");
 
     const [loading, setLoading] = useState<boolean>(false);
-    const { userDetails } = userDetailsStore();
+    const { userDetails, setUserDetails } = userDetailsStore();
 
     const router = useRouter();
 
+
     useEffect(() => {
+        const user = localStorage.getItem("userDetails");
+        let parsedUser = null;
+        if (user) {
+            parsedUser = JSON.parse(user);
+            console.log("))))", parsedUser);
+            setUserDetails(parsedUser);
+        }
         const storedCompanyId = localStorage.getItem("companyId");
         const storedCompanyLogo = localStorage.getItem("companyLogo");
 
-        if (!storedCompanyId || !storedCompanyLogo) {
+        if (!parsedUser.company_id || !storedCompanyLogo) {
             showError("שגיאה בשליפת הנציגים מהמערכת. אנא התחבר שוב כמנהל.");
             router.push("/login");
             return;
         }
-        setCompanyId(storedCompanyId);
+        setCompanyId(parsedUser.company_id);
         setCompanyLogo(storedCompanyLogo);
-
 
         const fetchData = async () => {
             setLoading(true);
             try {
-                const data = await fetchRepresentatives(storedCompanyId);
+                const data = await fetchRepresentatives(parsedUser.company_id);
                 console.log("Fetched representatives:", data);
                 setRepresentatives(data.filter((rep: Representative) => rep.name));
             } catch (error: any) {
@@ -62,7 +71,8 @@ export const Representatives = () => {
             cluster: process.env.PUSHER_CLUSTER,
         });
 
-        const channel = pusher.subscribe(`company-${storedCompanyId}`);
+
+        const channel = pusher.subscribe(`company-${parsedUser.company_id}`);
 
         channel.bind("status-updated", (updatedRep: Representative) => {
             console.log("Updated representative from Pusher:", updatedRep);
@@ -82,10 +92,9 @@ export const Representatives = () => {
         return () => {
             channel.unbind("status-updated");
             channel.unbind("new-representative");
-            pusher.unsubscribe(`company-${storedCompanyId}`);
+            pusher.unsubscribe(`company-${parsedUser.company_id}`);
         };
     }, [router]);
-
 
     const handleInvite = () => {
         setIsInviteRepresentative(true);
@@ -132,74 +141,78 @@ export const Representatives = () => {
         }
     };
 
-
     return (
-        <div className={style.container}>
-            <h2 className={style.title}>ניהול נציגים</h2>
-            <p className={style.repTitle}>הנציגים שלך:</p>
-            <div className={style.content}>
-                <div className={style.representativesList}>
-                    {loading ? (
-                        <p>Loading...</p>
-                    ) : representatives.length > 0 ? (
-                        representatives.map((rep) => (
-                            <div
-                                key={rep.id}
-                                className={style.repCard}
-                                onClick={() => handleRepresentativeClick(rep)}
-                            >
-                                <p>{rep.name}</p>
+        <div>            
+            <Link className={style.backLink} href="/chat/manager"><FaArrowRight /> </Link>
+
+            <div className={style.container}>
+                <h2 className={style.title}>ניהול נציגים</h2>
+                <p className={style.repTitle}>הנציגים שלך:</p>
+                <div className={style.content}>
+                    <div className={style.representativesList}>
+                        {loading ? (
+                            <p>Loading...</p>
+                        ) : representatives.length > 0 ? (
+                            representatives.map((rep) => (
                                 <div
-                                    className={`${style.statusDot} ${rep.status === "active"
-                                        ? style.active
-                                        : rep.status === "inactive"
-                                            ? style.inactive
-                                            : style.invited
-                                        }`}
-                                ></div>
+                                    key={rep.id}
+                                    className={style.repCard}
+                                    onClick={() => handleRepresentativeClick(rep)}
+                                >
+                                    <p>{rep.name}</p>
+                                    <div
+                                        className={`${style.statusDot} ${rep.status === "active"
+                                            ? style.active
+                                            : rep.status === "inactive"
+                                                ? style.inactive
+                                                : style.invited
+                                            }`}
+                                    ></div>
+                                </div>
+                            ))) : (
+                            <p className={style.noRepresentativesMessage}>
+                                אין לך נציגים להצגה כרגע :)
+                            </p>
+                        )}
+                    </div>
+                    {selectedRepresentative ? (
+                        <div className={style.detailsPanel}>
+                            <h3>פרטי נציג</h3>
+                            <p>{selectedRepresentative.name}</p>
+                            <p>{selectedRepresentative.email}</p>
+                            <p>{selectedRepresentative.phone}</p>
+                        </div>) :
+                        isInviteRepresentative && (
+                            <div className={style.inviteBox}>
+                                <input
+                                    type="name"
+                                    value={inviteName}
+                                    onChange={(e) => setInviteName(e.target.value)}
+                                    placeholder="שם נציג"
+                                    className={style.input}
+                                />
+                                <input
+                                    type="email"
+                                    value={inviteEmail}
+                                    onChange={(e) => setInviteEmail(e.target.value)}
+                                    placeholder="כתובת מייל נציג"
+                                    className={style.input}
+                                />
+                                <button
+                                    className={style.sendInviteButton}
+                                    onClick={handleInviteSubmit}
+                                    disabled={loading}
+                                >
+                                    {loading ? "שליחה..." : "שלח הזמנה"}
+                                </button>
                             </div>
-                        ))) : (
-                        <p className={style.noRepresentativesMessage}>
-                            אין לך נציגים להצגה כרגע :)
-                        </p>
-                    )}
+                        )}
                 </div>
-                {selectedRepresentative ? (
-                    <div className={style.detailsPanel}>
-                        <h3>פרטי נציג</h3>
-                        <p>{selectedRepresentative.name}</p>
-                        <p>{selectedRepresentative.email}</p>
-                        <p>{selectedRepresentative.phone}</p>
-                    </div>) :
-                    isInviteRepresentative && (
-                        <div className={style.inviteBox}>
-                            <input
-                                type="name"
-                                value={inviteName}
-                                onChange={(e) => setInviteName(e.target.value)}
-                                placeholder="שם נציג"
-                                className={style.input}
-                            />
-                            <input
-                                type="email"
-                                value={inviteEmail}
-                                onChange={(e) => setInviteEmail(e.target.value)}
-                                placeholder="כתובת מייל נציג"
-                                className={style.input}
-                            />
-                            <button
-                                className={style.sendInviteButton}
-                                onClick={handleInviteSubmit}
-                                disabled={loading}
-                            >
-                                {loading ? "שליחה..." : "שלח הזמנה"}
-                            </button>
-                        </div>
-                    )}
+                <button className={style.newInviteButton} onClick={handleInvite}>
+                    הזמן נציג חדש
+                </button>
             </div>
-            <button className={style.newInviteButton} onClick={handleInvite}>
-                הזמן נציג חדש
-            </button>
         </div>
+
     );
 };

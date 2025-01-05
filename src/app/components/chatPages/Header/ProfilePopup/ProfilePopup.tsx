@@ -5,14 +5,13 @@ import { z } from "zod";
 import { detailsSchema } from "@/app/services/validations";
 import { userDetailsStore } from "../../../../services/zustand";
 import { updateUserByEmail } from "@/app/services/details";
-import { uploadPicture } from "@/app/services/uploadPicture";
+// import { uploadPicture } from "@/app/services/uploadPicture";
 
 const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const { userDetails, setUserDetails } = userDetailsStore();
     const [fullName, setFullName] = useState(userDetails.name || "");
     const [address, setAddress] = useState(userDetails.address || "");
     const [idNumber, setIdNumber] = useState(userDetails.id_number || "");
-    const [newProfilePic, setNewProfilePic] = useState(userDetails.profile_picture);
     const [errorMessages, setErrorMessages] = useState({
         name: "",
         id_number: "",
@@ -24,34 +23,18 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         fileInputRef.current?.click();
     };
 
-    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            console.log("Selected file:", file);
-
-            try {
-                const fileUrl = await uploadPicture(file);
-                console.log("HI THERE" + fileUrl);
-                setNewProfilePic(fileUrl);
-
-                setUserDetails({
-                    ...userDetails,
-                    profile_picture: fileUrl,
-                });
-            } catch (error) {
-                alert("שגיאה בהעלאת התמונה");
-            }
-        }
-    };
 
     const handleSave = async () => {
+        console.log("HI!");
         try {
             const updatedDetails = {
                 name: fullName,
                 address: address,
                 id_number: idNumber,
-                profile_picture: newProfilePic,
+                email: userDetails.email,
+    
             };
+            console.log("HI!", updatedDetails);
 
             const parsedDetails = detailsSchema.parse(updatedDetails);
 
@@ -111,21 +94,11 @@ const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 </button>
                 <div>
                     <img className={styles.profilePicture}
-                        src={newProfilePic}
+                        src={userDetails.profile_picture}
                         alt="profilePic" />
-                    <FaCamera
-                        className={styles.cameraIcon}
-                        onClick={handleButtonClick} />
                 </div>
                 <h2>שלום, {userDetails.name}</h2>
 
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    accept=".png, .jpg, .jpeg, .gif"
-                    onChange={handleFileChange}
-                    style={{ display: "none" }}
-                />
                 <div>
                     <label>שם מלא:</label>
                     <input

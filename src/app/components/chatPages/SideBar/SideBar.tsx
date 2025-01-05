@@ -86,8 +86,8 @@ const SideBar: React.FC<SideBarProps> = ({
   }, [isDropdownOpen]);
 
   useEffect(() => {
-    const pusher = new Pusher("ff054817599b88393e16", {
-      cluster: "ap2",
+    const pusher = new Pusher(process.env.PUSHER_KEY, {
+      cluster: process.env.PUSHER_CLUSTER,
     });
   
     const channel = pusher.subscribe("global-messages");
@@ -223,7 +223,19 @@ const SideBar: React.FC<SideBarProps> = ({
               setFilteredCompanies(companiesData); // הצגת כל החברות כברירת מחדל
             }}
             onKeyDown={handleKeyPress}
+          //   if (e.target.value === "") {
+          //     setIsDropdownOpen(false);
+          //   }
+          // }}
+          // onKeyDown={handleKeyPress}
           />
+
+          {/* {isDropdownOpen && (
+            <div className={styles.selectOptions}>
+              <RenderFilteredCompanies />
+            </div>
+          )} */}
+
           {isDropdownOpen && (
             <div className={styles.selectOptions}>
               <button

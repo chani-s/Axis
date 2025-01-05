@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
     try {
         const userData = await req.json();
-        console.log("Register goofle details: " + userData)
+        console.log("Register google details: " + userData)
 
         if (!userData.email) {
             return NextResponse.json({ message: "Missing email" }, { status: 400 });
@@ -107,8 +107,8 @@ export async function POST(req: NextRequest) {
                 );
 
                 responseDetails.message = "User register successfully";
-                const { _id, ...userWithoutId } = insertUserDetails;
-                responseDetails.userDetails = userWithoutId;
+                //const { _id, ...userWithoutId } = insertUserDetails;
+                responseDetails.userDetails = insertUserDetails;
                 responseDetails.token = token;
 
                 const response = NextResponse.json(responseDetails);
