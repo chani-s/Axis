@@ -1,8 +1,6 @@
 import { http } from "./http";
 
 import { AxiosResponse } from "axios";
-import { getSpecificFields } from "./mongo";
-import { Conversation } from "../models/Conversation";
 export const CompanyService = {
   async getNameAndProfile(ids: string[]): Promise<any> {
     try {

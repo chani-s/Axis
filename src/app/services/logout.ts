@@ -1,5 +1,4 @@
 import { http } from "./http";
-import { conversationsStore } from "./zustand";
 
 // Logout function to clear the token and perform cleanup
 export const logout = async (userData: {

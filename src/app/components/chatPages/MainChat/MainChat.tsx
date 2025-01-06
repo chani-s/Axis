@@ -225,7 +225,10 @@ const MainChat = ({ type }: any) => {
 
       <div className={styles.sendingBar}>
         {type === "representative" && (
-          <button className={styles.detailsButton} onClick={showDetails}>
+          <button 
+          className={styles.detailsButton} 
+          // onClick={showDetails}
+          >
             פרטי לקוח
           </button>
         )}
