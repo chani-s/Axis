@@ -80,7 +80,9 @@
 }
 
 .backLink {
-  margin: 20px;
+  position: relative;
+  top: 20px;
+  right: 20px;
 }
 
 .statusDot {
@@ -141,4 +143,21 @@
   margin: 5px 0;
   font-size: 1rem;
   color: #555;
+}
+
+.spinner {
+  align-self: center;
+  animation: spin 1s linear infinite;
+  font-size: 2rem;
+  color: #ddba0e;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
