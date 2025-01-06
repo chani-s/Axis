@@ -1,6 +1,5 @@
 import { connectDatabase, getSpecificFields } from "@/app/services/mongo";
-import { ObjectId } from "mongodb";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
 

@@ -1,7 +1,8 @@
-
 import { connectDatabase, isExist, insertDocument, getSpecificFields, updateByEmail } from "@/app/services/mongo";
 import { NextResponse, NextRequest } from "next/server";
 import { hashPassword } from "../../services/hash";
+import pusher from "@/app/services/pusher"
+
 import jwt from "jsonwebtoken";
 export const dynamic = 'force-dynamic';
 
@@ -62,8 +63,13 @@ export async function POST(req: NextRequest) {
           client,
           "users",
           userData.email,
-          { status: "active" }
-        )
+          { status: "active" })
+
+          await pusher.trigger(`company-${userData.companyId}`, "status-updated", {
+            name: userData.name,
+            email: userData.email,
+            status: "active",
+        });
 
         if (updateStatus) {
           userDetails = await getSpecificFields(
@@ -96,8 +102,8 @@ export async function POST(req: NextRequest) {
       );
 
       responseDetails.message = "User signup successfully";
-      const { _id, ...userWithoutId } = userDetails;
-      responseDetails.userDetails = userWithoutId;
+      //const { _id, ...userWithoutId } = userDetails;
+      responseDetails.userDetails = userDetails;
       responseDetails.token = token;
 
       const response = NextResponse.json(responseDetails);

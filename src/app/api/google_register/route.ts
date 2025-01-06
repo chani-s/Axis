@@ -1,6 +1,8 @@
 
+//api/google_register/route.ts
 import { connectDatabase, getSpecificFields, getById, insertDocument, updateByEmail } from "@/app/services/mongo";
 import { NextResponse, NextRequest } from "next/server";
+import pusher from "@/app/services/pusher"
 import jwt from "jsonwebtoken";
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
     try {
         const userData = await req.json();
-        console.log("Register goofle details: " + userData)
+        console.log("Register google details: " + userData)
 
         if (!userData.email) {
             return NextResponse.json({ message: "Missing email" }, { status: 400 });
@@ -43,6 +45,13 @@ export async function POST(req: NextRequest) {
                     { status: "active", google_auth: true }
                 )
                 userDetails.status = "active";
+
+                await pusher.trigger(`company-${userDetails.companyId}`, "status-updated", {
+                    name: userDetails.name,
+                    email: userDetails.email,
+                    status: "active",
+                });
+
             }
 
             if (userDetails.user_type == "manager" && userDetails.status == "approved") {
@@ -98,8 +107,8 @@ export async function POST(req: NextRequest) {
                 );
 
                 responseDetails.message = "User register successfully";
-                const { _id, ...userWithoutId } = insertUserDetails;
-                responseDetails.userDetails = userWithoutId;
+                //const { _id, ...userWithoutId } = insertUserDetails;
+                responseDetails.userDetails = insertUserDetails;
                 responseDetails.token = token;
 
                 const response = NextResponse.json(responseDetails);

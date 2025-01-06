@@ -1,8 +1,8 @@
 "use client"
-// import type { Metadata } from "next";
 import "./globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import localFont from "next/font/local";
+import Layout from '@/app/components/Layout/Layout';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -17,11 +17,13 @@ const geistMono = localFont({
 });
 
 import { Fredoka } from 'next/font/google';
+import { usePathname } from "next/navigation";
 
 const fredoka = Fredoka({
   weight: ['300', '400'],
   subsets: ['latin'],
 });
+
 
 const queryClient = new QueryClient();
 
@@ -30,6 +32,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
   return (
     <html lang="en">
       <head>
@@ -41,10 +45,11 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${fredoka.className}`}>
 
-        {/* <body className={fredoka.className}> */}
         <QueryClientProvider client={queryClient}>
-          {children}
+
+          <Layout>{children}</Layout>
         </QueryClientProvider>
+
       </body>
     </html>
   );

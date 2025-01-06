@@ -34,13 +34,7 @@ const DetailsBar = ({ type }: { type: string }) => {
         localStorage.setItem("permissions", JSON.stringify(details));
     }, [details]);
 
-    // const toggleDetail = (key: keyof typeof details) => {
-    //     setDetails((prev) => ({
-    //         ...prev,
-    //         [key]: !prev[key],
-    //     }));
-    // };
-
+    
     const descriptions: Record<keyof typeof details, string> = {
         phone: "הרשאת גישה למספר הטלפון",
         address: "הרשאת גישה לכתובת",

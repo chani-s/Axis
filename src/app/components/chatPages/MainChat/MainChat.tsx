@@ -3,7 +3,6 @@ import styles from "./MainChat.module.css";
 import Pusher from "pusher-js";
 import {
   FaTimes,
-  FaBars,
   FaArrowLeft,
   FaWindowMinimize,
   FaInfoCircle,
@@ -34,6 +33,10 @@ const MainChat = ({ type }: any) => {
   const userDetails = userDetailsStore((state) => state.userDetails);
   const { conversation, setConversation } = conversationsStore();
 
+  const pusher = new Pusher(process.env.PUSHER_KEY, {
+      cluster: process.env.PUSHER_CLUSTER,
+    });
+
   useEffect(() => {
     if (!conversation?._id) return;
     const loadConversationMessages = async () => {
@@ -52,10 +55,6 @@ const MainChat = ({ type }: any) => {
 
     loadConversationMessages();
 
-    const pusher = new Pusher("ff054817599b88393e16", {
-      cluster: "ap2",
-    });
-
     const conversationChannel = `chat-channel-${conversation._id}`;
     const channel = pusher.subscribe(conversationChannel);
 
@@ -71,16 +70,16 @@ const MainChat = ({ type }: any) => {
       }
     });
 
-        return () => {
-            console.log(`Unsubscribing from channel: ${conversationChannel}`);
-            channel.unbind('new-message');
-            pusher.unsubscribe(conversationChannel);
-            setMessages([]);
-        };
+    return () => {
+      console.log(`Unsubscribing from channel: ${conversationChannel}`);
+      channel.unbind('new-message');
+      pusher.unsubscribe(conversationChannel);
+      setMessages([]);
+    };
 
-    }, [conversation?._id]);
-    const sendMessage = async () => {
-        if (!message || !conversation._id) return;
+  }, [conversation?._id]);
+  const sendMessage = async () => {
+    if (!message || !conversation._id) return;
 
     const newMessage: MessageObj = {
       time: new Date(),
@@ -205,11 +204,10 @@ const MainChat = ({ type }: any) => {
             return (
               <div
                 key={index}
-                className={`${styles.message} ${
-                  msg.sender === userDetails._id || !msg.sender
+                className={`${styles.message} ${msg.sender === userDetails._id || !msg.sender
                     ? styles.userMessage
                     : styles.otherMessage
-                }`}
+                  }`}
               >
                 <p className={styles.messageText}>{msg.text}</p>
                 <span className={styles.messageTime}>
@@ -227,7 +225,10 @@ const MainChat = ({ type }: any) => {
 
       <div className={styles.sendingBar}>
         {type === "representative" && (
-          <button className={styles.detailsButton} onClick={showDetails}>
+          <button 
+          className={styles.detailsButton} 
+          // onClick={showDetails}
+          >
             פרטי לקוח
           </button>
         )}
