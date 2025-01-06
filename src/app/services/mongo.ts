@@ -81,6 +81,53 @@ export async function updateByEmail(
   return updatedDocument;
 }
 
+export async function getDocumentsByIds(
+  client: MongoClient,
+  collection: string,
+  ids?: ObjectId[], 
+  include: boolean = true, 
+  fields?: object 
+) {
+  const db = client.db("Axis");
+  if (ids!=null){
+    const query = { _id: { [include ? "$in" : "$nin"]: ids } }; 
+    const options = fields ? { projection: fields } : {};
+    return await db.collection(collection).find(query, options).toArray();
+  }
+  else{
+    const options = fields ? { projection: fields } : {}; 
+    return await db.collection(collection).find(options).toArray();
+  }
+}
+
+export async function updateByUserId(
+  client: MongoClient,
+  collection: string,
+  documentId: string,
+  updateData: object
+) {
+  const db = client.db("Axis");
+  const result = await db
+    .collection(collection)
+    .updateOne({ user_id: documentId }, { $set: updateData });
+  const updatedDocument = await db
+    .collection(collection)
+    .findOne({ user_id: documentId});
+  return updatedDocument;
+}
+
+export async function deleteDocumentByEmail(
+  client: MongoClient,
+  collection: string,
+  documentEmail: string
+) {
+  const db = client.db("Axis");
+  const result = await db
+    .collection(collection)
+    .deleteOne({ email: documentEmail});
+  return { message: `Document with ID ${documentEmail} has been deleted.` };
+}
+
 
 export async function isExist(
   client: MongoClient,

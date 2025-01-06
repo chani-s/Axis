@@ -5,7 +5,6 @@ import { z } from "zod";
 import { detailsSchema } from "@/app/services/validations";
 import { userDetailsStore } from "../../../../services/zustand";
 import { updateUserByEmail } from "@/app/services/details";
-// import { uploadPicture } from "@/app/services/uploadPicture";
 
 const ProfilePopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const { userDetails, setUserDetails } = userDetailsStore();

@@ -2,7 +2,6 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import style from "./CompanyEntrance.module.css";
-import { FaArrowUp, FaTrash } from "react-icons/fa";
 import { useMutation } from "@tanstack/react-query";
 import { showError, showSuccess } from "../../services/messeges";
 import { signUpCompany } from "../../services/company";
@@ -165,48 +164,7 @@ export const CompanyEntrance = () => {
                                 required
                             />
                         </div>
-                        {/*<div className={style.files_container}>
-                            <h4 className={style.secondary_title}>העלה מסמכי בעלות חברה</h4>
-                            <h6 className={style.secondary_title}>PDF עד 3 מסמכים בפורמט</h6>
-                            <button
-                                type="button"
-                                onClick={handleButtonClick}
-                                className={style.uploadButton}
-                                disabled={selectedFiles.length >= maxFiles}
-                            >
-                                <FaArrowUp /> העלאת מסמכים
-                            </button>
-                            <input
-                                type="file"
-                                id="file-upload"
-                                ref={fileInputRef}
-                                accept=".pdf"
-                                onChange={handleFileChange}
-                                style={{ display: "none" }}
-                            />
-                            {selectedFiles.map((file) => (
-                                <div key={file.name} className={style.fileItem}>
-                                    <div>
-                                        <h5 className={style.secondary_title}>{file.name}</h5>
-                                        {uploadProgress[file.name] !== undefined && (
-                                            <div className={style.uploadProgressContainer}>
-                                                <div
-                                                    className={style.uploadProgress}
-                                                    style={{ width: `${uploadProgress[file.name]}%` }}
-                                                />
-                                            </div>
-                                        )}
-                                    </div>
-                                    <button
-                                        type="button"
-                                        className={style.removeButton}
-                                        onClick={() => handleRemoveFile(file.name)}
-                                    >
-                                        <FaTrash />
-                                    </button>
-                                </div>
-                            ))}
-                        </div>*/}
+                        
                     </div>
                     <button className={style.submitButton} type="submit">
                         הרשם
