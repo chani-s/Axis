@@ -24,13 +24,6 @@ export async function connectDatabase() {
   return clientPromise;
 }
 
-
-export async function getAllDocuments(client: any, collection: string) {
-  const db = client.db("Axis");
-  const documents = await db.collection(collection).find().toArray();
-  return documents;
-}
-
 export async function getById(client: any, collection: string, id: string) {
   const db = client.db("Axis");
   try {
@@ -55,21 +48,6 @@ export async function insertDocument(
   return insertedDocument;
 }
 
-export async function updateByUserId(
-  client: MongoClient,
-  collection: string,
-  documentId: string,
-  updateData: object
-) {
-  const db = client.db("Axis");
-  const result = await db
-    .collection(collection)
-    .updateOne({ user_id: documentId }, { $set: updateData });
-  const updatedDocument = await db
-    .collection(collection)
-    .findOne({ user_id: documentId});
-  return updatedDocument;
-}
 
 export async function updateById(
   client: MongoClient,
@@ -86,6 +64,7 @@ export async function updateById(
     .findOne({ _id: new ObjectId(documentId) });
   return updatedDocument;
 }
+
 export async function updateByEmail(
   client: MongoClient,
   collection: string,
@@ -102,16 +81,39 @@ export async function updateByEmail(
   return updatedDocument;
 }
 
-export async function deleteDocument(
+export async function getDocumentsByIds(
   client: MongoClient,
   collection: string,
-  documentId: string
+  ids?: ObjectId[], 
+  include: boolean = true, 
+  fields?: object 
+) {
+  const db = client.db("Axis");
+  if (ids!=null){
+    const query = { _id: { [include ? "$in" : "$nin"]: ids } }; 
+    const options = fields ? { projection: fields } : {};
+    return await db.collection(collection).find(query, options).toArray();
+  }
+  else{
+    const options = fields ? { projection: fields } : {}; 
+    return await db.collection(collection).find(options).toArray();
+  }
+}
+
+export async function updateByUserId(
+  client: MongoClient,
+  collection: string,
+  documentId: string,
+  updateData: object
 ) {
   const db = client.db("Axis");
   const result = await db
     .collection(collection)
-    .deleteOne({ _id: new ObjectId(documentId) });
-  return { message: `Document with ID ${documentId} has been deleted.` };
+    .updateOne({ user_id: documentId }, { $set: updateData });
+  const updatedDocument = await db
+    .collection(collection)
+    .findOne({ user_id: documentId});
+  return updatedDocument;
 }
 
 export async function deleteDocumentByEmail(
@@ -126,6 +128,7 @@ export async function deleteDocumentByEmail(
   return { message: `Document with ID ${documentEmail} has been deleted.` };
 }
 
+
 export async function isExist(
   client: MongoClient,
   collection: string,
@@ -136,20 +139,7 @@ export async function isExist(
   return !!exists; 
 }
 
-export async function upsertDocument(
-  client: MongoClient,
-  collection: string,
-  filter: object,
-  updateData: object
-) {
-  const db = client.db("Axis");
-  const result = await db
-    .collection(collection)
-    .updateOne(filter, { $set: updateData }, { upsert: true });
-  return result.upsertedId
-    ? { upsertedId: result.upsertedId }
-    : { modifiedCount: result.modifiedCount };
-}
+
 
 //await getSpecificFields(client, "users", { age: { $gte: 30 } }(<-מביא שדות אלו), { name: 1, age: 1 }(<-ממין לפי שדות אלו));
 export async function getSpecificFields(
@@ -169,25 +159,5 @@ export async function getSpecificFields(
 
 
 
-export async function getDocumentsByIds(
-  client: MongoClient,
-  collection: string,
-  ids?: ObjectId[], 
-  include: boolean = true, 
-  fields?: object 
-) {
-  const db = client.db("Axis");
-  if (ids!=null){
-    const query = { _id: { [include ? "$in" : "$nin"]: ids } }; 
-
-    const options = fields ? { projection: fields } : {};
-    return await db.collection(collection).find(query, options).toArray();
-  }
-  else{
-    const options = fields ? { projection: fields } : {}; 
-    return await db.collection(collection).find(options).toArray();
-
-  }
  
 
-}

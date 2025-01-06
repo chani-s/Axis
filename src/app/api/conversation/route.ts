@@ -4,12 +4,8 @@ import { connectDatabase, getSpecificFields } from "@/app/services/mongo";
 import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import { insertDocument } from "@/app/services/mongo";
-import Pusher from "pusher";
 import jwt from "jsonwebtoken";
 import { verifyAuthToken } from "@/app/services/decodeToken";
-import { Conversation } from "@/app/models/Conversation";
-import { object } from "zod";
-
 const secret = process.env.TOKEN_SECRET_KEY;
 
 export async function GET(request: NextRequest) {

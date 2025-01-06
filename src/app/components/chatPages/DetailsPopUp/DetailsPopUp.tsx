@@ -65,54 +65,7 @@ const DetailsPopUp = ({ onClose }: { onClose: () => void }) => {
                 alert("שגיאה בשמירת הנתונים");
             }
         }
-        // const updatedDetails = {
-        //     name: fullName,
-        //     address: address,
-        //     id_number: idNumber,
-        // };
-
-        // try {
-        //     detailsSchema.parse(updatedDetails);
-
-        //     const response = await updateUserByEmail(userDetails.email, updatedDetails);
-
-        //     if (response.data.success) {
-        //         setUserDetails({
-        //             ...userDetails,
-        //             name: updatedDetails.name,
-        //             address: updatedDetails.address,
-        //             id_number: updatedDetails.id_number,
-        //         });
-        //         onClose();
-        //     } else {
-        //         throw new Error("Failed to update user data");
-        //     }
-        // } catch (error) {
-        //     if (error instanceof z.ZodError) {
-        //         const newErrorMessages: { name: string, id_number: string, address: string } = {
-        //             name: "",
-        //             id_number: "",
-        //             address: "",
-        //         };
-
-        //         error.errors.forEach((err) => {
-        //             if (err.path.includes("name")) {
-        //                 newErrorMessages.name = err.message;
-        //             }
-        //             if (err.path.includes("id_number")) {
-        //                 newErrorMessages.id_number = err.message;
-        //             }
-        //             if (err.path.includes("address")) {
-        //                 newErrorMessages.address = err.message;
-        //             }
-        //         });
-
-        //         setErrorMessages(newErrorMessages);
-        //     } else {
-        //         console.error("שגיאה:", error);
-        //         alert("שגיאה בשמירת הנתונים");
-        //     }
-        // }
+        
     };
 
     const handleCancelClick = () => {
